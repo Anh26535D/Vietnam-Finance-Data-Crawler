@@ -16,7 +16,12 @@ URL_STOCK_BIZ = {
 }
 
 URL_TVSI = {
-  "CLOSE":"https://finance.tvsi.com.vn/Enterprises/LichsugiaSymbolPart2?symbol=SYMBOL&currentPage=PAGE&duration=d&startDate=DATE_START&endDate=DATE_END&_=1655626220398",
+  "CLOSE":"https://finance.tvsi.com.vn/Enterprises/LichsugiaSymbolPart2?symbol=SYMBOL&currentPage=PAGE&duration=d&startDate=DATE_START&endDate=DATE_END",
+  "BALANCE_SHEET_QUARTER":"https://finance.tvsi.com.vn/Enterprises/BangCanDoiKeToan?symbol=SYMBOL&YearView=YEAR&period=2&donvi=1",
+  "INCOME_STATEMENT_QUARTER":"https://finance.tvsi.com.vn/Enterprises/BaoCaoKetQuaKd?symbol=SYMBOL&YearView=YEAR&period=2&donvi=1",
+  # "CASH_FLOWS_INDIRECT":"https://finance.tvsi.com.vn/Enterprises/LuuChuyenTienTegiantiep?symbol=AAA&YearView=2022&period=2&donvi=1",
+  # "CASH_FLOWS_DIRECT":"https://finance.tvsi.com.vn/Enterprises/LuuChuyenTienTe?symbol=AAA&YearView=2022&period=2&donvi=1",
+
 }
 
 URL_VIETSTOCK = {

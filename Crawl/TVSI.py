@@ -1,10 +1,44 @@
 
+import math
 import pandas as pd
 from Crawl.base.URL import URL_TVSI
 from .base import setup
 def convertDateForLink(date):
       return date.replace("/","%2F")
-      
+class Financail(setup.Setup):
+    def __init__(self,symbol="AAA",start="10/06/2021",end="10/10/2021"):
+        super().__init__()
+        self.symbol = symbol
+        self.URL_BALANCED = URL_TVSI["BALANCE_SHEET_QUARTER"]
+        self.URL_INCOME = URL_TVSI["INCOME_STATEMENT_QUARTER"]
+    
+    def getFinanStatement(self,link):
+        table = self.download_batch_get_request(link)
+        table = table.rename(columns=table.iloc[0])
+        table = table.drop(table.index[0])
+        table = table.dropna(axis=1, how='all')
+        arr = []
+        for i in table.columns:
+            if str(i) == "nan":
+                arr.append("field")
+            else:
+                arr.append(i)
+        table.columns = arr
+        return table
+    
+    def get_Table(self,year,table):
+        arr = ['field']
+        for col in table.columns:
+            if col.find(str(year))!=-1:
+                arr.append(col)
+        return table[arr]
+
+    def get_Balance(self,year):
+        table = self.getFinanStatement(self.URL_BALANCED.replace("SYMBOL",self.symbol).replace("YEAR",str(year)))
+        return self.get_Table(year,table)
+    def get_Income(self,year):
+        table = self.getFinanStatement(self.URL_INCOME.replace("SYMBOL",self.symbol).replace("YEAR",str(year)))
+        return self.get_Table(year,table)
 class Close(setup.Setup):
     def __init__(self,symbol="AAA",start="10/06/2021",end="10/10/2021"):
         super().__init__()
