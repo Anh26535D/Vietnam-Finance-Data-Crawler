@@ -32,13 +32,32 @@ class Financail(setup.Setup):
             if col.find(str(year))!=-1:
                 arr.append(col)
         return table[arr]
+    
+    def get_Data_Table(self,link,year):
+        table = self.getFinanStatement(link.replace("SYMBOL",self.symbol).replace("YEAR",str(year)))
+        return self.get_Table(year,table)
+    
+    def get_Data_Link(self,start,end,link):
+        if self.checkstatus_TVSI(link.replace("SYMBOL",self.symbol).replace("YEAR",str(start))):
+            result = pd.DataFrame({"field":[]})
+            for i in range(start,end+1):
+                try:
+                    df1 = self.get_Data_Table(link,i)
+                    for col in df1.columns:
+                        if col in result.columns:
+                            list_field.append(col)
+                    result = pd.merge(df1,result,on=list_field,how='outer')
+                except:
+                    pass
+        else:
+            return
+        return result
 
-    def get_Balance(self,year):
-        table = self.getFinanStatement(self.URL_BALANCED.replace("SYMBOL",self.symbol).replace("YEAR",str(year)))
-        return self.get_Table(year,table)
-    def get_Income(self,year):
-        table = self.getFinanStatement(self.URL_INCOME.replace("SYMBOL",self.symbol).replace("YEAR",str(year)))
-        return self.get_Table(year,table)
+    def get_Balance(self,start,end):
+        return self.get_Data_Link(start,end,self.URL_BALANCED)
+    def get_Income(self,start,end):
+        return self.get_Data_Link(start,end,self.URL_INCOME)
+
 class Close(setup.Setup):
     def __init__(self,symbol="AAA",start="10/06/2021",end="10/10/2021"):
         super().__init__()
