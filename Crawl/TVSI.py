@@ -40,6 +40,7 @@ class Financail(setup.Setup):
     def get_Data_Link(self,start,end,link):
         if self.checkstatus_TVSI(link.replace("SYMBOL",self.symbol).replace("YEAR",str(start))):
             result = pd.DataFrame({"field":[]})
+            list_field = []
             for i in range(start,end+1):
                 try:
                     df1 = self.get_Data_Table(link,i)
