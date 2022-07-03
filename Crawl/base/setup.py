@@ -138,7 +138,6 @@ class Setup():
         rs = requests.get(link)
         soup = BeautifulSoup(rs.content, 'html.parser')
         list_ = soup.find_all("div",{"class":"container"})
-        print(list_)
         if len(list_) == 0:
             return True
         else:
