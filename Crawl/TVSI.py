@@ -11,6 +11,8 @@ class Financail(setup.Setup):
         self.symbol = symbol
         self.URL_BALANCED = URL_TVSI["BALANCE_SHEET_QUARTER"]
         self.URL_INCOME = URL_TVSI["INCOME_STATEMENT_QUARTER"]
+        self.URL_BALANCED_YEAR = URL_TVSI["BALANCE_SHEET_YEAR"]
+        self.URL_INCOME_YEAR = URL_TVSI["INCOME_STATEMENT_YEAR"]
     
     def getFinanStatement(self,link):
         table = self.download_batch_get_request(link)
@@ -58,6 +60,11 @@ class Financail(setup.Setup):
         return self.get_Data_Link(start,end,self.URL_BALANCED)
     def get_Income(self,start,end):
         return self.get_Data_Link(start,end,self.URL_INCOME)
+    
+    def get_Balance_Year(self,start,end):
+        return self.get_Data_Link(start,end,self.URL_BALANCED_YEAR)
+    def get_Income_Year(self,start,end):
+        return self.get_Data_Link(start,end,self.URL_INCOME_YEAR)
 
 class Close(setup.Setup):
     def __init__(self,symbol="AAA",start="10/06/2021",end="10/10/2021"):
