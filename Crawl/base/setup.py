@@ -26,10 +26,10 @@ class Setup():
         self.form_data = {}
         self.VS = URL_VIETSTOCK["LOGIN"] 
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
-        try:
-            self.reset_driver()
-        except:
-            self.reset_colab()
+        # try:
+        #     self.reset_driver()
+        # except:
+        #     self.reset_colab()
 
     def reset_colab(self):
         chrome_options = webdriver.ChromeOptions()

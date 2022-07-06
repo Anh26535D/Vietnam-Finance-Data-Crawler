@@ -206,6 +206,7 @@ class Close(setup.Setup):
         self.symbol=symbol
         self.URL_CAFE_CLOSE = self.setup_link(symbol,URL_CAFE["CLOSE"])
         self.URL_CAFE_FUND =  self.setup_link(symbol,URL_CAFE["CLOSE_FUND"])
+        self.URL_CAFE_DETAIL = self.setup_link(symbol,URL_CAFE["CLOSE_DETAIL"])
     def setup_link(self,symbol,link):
       return link.replace("SYMBOL",symbol)
     def fix_date(self,start,end):
@@ -215,6 +216,8 @@ class Close(setup.Setup):
         return self.download_one_close()
     def DownloadCloseFund(self):
         return self.download_one_fund()
+    def DownloadCloseDetail(self):
+        return self.download_one_detail_close()
     def download_one(self,id_batch,url):
         self.form_data = {'ctl00$ContentPlaceHolder1$scriptmanager':'ctl00$ContentPlaceHolder1$ctl03$panelAjax|ctl00$ContentPlaceHolder1$ctl03$pager1',
                        'ctl00$ContentPlaceHolder1$ctl03$txtKeyword':self.symbol,
@@ -223,12 +226,12 @@ class Close(setup.Setup):
                        '__EVENTTARGET':'ctl00$ContentPlaceHolder1$ctl03$pager1',
                        '__EVENTARGUMENT':id_batch,
                        '__ASYNCPOST':'true'}
-        stock_slice_batch = self.download_batch(url)
+        stock_slice_batch = self.download_batch_get_post(url)
         stock_slice_batch = stock_slice_batch.rename(columns=stock_slice_batch.iloc[0])
-        try:
-            stock_slice_batch = stock_slice_batch.drop([stock_slice_batch.index[0],stock_slice_batch.index[1]])
-        except:
-            stock_slice_batch = stock_slice_batch.drop(stock_slice_batch.index[0])
+        # try:
+        #     stock_slice_batch = stock_slice_batch.drop([stock_slice_batch.index[0],stock_slice_batch.index[1]])
+        # except:
+        stock_slice_batch = stock_slice_batch.drop(stock_slice_batch.index[0])
         return stock_slice_batch
 
     def download_one_close(self):
@@ -248,6 +251,18 @@ class Close(setup.Setup):
             stock_data = pd.concat([stock_data, stock_slice_batch], axis=0)
             try:
                 date_end_batch = stock_slice_batch["KLđăng ký"].values[-1]
+            except:
+                break
+        return stock_data
+    
+    def download_one_detail_close(self):
+        stock_data = pd.DataFrame({})
+        for i in range(1000):
+            stock_slice_batch = self.download_one(i + 1, self.URL_CAFE_DETAIL)
+            print(stock_slice_batch)
+            stock_data = pd.concat([stock_data, stock_slice_batch], axis=0)
+            try:
+                date_end_batch = stock_slice_batch["Ngày"].values[-1]
             except:
                 break
         return stock_data

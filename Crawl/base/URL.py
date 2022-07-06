@@ -4,6 +4,7 @@ PASSWORD = 'xuanphong2002'
 URL_CAFE = {
     "CLOSE": "https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-1.chn#data",
     "CLOSE_FUND": "https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-5.chn#data",
+    "CLOSE_DETAIL":"https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-2.chn#data",
     "FINANCIAL":"https://s.cafef.vn/bao-cao-tai-chinh/SYMBOL/IncSta/TIME/ket-qua-hoat-dong-kinh-doanh-cong-ty-co-phan-nhua-an-phat-xanh.chn",
     "DIVIDEND":"https://s.cafef.vn/",
     "VOLUME_NOW":"https://s.cafef.vn/",
