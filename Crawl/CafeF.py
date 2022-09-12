@@ -228,10 +228,10 @@ class Close(setup.Setup):
                        '__ASYNCPOST':'true'}
         stock_slice_batch = self.download_batch_get_post(url)
         stock_slice_batch = stock_slice_batch.rename(columns=stock_slice_batch.iloc[0])
-        # try:
-        #     stock_slice_batch = stock_slice_batch.drop([stock_slice_batch.index[0],stock_slice_batch.index[1]])
-        # except:
-        stock_slice_batch = stock_slice_batch.drop(stock_slice_batch.index[0])
+        try:
+            stock_slice_batch = stock_slice_batch.drop([stock_slice_batch.index[0],stock_slice_batch.index[1]])
+        except:
+            stock_slice_batch = stock_slice_batch.drop(stock_slice_batch.index[0])
         return stock_slice_batch
 
     def download_one_close(self):

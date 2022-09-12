@@ -11,6 +11,7 @@ else:
 class PATH_ENV():
     def __init__(self):
         self.PATH_MAIN = PATH_Data
+        self.DateCurrent = date
         self.DayCurrent= date.strftime("%Y-%m-%d")
         self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
         self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")

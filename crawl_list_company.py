@@ -8,4 +8,4 @@ t = VietStock.Other("T")
 t.login_VS()
 data = t.Listing()
 
-data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company",PATH_.DayCurrent)}.csv',index=False)
+data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
