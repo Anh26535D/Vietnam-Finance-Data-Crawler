@@ -26,10 +26,10 @@ class Setup():
         self.form_data = {}
         self.VS = URL_VIETSTOCK["LOGIN"] 
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
-        # try:
-        #     self.reset_driver()
-        # except:
-        #     self.reset_colab()
+        try:
+            self.reset_driver()
+        except:
+            self.reset_colab()
 
     def reset_colab(self):
         chrome_options = webdriver.ChromeOptions()
@@ -42,7 +42,7 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:/webdrive/chromedriver.exe"):
+    def reset_driver(self, path="C:\webdriver/chromedriver.exe"):
         self.driver = webdriver.Chrome(executable_path=path)
 
     def request_link(self,link,time=5):

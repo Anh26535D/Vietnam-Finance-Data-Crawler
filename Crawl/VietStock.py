@@ -102,6 +102,7 @@ class Other(setup.Setup):
         return self.getTable(self.CreateLink('LISTING'))
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
+
     def getTable(self, link):
         self.request_link(link)
         time.sleep(1)
@@ -113,14 +114,14 @@ class Other(setup.Setup):
             data = self.getTableInfor(page)
             for number_page in range(2, number_pages+1):
                 # if method == 'number_page'
-                data_new = self.getNextTable(number_page, link)
+                data_new = self.getNextTable()
                 data= pd.concat([data, data_new])
             return data
         else: return self.getTableInfor(page)
 
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
-        time.sleep(1)
+        time.sleep(5)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 
