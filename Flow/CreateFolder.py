@@ -7,7 +7,7 @@ from Flow import PATH_env
 class FolderData(PATH_env.PATH_ENV):
     def __init__(self):
         super().__init__()
-        self.CloseObject = ["CafeF","TVSI"]
+        self.CloseObject = ["CafeF","StockBiz"]
         self.FinancialObject = ["CafeF","VietStock"]
     
     def createFolder(self,path):

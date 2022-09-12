@@ -12,6 +12,7 @@ class FinanStatement(setup.Setup):
         self.link_balance = URL_VIETSTOCK["BALANCE_SHEET"].replace("SYMBOL",symbol)
         self.link_income = URL_VIETSTOCK["INCOME_STATEMENT"].replace("SYMBOL",symbol)
         self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",symbol)
+        
 
 
     def BalanceSheet(self,PeriodType):
@@ -76,6 +77,7 @@ class FinanStatement(setup.Setup):
 class Other(setup.Setup):
     def __init__(self,symbol) -> None:
         super().__init__()
+        self.list_symbol_listing = pd.DataFrame({})
 
     def CreateLink(self,type_,symbol=""):
         return  URL_VIETSTOCK[type_].replace("SYMBOL",symbol)
@@ -99,7 +101,10 @@ class Other(setup.Setup):
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))
     
     def Listing(self):
-        return self.getTable(self.CreateLink('LISTING'))
+        self.getTableForListing(self.CreateLink('LISTING'),"1")
+        self.getTableForListing(self.CreateLink('LISTING'),"2")
+        self.getTableForListing(self.CreateLink('LISTING'),"5")
+        return self.list_symbol_listing
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
 
@@ -118,7 +123,29 @@ class Other(setup.Setup):
                 data= pd.concat([data, data_new])
             return data
         else: return self.getTableInfor(page)
+    
+    def getExchangeNormal(self,exchange):
+        self.click_select("exchange",exchange)
+        self.click_select("businessTypeID","1")
+        self.click_something_by_xpath('//*[@id="corporate-az"]/div/div[1]/div[1]/button')
+        time.sleep(2)
 
+    def getTableForListing(self, link,exchange):
+        self.request_link(link)
+        time.sleep(1)
+        self.getExchangeNormal(exchange)
+        page_source = self.driver.page_source
+        page = BeautifulSoup(page_source, 'html.parser')
+        number_pages = self.getNumberPage(page)
+        if number_pages > 1:
+            if self.list_symbol_listing.empty:
+                self.list_symbol_listing = self.getTableInfor(page)
+            for number_page in range(2, number_pages+1):
+                data_new = self.getNextTable()
+                self.list_symbol_listing= pd.concat([self.list_symbol_listing, data_new])
+            return self.list_symbol_listing
+        else: return self.getTableInfor(page)
+    
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
         time.sleep(5)
