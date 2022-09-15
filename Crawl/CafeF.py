@@ -149,15 +149,18 @@ class Volume(setup.Setup):
         self.URL_VOLUME_NOW = URL_CAFE["VOLUME_NOW"]
 
     def setupLink(self, link):
-        self.URL_VOLUME_NOW = self.URL_VOLUME_NOW + link
+        self.URL_VOLUME_NOW = self.URL_VOLUME_NOW.replace("SYMBOL",link)
 
     def getVolumeNow(self,link):
         self.setupLink(link)
         self.request_link(self.URL_VOLUME_NOW,5)
         try:
-           element = self.find_element_by_xpath('//*[@id="content"]/div/div[6]/div[5]/div/ul')
+           element = self.find_element_by_xpath('//*[@id="content"]/div/div[7]/div[5]/div/ul')
         except:
-            element = self.find_element_by_xpath('//*[@id="content"]/div/div[5]/div[5]/div/ul')
+            try:
+                element = self.find_element_by_xpath('//*[@id="content"]/div/div[6]/div[5]/div/ul')
+            except:
+                element = self.find_element_by_xpath('//*[@id="contentV1"]/div[4]/div[5]/div/ul')
         finally:
             pass
         soup = str(element.get_attribute('innerHTML'))
@@ -183,20 +186,45 @@ class Volume(setup.Setup):
 class Dividend(setup.Setup):
     def __init__(self):
         super().__init__()
-        self.link = "https://s.cafef.vn/"
+        self.link = URL_CAFE["DIVIDEND"]
         self.new = None
 
-    def setup_link(self, link):
-        self.link = self.link + link
+    def setup_link(self, symbol):
+        self.link = self.link.replace("SYMBOL",symbol)
 
-    def get_new(self,link):
-        self.setup_link(link)
+    def get_new(self,symbol):
+        self.setup_link(symbol)
         self.request_link(self.link,10)
         soup = BeautifulSoup(self.driver.page_source, 'html.parser')
         t = soup.find_all("div",attrs={"class":"middle"})
         t1 = t[0].text
         self.new = t1.split("-")
-        return self.new
+        return pd.DataFrame({"New":self.new})
+    def FilterData(self,day,s):
+        if s[:20].find("bằng Cổ phiếu") !=-1:
+            return {"Time":day,
+                "Tien": False,
+                "Tyle": s[s.find("tỷ lệ")+6:s.find("tỷ lệ")+15].replace("\n","").replace(" ",'').replace(":",'/')} 
+        if s[:15].find("bằng Tiền") != -1:
+            return {"Time":day,
+                "Tien": True,
+                "Tyle": s[s.find("tỷ lệ")+6: s.find("tỷ lệ")+15].replace("\n","").replace("%","").replace(",",".").replace(" ",'')}
+        return 0
+    
+    def LocDuLieu(self):
+        arr_result = []
+        for i in self.new:
+            if i.find("Cổ tức bằng")!=-1:
+                day = i[1:11]
+                for j in i.split("Cổ tức "):
+                    cp = self.FilterData(day,j)
+                    if cp !=0:
+                        arr_result.append(cp)
+        df = pd.DataFrame(data=arr_result)
+        return df
+    def getDay(self,start,end):
+        self.data["Time"] = self.data.apply(lambda row: self.formatDayISO(row["Time"]),axis=1)
+        return self.data[(self.data["Time"] >=start)&(self.data["Time"] <=end)]
     
 class Close(setup.Setup):
     def __init__(self,symbol="AAA",start='01/01/2000',end='09/06/2022'):

@@ -6,8 +6,8 @@ URL_CAFE = {
     "CLOSE_FUND": "https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-5.chn#data",
     "CLOSE_DETAIL":"https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-2.chn#data",
     "FINANCIAL":"https://s.cafef.vn/bao-cao-tai-chinh/SYMBOL/IncSta/TIME/ket-qua-hoat-dong-kinh-doanh-cong-ty-co-phan-nhua-an-phat-xanh.chn",
-    "DIVIDEND":"https://s.cafef.vn/",
-    "VOLUME_NOW":"https://s.cafef.vn/",
+    "DIVIDEND":"https://s.cafef.vn/hose/SYMBOL-cong-ty-co-phan-nhua-an-phat-xanh.chn",
+    "VOLUME_NOW":"https://s.cafef.vn/hose/SYMBOL-cong-ty-co-phan-nhua-an-phat-xanh.chn",
     "VOLUME_EVENT":"https://s.cafef.vn/Ajax/Events_RelatedNews_New.aspx?symbol=*&floorID=0&configID=4&PageIndex=1&PageSize=1000&Type=2",
     "LIST_DELIST":"https://s.cafef.vn/du-lieu-doanh-nghiep.chn",
 }

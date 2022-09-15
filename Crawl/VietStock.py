@@ -13,8 +13,6 @@ class FinanStatement(setup.Setup):
         self.link_income = URL_VIETSTOCK["INCOME_STATEMENT"].replace("SYMBOL",symbol)
         self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",symbol)
         
-
-
     def BalanceSheet(self,PeriodType):
         return self.table_lake(self.link_balance, PeriodType)
 

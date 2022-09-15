@@ -16,7 +16,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 pd.set_option('mode.chained_assignment', None)
 
 class Setup():
-    def __init__(self) -> None:
+    def __init__(self,type_tech = "Selenium") -> None:
         self.user = USER
         self.password = PASSWORD
         self.year = 0
@@ -26,10 +26,11 @@ class Setup():
         self.form_data = {}
         self.VS = URL_VIETSTOCK["LOGIN"] 
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
-        try:
-            self.reset_driver()
-        except:
-            self.reset_colab()
+        if type_tech == "Selenium":
+            try:
+                self.reset_driver()
+            except:
+                self.reset_colab()
 
     def reset_colab(self):
         chrome_options = webdriver.ChromeOptions()
@@ -42,7 +43,7 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:\webdriver/chromedriver.exe"):
+    def reset_driver(self, path="C:\web_driver/chromedriver.exe"):
         self.driver = webdriver.Chrome(executable_path=path)
 
     def request_link(self,link,time=5):

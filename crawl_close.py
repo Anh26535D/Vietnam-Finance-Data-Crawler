@@ -5,7 +5,7 @@ from Flow import PATH_env
 import datetime
 
 PATH_ = PATH_env.PATH_ENV()
-start = PATH_.DateCurrent - datetime.timedelta(days=365)
+start = PATH_.DateCurrent - datetime.timedelta(days=180)
 start = start.strftime("%d/%m/%Y")
 end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
