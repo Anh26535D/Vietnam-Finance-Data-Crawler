@@ -9,9 +9,11 @@ class FinanStatement(setup.Setup):
     def __init__(self,symbol):
         super().__init__()
         self.symbol = symbol
-        self.link_balance = URL_VIETSTOCK["BALANCE_SHEET"].replace("SYMBOL",symbol)
-        self.link_income = URL_VIETSTOCK["INCOME_STATEMENT"].replace("SYMBOL",symbol)
-        self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",symbol)
+    
+    def setupLink(self):
+        self.link_balance = URL_VIETSTOCK["BALANCE_SHEET"].replace("SYMBOL",self.symbol)
+        self.link_income = URL_VIETSTOCK["INCOME_STATEMENT"].replace("SYMBOL",self.symbol)
+        self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",self.symbol)
         
     def BalanceSheet(self,PeriodType):
         return self.table_lake(self.link_balance, PeriodType)
@@ -41,7 +43,7 @@ class FinanStatement(setup.Setup):
     def click_to_all_year(self, PeriodType):
         try:
             try:
-                self.click_select("period","-1")
+                self.click_select("period","2")
                 time.sleep(0.5)
                 self.click_select("UnitDong","1000")
                 time.sleep(0.5)

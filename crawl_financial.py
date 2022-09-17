@@ -31,6 +31,8 @@ def test_data(symbol):
 dict_time = {
     "Q":"Quarter/",
     "Y":"Year/",
+    "QUY":"Quarter/",
+    "NAM":"Year/"
 }
 
 def FinancialCafeF(symbol,type_):
@@ -64,7 +66,47 @@ def FinancialCafeF(symbol,type_):
             print("loi nang, dell lap trinh nua")
     print("Done!!",symbol)
 
+
+
+webVS = VietStock.FinanStatement("AAA")
+webVS.login_VS()
+
+def FinancialVietStock(symbol,type_):
+    global PATH
+    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"VietStock",dict_time[type_])
+    list_must_crawl_again = list(test_data(symbol))
+    if len(list_must_crawl_again) == 0:
+        return 0
+    else:
+        print(symbol,list_must_crawl_again,end=" ")
+    webVS.symbol=symbol
+    webVS.setupLink()
+
+    time = 2
+    for i in list_must_crawl_again:
+        if i == 1:
+            income = webVS.IncomStatement(type_)
+            income.to_csv(f"{PATH}IncomeStatement/{symbol}.csv",index=False)
+        elif i == 2:
+            balan = webVS.BalanceSheet(type_)
+            balan.to_csv(f"{PATH}BalanceSheet/{symbol}.csv",index=False)
+        elif i == 3:
+            CFID = webVS.CashFlows(type_)
+            CFID.to_csv(f"{PATH}CashFlowInDirect/{symbol}.csv",index=False)
+        else:
+            print("loi nang, dell lap trinh nua")
+    print("Done!!",symbol)
+
+def runVS(func):
+    try:
+        func
+    except:
+        webVS = VietStock.FinanStatement("")
+        webVS.login_VS()
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
     FinancialCafeF(symbol,"Q")
     FinancialCafeF(symbol,"Y")
+    runVS(FinancialVietStock(symbol,"NAM"))
+    runVS(FinancialVietStock(symbol,"QUY"))
+# #     break

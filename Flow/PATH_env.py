@@ -1,6 +1,6 @@
 from datetime import datetime
 
-PATH_Data = "C:\DataVietNam\Data"
+# PATH_Data = "C:\DataVietNam\Data"
 PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
 day,month,year=0,0,0
