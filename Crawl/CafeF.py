@@ -228,7 +228,7 @@ class Dividend(setup.Setup):
     
 class Close(setup.Setup):
     def __init__(self,symbol="AAA",start='01/01/2000',end='09/06/2022'):
-        super().__init__()
+        super().__init__(type_tech = "Requests")
         self.start = start
         self.end = end
         self.symbol=symbol

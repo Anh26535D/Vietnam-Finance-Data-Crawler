@@ -16,7 +16,7 @@ def closeCafeF(symbol):
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
         com = CafeF.Close(symbol=symbol,start=start,end=end)
-        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv")
+        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
     
 def closeStockBiz(symbol):
     PATH = PATH_.joinPath(PATH_.PATH_CLOSE,"StockBiz")
@@ -24,11 +24,10 @@ def closeStockBiz(symbol):
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
         com = StockBiz.Close(symbol=symbol,start=end,end=start)
-        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv")
+        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    print(symbol)
     closeCafeF(symbol)
     closeStockBiz(symbol)
 # closeCafeF("AAA")

@@ -28,9 +28,9 @@ class Setup():
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
         if type_tech == "Selenium":
             try:
-                self.reset_driver()
-            except:
                 self.reset_colab()
+            except:
+                self.reset_driver()
 
     def reset_colab(self):
         chrome_options = webdriver.ChromeOptions()
@@ -43,15 +43,23 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:\web_driver/chromedriver.exe"):
-        self.driver = webdriver.Chrome(executable_path=path)
+    def reset_driver(self, path="C:\\webdriver/chromedriver.exe"):
+        chrome_options = webdriver.ChromeOptions()
+        # chrome_options.add_argument('--headless')
+        # chrome_options.add_argument('--no-sandbox')
+        # chrome_options.add_argument('enable-automation')
+        # chrome_options.add_argument('--disable-dev-shm-usage')
+        # chrome_options.add_argument('--disable-browser-side-navigation')
+        # chrome_options.add_argument('--disable-gpu')
+        self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
 
     def request_link(self,link,time=5):
         try:
             self.driver.set_page_load_timeout(time)
             self.driver.get(link)
         except:
-            self.request_link(link,10)
+            # self.request_link(link,10)
+            pass
 
     def format(self, time):
         s = time.split("-")

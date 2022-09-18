@@ -64,7 +64,14 @@ def FinancialCafeF(symbol,type_):
             print("loi nang, dell lap trinh nua")
     print("Done!!",symbol)
 
+
+def run(func):
+    try:func
+    except:pass
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    FinancialCafeF(symbol,"Q")
-    FinancialCafeF(symbol,"Y")
+    try:
+        run(FinancialCafeF(symbol,"Q"))
+        run(FinancialCafeF(symbol,"Y"))
+    except:
+        pass

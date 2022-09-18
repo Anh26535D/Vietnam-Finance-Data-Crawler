@@ -295,18 +295,18 @@
       <start>Y</start>
       <dummy>N</dummy>
       <repeat>Y</repeat>
-      <schedulerType>2</schedulerType>
+      <schedulerType>0</schedulerType>
       <intervalSeconds>10</intervalSeconds>
       <intervalMinutes>0</intervalMinutes>
-      <hour>18</hour>
-      <minutes>37</minutes>
+      <hour>15</hour>
+      <minutes>10</minutes>
       <weekDay>1</weekDay>
       <DayOfMonth>1</DayOfMonth>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>80</xloc>
-      <yloc>272</yloc>
+      <yloc>256</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -330,8 +330,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>240</xloc>
-      <yloc>272</yloc>
+      <xloc>208</xloc>
+      <yloc>256</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -355,12 +355,12 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>448</xloc>
-      <yloc>272</yloc>
+      <xloc>352</xloc>
+      <yloc>256</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>GetListCompany 2</name>
+      <name>Price</name>
       <description/>
       <type>SHELL</type>
       <attributes/>
@@ -381,29 +381,94 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>624</xloc>
-      <yloc>272</yloc>
+      <yloc>160</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
-      <name>Dummy</name>
+      <name>Dividend</name>
       <description/>
-      <type>SPECIAL</type>
+      <type>SHELL</type>
       <attributes/>
-      <start>N</start>
-      <dummy>Y</dummy>
-      <repeat>N</repeat>
-      <schedulerType>0</schedulerType>
-      <intervalSeconds>0</intervalSeconds>
-      <intervalMinutes>60</intervalMinutes>
-      <hour>12</hour>
-      <minutes>0</minutes>
-      <weekDay>1</weekDay>
-      <DayOfMonth>1</DayOfMonth>
+      <filename/>
+      <work_directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile>Dividend</logfile>
+      <set_append_logfile>Y</set_append_logfile>
+      <logext/>
+      <add_date>Y</add_date>
+      <add_time>Y</add_time>
+      <insertScript>Y</insertScript>
+      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\crawl_dividend.py"</script>
+      <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>784</xloc>
-      <yloc>272</yloc>
+      <xloc>624</xloc>
+      <yloc>240</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Financial</name>
+      <description/>
+      <type>SHELL</type>
+      <attributes/>
+      <filename/>
+      <work_directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <set_append_logfile>N</set_append_logfile>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\crawl_financial.py"</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>624</xloc>
+      <yloc>304</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Volume</name>
+      <description/>
+      <type>SHELL</type>
+      <attributes/>
+      <filename/>
+      <work_directory/>
+      <arg_from_previous>N</arg_from_previous>
+      <exec_per_row>N</exec_per_row>
+      <set_logfile>N</set_logfile>
+      <logfile/>
+      <set_append_logfile>N</set_append_logfile>
+      <logext/>
+      <add_date>N</add_date>
+      <add_time>N</add_time>
+      <insertScript>Y</insertScript>
+      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\crawl_volume.py"</script>
+      <loglevel>Basic</loglevel>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>624</xloc>
+      <yloc>368</yloc>
+      <attributes_kjc/>
+    </entry>
+    <entry>
+      <name>Success</name>
+      <description/>
+      <type>SUCCESS</type>
+      <attributes/>
+      <parallel>N</parallel>
+      <draw>Y</draw>
+      <nr>0</nr>
+      <xloc>880</xloc>
+      <yloc>256</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
@@ -428,7 +493,43 @@
     </hop>
     <hop>
       <from>GetListCompany</from>
-      <to>GetListCompany 2</to>
+      <to>Price</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>GetListCompany</from>
+      <to>Dividend</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>GetListCompany</from>
+      <to>Financial</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>GetListCompany</from>
+      <to>Volume</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>N</evaluation>
+      <unconditional>Y</unconditional>
+    </hop>
+    <hop>
+      <from>Price</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
@@ -436,8 +537,26 @@
       <unconditional>N</unconditional>
     </hop>
     <hop>
-      <from>GetListCompany 2</from>
-      <to>Dummy</to>
+      <from>Dividend</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Financial</from>
+      <to>Success</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Volume</from>
+      <to>Success</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
       <enabled>Y</enabled>
