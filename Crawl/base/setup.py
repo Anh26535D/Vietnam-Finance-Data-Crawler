@@ -106,7 +106,7 @@ class Setup():
 
 
     def click_select(self,name,value):
-        select = Select(self.driver.find_element_by_name(name))
+        select = Select(self.driver.find_element(By.NAME,name))
         select.select_by_value(value)
         
 
