@@ -28,7 +28,10 @@ def closeStockBiz(symbol):
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    closeCafeF(symbol)
-    closeStockBiz(symbol)
+    try:
+        closeCafeF(symbol)
+        closeStockBiz(symbol)
+    except:
+        pass
 # closeCafeF("AAA")
 # closeStockBiz("AAA")

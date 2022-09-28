@@ -294,10 +294,10 @@
       <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
-      <repeat>Y</repeat>
+      <repeat>N</repeat>
       <schedulerType>0</schedulerType>
-      <intervalSeconds>10</intervalSeconds>
-      <intervalMinutes>0</intervalMinutes>
+      <intervalSeconds>0</intervalSeconds>
+      <intervalMinutes>7200</intervalMinutes>
       <hour>15</hour>
       <minutes>10</minutes>
       <weekDay>1</weekDay>
@@ -381,7 +381,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>624</xloc>
-      <yloc>160</yloc>
+      <yloc>80</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -406,7 +406,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>624</xloc>
-      <yloc>240</yloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -431,7 +431,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>624</xloc>
-      <yloc>304</yloc>
+      <yloc>416</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -456,7 +456,7 @@
       <draw>Y</draw>
       <nr>0</nr>
       <xloc>624</xloc>
-      <yloc>368</yloc>
+      <yloc>304</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
