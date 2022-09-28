@@ -1,7 +1,7 @@
 from datetime import datetime
 
 # PATH_Data = "C:\DataVietNam\Data"
-PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
+# PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
 day,month,year=0,0,0
 if day != 0:
@@ -11,15 +11,10 @@ else:
 
 
 class PATH_ENV():
-    def __init__(self):
-        self.PATH_MAIN = PATH_Data
+    def __init__(self,Type_):
         self.DateCurrent = date
         self.DayCurrent= date.strftime("%Y-%m-%d")
-        self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
-        self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")
-        self.PATH_FINANCIAL = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Financial")
-        self.PATH_DIVIDEND = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Dividend")
-        self.PATH_VOLUME = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Volume")
+        self.setTypeForder(Type_)
         self.CloseObject = ["CafeF","StockBiz"]
         self.DividendObject = ["CafeF","VietStock"]
         self.DividendPartObject = ["CashDividend","BonusShare","StockDividend"]
@@ -31,5 +26,18 @@ class PATH_ENV():
 
     def joinPath(self,*arg):
         return "/".join(arg)
+    
+    def setTypeForder(self,Type):
+        if Type == "Ingestion":
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
+        elif Type == "Raw_VIS":
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
+        self.PATH_MAIN = PATH_Data
+        self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
+        self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")
+        self.PATH_FINANCIAL = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Financial")
+        self.PATH_DIVIDEND = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Dividend")
+        self.PATH_VOLUME = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Volume")
+            
     
 
