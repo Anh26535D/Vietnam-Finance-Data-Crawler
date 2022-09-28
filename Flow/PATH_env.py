@@ -1,4 +1,4 @@
-from datetime import datetime
+import datetime
 
 # PATH_Data = "C:\DataVietNam\Data"
 # PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
@@ -7,9 +7,11 @@ day,month,year=0,0,0
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
-    date = datetime.today()
-
-
+    date = datetime.datetime.today()
+    t = date.timetuple().tm_yday
+    if t % 2 == 1:
+        date = date - datetime.timedelta(days=1)
+        
 class PATH_ENV():
     def __init__(self,Type_):
         self.DateCurrent = date

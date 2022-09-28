@@ -7,8 +7,8 @@ from Crawl.base.URL import URL_68
 class Crawl68(setup.Setup):
     def __init__(self,symbol="AAA"):
         super().__init__()
-        self.start = start
-        self.end = end
+        # self.start = start
+        # self.end = end
         self.symbol=symbol
         self.URL_68_CLOSE = URL_68["CLOSE"]
 

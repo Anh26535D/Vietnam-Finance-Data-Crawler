@@ -11,12 +11,12 @@ start = start.strftime("%d/%m/%Y")
 end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
 def checkfile(symbol,file_type):
-  try:
-    with open(f"{PATH}/{file_type}/{symbol}.json", 'r',encoding='utf-8') as j:
-      temp = json.loads(j.read())
-  except:
-    return False
-  return True
+    try:
+        with open(f"{PATH}/{file_type}/{symbol}.json", 'r',encoding='utf-8') as j:
+            temp = json.loads(j.read())
+    except:
+        return False
+    return True
 
 def test_data(symbol):
   if checkfile(symbol,"IncomeStatement")==False:
@@ -93,6 +93,8 @@ def FinancialVietStock(symbol,type_):
         elif i == 3:
             CFID = webVS.CashFlows(type_)
             CFID.to_csv(f"{PATH}CashFlowInDirect/{symbol}.csv",index=False)
+        elif i == 4:
+            pass
         else:
             print("loi nang, dell lap trinh nua")
     print("Done!!",symbol)

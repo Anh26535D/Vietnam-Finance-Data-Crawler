@@ -5,7 +5,7 @@ from .base import setup
 
 class Close(setup.Setup):    
     def __init__(self,symbol="AAA",start='09/06/2022',end = '09/06/2022'):
-        super().__init__()
+        super().__init__(type_tech = "Resquests")
         self.URL_CLOSE = URL_STOCK_BIZ["CLOSE"].replace("SYMBOL",symbol)
         self.symbol= symbol
         self.start = start

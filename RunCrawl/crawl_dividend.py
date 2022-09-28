@@ -15,22 +15,29 @@ def DividendCafeF(symbol):
     try:
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
-        com = CafeF.Dividend()
-        com.get_new(symbol).to_csv(f"{PATH}/{symbol}.csv",index=False)
-    
+        try:
+            com = CafeF.Dividend()
+            com.get_new(symbol).to_csv(f"{PATH}/{symbol}.csv",index=False)
+        except:
+            pass
+        
 def DividendVietStock(symbol):
     PATH = PATH_.joinPath(PATH_.PATH_DIVIDEND,"VietStock")
     try:
-        df = pd.read_csv(f"{PATH}/{symbol}.csv")
+        df = pd.read_csv(f"{PATH}/BonusShare/{symbol}.csv")
     except:
-        com = VietStock.Other(symbol=symbol)
-        com.BonusShare(symbol).to_csv(f"{PATH}/BonusShare/{symbol}.csv",index=False)
-        com.CashDividend(symbol).to_csv(f"{PATH}/CashDividend/{symbol}.csv",index=False)
-        com.StockDividend(symbol).to_csv(f"{PATH}/StockDividend/{symbol}.csv",index=False)
-
+        try:
+            com = VietStock.Other(symbol=symbol)
+            com.BonusShare(symbol).to_csv(f"{PATH}/BonusShare/{symbol}.csv",index=False)
+            com.CashDividend(symbol).to_csv(f"{PATH}/CashDividend/{symbol}.csv",index=False)
+            com.StockDividend(symbol).to_csv(f"{PATH}/StockDividend/{symbol}.csv",index=False)
+        except:
+            pass
+       
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    print(symbol)
-    DividendCafeF(symbol)
-    DividendVietStock(symbol)
+    try:
+        print(symbol)
+        DividendCafeF(symbol)
+        DividendVietStock(symbol)

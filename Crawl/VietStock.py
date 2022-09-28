@@ -110,15 +110,13 @@ class Other(setup.Setup):
 
     def getTable(self, link):
         self.request_link(link)
-        time.sleep(1)
+        time.sleep(2)
         page_source = self.driver.page_source
         page = BeautifulSoup(page_source, 'html.parser')
         number_pages = self.getNumberPage(page)
-        # print(number_pages)
         if number_pages > 1:
             data = self.getTableInfor(page)
             for number_page in range(2, number_pages+1):
-                # if method == 'number_page'
                 data_new = self.getNextTable()
                 data= pd.concat([data, data_new])
             return data
@@ -153,7 +151,7 @@ class Other(setup.Setup):
         return self.getTableInfor(page)
 
     def getTableInfor(self, page):
-        time.sleep(1)
+        # time.sleep(1)
         list_table = page.find_all('table', {'class':
         'table table-striped table-bordered table-hover table-middle pos-relative m-b'})
         try: return pd.read_html(str(list_table))[0]
