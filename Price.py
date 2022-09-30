@@ -2,16 +2,18 @@ import pandas as pd
 from Flow import Folder
 import math
 from Flow.PATH_env import PATH_ENV
-
-PATH_ = PATH_ENV.PATH_ENV()
-PATH_CAFEF = PATH_.joinPath(PATH_.PATH_CLOSE,"CafeF")
-PATH_STOCKBIZ = PATH_.joinPath(PATH_.PATH_CLOSE,"StockBiz")
+def ConcatData(LIST_PATH,symbol):
+    df_close = pd.DataFrame()
+    for link in LIST_PATH:
+        try:
+            df = pd.read_csv(f"{link}/{symbol}.csv")
+        except:
+            df = pd.DataFrame({"Ngày":[],"Giá đóng cửa":[]})
+        df_close = pd.concat([df_close,df],ignore_index=True)
+    return df_close.drop_duplicates(subset=["Ngày"])
 
 def getDataCafeF(symbol):
-    try:
-        data = pd.read_csv(f"{PATH_CAFEF}/{symbol}.csv")
-    except:
-        data = pd.DataFrame({"Ngày":[],"Giá đóng cửa":[]})
+    data = ConcatData([FU.joinPath(FC.PATH_MAIN,date,"Close","CafeF") for date in F_RANGE],symbol)
     try:
         data = data[["Ngày","Giá đóng cửa"]]
     except:
@@ -19,12 +21,8 @@ def getDataCafeF(symbol):
     return data[["Ngày","Giá đóng cửa"]].rename(columns={"Ngày":"Date","Giá đóng cửa":"Close"})
 
 def getDataStockBiz(symbol):
-    try:
-        data = pd.read_csv(f"{PATH_STOCKBIZ}/{symbol}.csv")
-    except:
-        data = pd.DataFrame({"Ngày":[],"Đóng cửa":[]})
+    data = ConcatData([FU.joinPath(FC.PATH_MAIN,date,"Close","StockBiz") for date in F_RANGE],symbol)
     return data[["Ngày","Đóng cửa"]].rename(columns={"Ngày":"Date","Đóng cửa":"Close"})
-
 
 def formatDate(x):
     s = x.split("/")
@@ -44,9 +42,23 @@ def concat_source(symbol):
     result["Date"] = result["Date"].apply(lambda x: formatDate(x))
     result["Close"] = result.apply(lambda x: getClose(x["Close_x"],x["Close_y"]),axis=1)
     data = result[["Date","Close"]]
-    return data.sort_values(by=['Date'],ascending=False).reset_index(drop=True)
+    data = data.sort_values(by=['Date'],ascending=False).reset_index(drop=True)
+    data.to_csv(f"{FU.PATH_CLOSE}/{symbol}.csv",index=False)
 
-for symbol in List_Symbol:
-    print(symbol)
-    data = concat_source(symbol)
-    data.to_csv(f"{PATH_SAVE}{symbol}.csv")
+FC = Folder.FolderCrawl()
+FU = Folder.FolderUpdate()
+
+F_START = FU.GetDateUpdateNearest()
+F_END = FU.GetDateUpdate()
+F_BASE = FC.getListPath()
+F_RANGE = []
+for date in F_BASE:
+    if date>F_START and date <= F_END:
+        F_RANGE.append(date)
+
+List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
+for symbol in List_Symbol["Mã CK▲"]:
+    try:
+        concat_source(symbol)
+    except:
+        pass

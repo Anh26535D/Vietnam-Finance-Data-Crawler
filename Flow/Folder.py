@@ -13,6 +13,28 @@ class FolderData(PATH_env.PATH_ENV):
         isExist = os.path.exists(path)
         if not isExist:
             os.makedirs(path)
+    
+    def GetDateUpdate(self):
+        list_date = os.listdir(self.PATH_MAIN)
+        arr = []
+        for day in list_date:
+            if len(day) == 10:
+                arr.append(day)
+        arr.sort()
+        return arr[-1]
+    def GetDateUpdateNearest(self):
+        list_date = os.listdir(self.PATH_MAIN)
+        arr = []
+        for day in list_date:
+            if len(day) == 10:
+                arr.append(day)
+        arr.sort()
+        if len(arr)== 1:
+            return self.GetDateUpdate()
+        return arr[-2]
+    def getListPath(self):
+        return os.listdir(self.PATH_MAIN)
+
 
 class FolderCrawl(FolderData):
     def __init__(self):
@@ -59,12 +81,12 @@ class FolderUpdate(FolderData):
         super().__init__("Raw_VIS")
         self.NeedFolderUpdate = []
     
+    
+
     def folderClose(self):
         path = self.PATH_CLOSE
         self.createFolder(path)
-        for obj in self.CloseObject:
-            self.createFolder(self.joinPath(path,obj))
-
+        
     def folderDividend(self):
         path = self.PATH_DIVIDEND
         self.createFolder(path)
