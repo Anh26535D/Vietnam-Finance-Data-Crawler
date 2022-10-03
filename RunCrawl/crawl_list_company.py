@@ -1,5 +1,5 @@
 import pandas as pd
-from Crawl import VietStock
+from ..Crawl import VietStock
 import Flow.PATH_env as PATH_env
 
 
