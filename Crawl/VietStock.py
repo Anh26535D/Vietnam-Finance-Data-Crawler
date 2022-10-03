@@ -22,15 +22,12 @@ class FinanStatement(setup.Setup):
         return self.table_lake(self.link_income, PeriodType)
 
     def CashFlows(self, PeriodType):
-        return self.table_lake(self.link_cashflow, PeriodType)
+        return self.table_lake(self.link_cashflow, PeriodType,"CashFlow")
     
-    def table_lake(self, link, PeriodType):
+    def table_lake(self, link, PeriodType,*arg):
         self.request_link(link)
-        if self.check_page() == True:
-            self.click_to_all_year(PeriodType)
-            time.sleep(1)
-            data = self.getTable()
-        else: data = pd.DataFrame({'Nothing':[]})
+        self.click_to_all_year(PeriodType,*arg)
+        data = self.getTable()
         return data
 
     def check_page(self):
@@ -40,7 +37,7 @@ class FinanStatement(setup.Setup):
         if len(check) == 0:
             return True
 
-    def click_to_all_year(self, PeriodType):
+    def click_to_all_year(self, PeriodType,*arg):
         try:
             try:
                 self.click_select("period","2")
@@ -48,15 +45,14 @@ class FinanStatement(setup.Setup):
                 self.click_select("UnitDong","1000")
                 time.sleep(0.5)
                 self.click_select("PeriodType",PeriodType)
-                time.sleep(2)
+                time.sleep(0.5)
             except: pass
-            try:
-                self.click_something_by_xpath('//*[@id="expand-overall-CDKT"]/i')
-                time.sleep(2)
-                self.click_something_by_xpath('//*[@id="expand-overall-CDKT"]/i')
-                time.sleep(0.3)
-            except: pass
-        finally:
+            if len(arg) != 1:
+                try:
+                    self.click_something_by_xpath('//*[@id="expand-overall-CDKT"]')
+                    time.sleep(1)
+                except: pass
+        except:
             pass
 
     def getTable(self):
@@ -150,7 +146,7 @@ class Other(setup.Setup):
     
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
-        time.sleep(5)
+        time.sleep(3)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 
