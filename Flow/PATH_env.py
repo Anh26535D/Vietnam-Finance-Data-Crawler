@@ -23,7 +23,7 @@ class PATH_ENV():
         self.FinancialObject = ["CafeF","VietStock"]
         self.Type_Time = ["Year","Quarter"]
         self.FinancialPartObject = ["BalanceSheet","IncomeStatement","CashFlowDirect","CashFlowInDirect"]
-        self.VolumeObject = ["CafeF","VietStock"]
+        self.VolumeObject = ["CafeF","VietStock","TVSI"]
         self.VolumePartObject = ["TreasuryShares","VolumeAdditionailEvents","VolumeNow"]
         self.Phase = [f"F{i}" for i in range(4)]
 

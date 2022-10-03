@@ -87,6 +87,7 @@ class FolderCrawl(FolderData):
                     
     def folderVolume(self):
         path = self.PATH_VOLUME
+        self.createFolder(path)
         for obj in self.VolumeObject:
             self.createFolder(self.joinPath(path,obj))
 
