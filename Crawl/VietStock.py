@@ -75,7 +75,7 @@ class FinanStatement(setup.Setup):
         return data
 
 class Other(setup.Setup):
-    def __init__(self,symbol) -> None:
+    def __init__(self) -> None:
         super().__init__()
         self.list_symbol_listing = pd.DataFrame({})
 
@@ -96,6 +96,10 @@ class Other(setup.Setup):
     
     def TreasuryStockTransactions(self, symbol):
         return self.getTable(self.CreateLink('TREASURY_STOCK_TRANSACTIONS',symbol))
+
+    def VolumeNow(self,symbol):
+        return self.download_batch_get_request(self.CreateLink('LIST_INFOR',symbol),{"class":"table table-hover"})
+
 
     def Company_delisting(self, symbol):
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))

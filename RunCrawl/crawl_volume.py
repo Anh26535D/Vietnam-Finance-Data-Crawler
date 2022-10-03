@@ -19,16 +19,19 @@ def VolumeCafeF(symbol):
         com.getVolumeNow(symbol).to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
         com.getVolumeEvent(symbol).to_csv(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv",index=False)
     
-# def VolumeVietStock(symbol):
-#     PATH = PATH_.joinPath(PATH_.PATH_VOLUME,"VietStock")
-#     try:
-#         df = pd.read_csv(f"{PATH}/{symbol}.csv")
-#     except:
-#         com = VietStock.Other(symbol=symbol)
-#         com.
-
+def VolumeVietStock(symbol):
+    PATH = PATH_.joinPath(PATH_.PATH_VOLUME,"VietStock")
+    try:
+        df = pd.read_csv(f"{PATH}/{symbol}.csv")
+    except:
+        com = VietStock.Other()
+        com.AdditionalListing(symbol).to_csv(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv",index=False)
+        com.VolumeNow(symbol).to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
+        com.TreasuryStockTransactions(symbol).to_csv(f"{PATH}/TreasuryShares/{symbol}.csv",index=False)
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    print(symbol)
     VolumeCafeF(symbol)
+    VolumeVietStock(symbol)
+    print("Done: ",symbol)
+    

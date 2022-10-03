@@ -19,6 +19,7 @@ def read_file():
         
 
 
+
 def CopyFile(list_symbol,F_RANGE):
     for date in F_RANGE:
         
