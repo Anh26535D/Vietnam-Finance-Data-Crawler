@@ -58,7 +58,6 @@ for date in F_BASE:
         F_RANGE.append(date)
 
 TP = TransformPrice()
-
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
     try:

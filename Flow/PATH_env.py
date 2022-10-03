@@ -25,6 +25,7 @@ class PATH_ENV():
         self.FinancialPartObject = ["BalanceSheet","IncomeStatement","CashFlowDirect","CashFlowInDirect"]
         self.VolumeObject = ["CafeF","VietStock"]
         self.VolumePartObject = ["TreasuryShares","VolumeAdditionailEvents","VolumeNow"]
+        self.Phase = [f"F{i}" for i in range(4)]
 
     def joinPath(self,*arg):
         return "/".join(arg)
