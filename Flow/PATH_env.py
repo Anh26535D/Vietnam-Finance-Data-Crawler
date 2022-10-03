@@ -1,7 +1,7 @@
 import datetime
 
-# PATH_Data = "C:\Data"
-PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
+PATH_Data = "C:\Data"
+# PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
 day,month,year=0,0,0
 if day != 0:
@@ -11,6 +11,8 @@ else:
     t = date.timetuple().tm_yday
     if t % 2 == 1:
         date = date - datetime.timedelta(days=1)
+    if t % 2 == 0:
+        date = date - datetime.timedelta(days=2)
         
 class PATH_ENV():
     def __init__(self):

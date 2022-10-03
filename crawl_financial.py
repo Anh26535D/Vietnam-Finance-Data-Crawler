@@ -1,8 +1,9 @@
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
-from Flow import PATH_env
+from Flow import PATH_env,RUN
 import datetime
+import time
 import json
 
 PATH_ = PATH_env.PATH_ENV()
@@ -15,7 +16,10 @@ def checkfile(symbol,file_type):
         with open(f"{PATH}/{file_type}/{symbol}.json", 'r',encoding='utf-8') as j:
             temp = json.loads(j.read())
     except:
-        return False
+        try:
+            pd.read_csv(f"{PATH}/{file_type}/{symbol}.csv")
+        except:
+            return False
     return True
 
 def test_data(symbol):
@@ -34,6 +38,7 @@ dict_time = {
     "QUY":"Quarter/",
     "NAM":"Year/"
 }
+
 
 def FinancialCafeF(symbol,type_):
     global PATH
@@ -64,11 +69,10 @@ def FinancialCafeF(symbol,type_):
                     json.dump(CFD, outfile, ensure_ascii=False)
         else:
             print("loi nang, dell lap trinh nua")
-    print("Done!!",symbol)
+    print("Done CF!!",symbol)
+    web.turn_off_drive()
 
-
-
-webVS = VietStock.FinanStatement("AAA")
+webVS = VietStock.FinanStatement("")
 webVS.login_VS()
 
 def FinancialVietStock(symbol,type_):
@@ -81,13 +85,13 @@ def FinancialVietStock(symbol,type_):
         print(symbol,list_must_crawl_again,end=" ")
     webVS.symbol=symbol
     webVS.setupLink()
-
-    time = 2
     for i in list_must_crawl_again:
         if i == 1:
+            # pass
             income = webVS.IncomStatement(type_)
             income.to_csv(f"{PATH}IncomeStatement/{symbol}.csv",index=False)
         elif i == 2:
+            # pass
             balan = webVS.BalanceSheet(type_)
             balan.to_csv(f"{PATH}BalanceSheet/{symbol}.csv",index=False)
         elif i == 3:
@@ -97,18 +101,47 @@ def FinancialVietStock(symbol,type_):
             pass
         else:
             print("loi nang, dell lap trinh nua")
-    print("Done!!",symbol)
+    print("Done VS!!",symbol)
 
-def runVS(func):
+def run_reset_cf():
+    global web
     try:
-        func
+        web = CafeF.FinancailStatement()
     except:
+        print("Tam Nghi CF-------------------")
+        time.sleep(100)
+        run_reset_cf()
+def run_reset_vs():
+    global webVS
+    try:
         webVS = VietStock.FinanStatement("")
         webVS.login_VS()
+    except:
+        print("Tam Nghi VS-------------------")
+        time.sleep(100)
+        run_reset_vs()
+
+
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
-    FinancialCafeF(symbol,"Q")
-    FinancialCafeF(symbol,"Y")
-    runVS(FinancialVietStock(symbol,"NAM"))
-    runVS(FinancialVietStock(symbol,"QUY"))
+    try:
+        FinancialCafeF(symbol,"Q")
+    except:
+        run_reset_cf()
+
+    try:
+        FinancialCafeF(symbol,"Y")
+    except:
+        run_reset_cf()
+
+    try:
+        FinancialVietStock(symbol,"NAM")
+    except:
+        run_reset_vs()
+    try:
+        FinancialVietStock(symbol,"QUY")
+    except:
+        run_reset_vs()
+webVS.turn_off_drive()
+
 # #     break

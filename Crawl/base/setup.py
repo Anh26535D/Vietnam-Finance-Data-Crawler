@@ -31,8 +31,13 @@ class Setup():
                 self.reset_colab()
             except:
                 self.reset_driver()
-
+    def turn_off_drive(self):
+        try:
+            self.driver.quit()
+        except:
+            pass
     def reset_colab(self):
+        
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
         chrome_options.add_argument('--no-sandbox')
@@ -45,6 +50,11 @@ class Setup():
 
     def reset_driver(self, path="C:\\webdriver/chromedriver.exe"):
         chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        # try:
+        #     self.driver.quit()
+        # except:
+        #     pass
         # chrome_options.add_argument('--headless')
         # chrome_options.add_argument('--no-sandbox')
         # chrome_options.add_argument('enable-automation')
@@ -58,8 +68,13 @@ class Setup():
             self.driver.set_page_load_timeout(time)
             self.driver.get(link)
         except:
+            self.driver.quit()
+            # try:
+            #     self.reset_colab()
+            # except:
+            #     self.reset_driver()
             # self.request_link(link,10)
-            pass
+            # pass 
 
     def format(self, time):
         s = time.split("-")
@@ -82,7 +97,7 @@ class Setup():
             )
             element.click()
         except:
-            self.driver.refresh()
+            # self.driver.refresh()
             pass
 
     def click_something_by_id(self, something):
@@ -101,7 +116,7 @@ class Setup():
             )
             element.send_keys(somthing)
         except:
-            self.driver.refresh()
+            # self.driver.refresh()
             pass
 
 
@@ -140,7 +155,7 @@ class Setup():
             self.send_something_by_id('txtPassword',self.password)
             self.click_something_by_id('btnLoginAccount')
         finally:
-            time.sleep(1)
+            time.sleep(10)
             pass
     
     def checkstatus_TVSI(self,link):

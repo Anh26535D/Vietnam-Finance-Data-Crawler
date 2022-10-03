@@ -38,6 +38,7 @@ def DividendVietStock(symbol):
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
     try:
-        print(symbol)
         DividendCafeF(symbol)
         DividendVietStock(symbol)
+    except:
+        pass
