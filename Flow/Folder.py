@@ -1,4 +1,3 @@
-from calendar import c
 from datetime import datetime
 import os
 from typing import Type
@@ -17,6 +16,7 @@ class FolderData(PATH_env.PATH_ENV):
     
     def GetDateUpdate(self):
         list_date = os.listdir(self.PATH_MAIN)
+        print(self.PATH_MAIN)
         arr = []
         for day in list_date:
             if len(day) == 10:
@@ -72,7 +72,6 @@ class FolderCrawl(FolderData):
         for obj in self.DividendObject:
             if obj == "VietStock":
                 for p_obj in self.DividendPartObject:
-                    self.createFolder(self.joinPath(path,obj))
                     self.createFolder(self.joinPath(path,obj,p_obj))
             else:
                 self.createFolder(self.joinPath(path,obj))
@@ -82,7 +81,6 @@ class FolderCrawl(FolderData):
         self.createFolder(path)
         for obj in self.FinancialObject:
             for t_time in self.Type_Time:
-                self.createFolder(self.joinPath(path,obj))
                 self.createFolder(self.joinPath(path,obj,t_time))
                     
     def folderVolume(self):
@@ -111,25 +109,22 @@ class FolderUpdate(FolderData):
         for obj in self.DividendObject:
             if obj == "VietStock":
                 for p_obj in self.DividendPartObject:
-                    self.createFolder(self.joinPath(path,obj))
                     self.createFolder(self.joinPath(path,obj,p_obj))
             else:
                 self.createFolder(self.joinPath(path,obj))
     def folderFinancial(self):
         path = self.PATH_FINANCIAL
         self.createFolder(path)
-        for obj in self.Phase:
-            for t_time in self.Type_Time:
-                for p_obj in self.FinancialPartObject:
-                    self.createFolder(self.joinPath(path,obj))
-                    self.createFolder(self.joinPath(path,obj,t_time))
-                    self.createFolder(self.joinPath(path,obj,t_time,p_obj))
+        for obj in self.FinancialObject:
+            for P_F in self.Phase:
+                for t_time in self.Type_Time:
+                    for p_obj in self.FinancialPartObject:
+                        self.createFolder(self.joinPath(path,obj,P_F,t_time,p_obj))
     
     def folderVolume(self):
         path = self.PATH_VOLUME
         for obj in self.VolumeObject:
             for p_obj in self.VolumePartObject:
-                self.createFolder(self.joinPath(path,obj))
                 self.createFolder(self.joinPath(path,obj,p_obj))        
     
     def Run_Create_Folder(self):

@@ -1,3 +1,5 @@
+import sys
+sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
 
 FC = Folder.FolderCrawl()

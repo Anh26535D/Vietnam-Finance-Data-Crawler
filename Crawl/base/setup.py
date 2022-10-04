@@ -51,16 +51,6 @@ class Setup():
     def reset_driver(self, path="C:\\webdriver/chromedriver.exe"):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-        # try:
-        #     self.driver.quit()
-        # except:
-        #     pass
-        # chrome_options.add_argument('--headless')
-        # chrome_options.add_argument('--no-sandbox')
-        # chrome_options.add_argument('enable-automation')
-        # chrome_options.add_argument('--disable-dev-shm-usage')
-        # chrome_options.add_argument('--disable-browser-side-navigation')
-        # chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
 
     def request_link(self,link,time=5):

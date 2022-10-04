@@ -8,7 +8,6 @@ import json
 
 PATH_ = PATH_env.PATH_ENV()
 start = PATH_.DateCurrent - datetime.timedelta(days=90)
-# start = start.strftime("%d/%m/%Y")
 end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
 def checkfile(symbol,file_type):
@@ -138,6 +137,7 @@ for symbol in List_Symbol["Mã CK▲"]:
         FinancialVietStock(symbol,"NAM")
     except:
         run_reset_vs()
+        
     try:
         FinancialVietStock(symbol,"QUY")
     except:
