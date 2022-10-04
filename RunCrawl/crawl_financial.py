@@ -7,8 +7,7 @@ import time
 import json
 
 PATH_ = PATH_env.PATH_ENV()
-start = PATH_.DateCurrent - datetime.timedelta(days=180)
-start = start.strftime("%d/%m/%Y")
+start = PATH_.DateCurrent - datetime.timedelta(days=90)
 end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
 def checkfile(symbol,file_type):
@@ -52,19 +51,19 @@ def FinancialCafeF(symbol,type_):
     time = 2
     for i in list_must_crawl_again:
         if i == 1:
-            income = web.get_Income(symbol, year=PATH_.DateCurrent.year,month=PATH_.DateCurrent.month,day=PATH_.DateCurrent.day, type_=type_, times=time)
+            income = web.get_Income(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
             with open(f"{PATH}IncomeStatement/{symbol}.json", "w",encoding='utf8') as outfile:
                     json.dump(income, outfile, ensure_ascii=False)
         elif i == 2:
-            balan = web.get_Balance(symbol, year=PATH_.DateCurrent.year,month=PATH_.DateCurrent.month,day=PATH_.DateCurrent.day, type_=type_, times=time)
+            balan = web.get_Balance(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
             with open(f"{PATH}BalanceSheet/{symbol}.json", "w",encoding='utf8') as outfile:
                     json.dump(balan, outfile, ensure_ascii=False)
         elif i == 3:
-            CFID = web.get_CashFlowIndirect(symbol, year=PATH_.DateCurrent.year,month=PATH_.DateCurrent.month,day=PATH_.DateCurrent.day, type_=type_, times=time)
+            CFID = web.get_CashFlowIndirect(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
             with open(f"{PATH}CashFlowInDirect/{symbol}.json", "w",encoding='utf8') as outfile:
                     json.dump(CFID, outfile, ensure_ascii=False)
         elif i == 4:
-            CFD = web.get_CashFlowDirect(symbol, year=PATH_.DateCurrent.year,month=PATH_.DateCurrent.month,day=PATH_.DateCurrent.day, type_=type_, times=time)
+            CFD = web.get_CashFlowDirect(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
             with open(f"{PATH}CashFlowDirect/{symbol}.json", "w",encoding='utf8') as outfile:
                     json.dump(CFD, outfile, ensure_ascii=False)
         else:
@@ -138,6 +137,7 @@ for symbol in List_Symbol["Mã CK▲"]:
         FinancialVietStock(symbol,"NAM")
     except:
         run_reset_vs()
+        
     try:
         FinancialVietStock(symbol,"QUY")
     except:

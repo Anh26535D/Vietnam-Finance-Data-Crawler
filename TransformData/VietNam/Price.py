@@ -1,4 +1,6 @@
 import pandas as pd
+import sys
+sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
 import math
 from Flow.PATH_env import PATH_ENV
