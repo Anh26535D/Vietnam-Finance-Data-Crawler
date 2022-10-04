@@ -22,7 +22,6 @@ class CafeF(TransForm):
         self.data_field["Income"]=df
 
     def Financial_F0_to_F1(self,symbol,field):
-        list_ = []
         try:
             with open(f'{self.path_object["F0"][field]}/{symbol}.json', "r",encoding='utf8') as j:
                     data = json.loads(j.read())
