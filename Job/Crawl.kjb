@@ -450,7 +450,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\crawl_volume.py"</script>
+      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_volume.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
