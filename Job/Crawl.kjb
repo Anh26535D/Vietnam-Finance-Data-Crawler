@@ -400,7 +400,7 @@
       <add_date>Y</add_date>
       <add_time>Y</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\crawl_dividend.py"</script>
+      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" C:\DataVietNam\RunCrawl\crawl_dividend.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>

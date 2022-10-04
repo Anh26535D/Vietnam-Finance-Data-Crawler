@@ -1,6 +1,5 @@
 import datetime
 
-# PATH_Data = "C:\DataVietNam\Data"
 # PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
 day,month,year=0,0,0
@@ -10,9 +9,14 @@ else:
     date = datetime.datetime.today()
     t = date.timetuple().tm_yday
     if t % 2 == 1:
-        date = date - datetime.timedelta(days=1)
+        date = date - datetime.timedelta(days=3)
+    if t % 2 == 0:
+        date = date - datetime.timedelta(days=2)
         
+
+
 class PATH_ENV():
+    PATH_Data = "C:\Data"
     def __init__(self,Type_):
         self.DateCurrent = date
         self.DayCurrent= date.strftime("%Y-%m-%d")
@@ -32,9 +36,9 @@ class PATH_ENV():
     
     def setTypeForder(self,Type):
         if Type == "Ingestion":
-            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
+            PATH_Data = f"{PATH_ENV.PATH_Data}\Ingestion"
         elif Type == "Raw_VIS":
-            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
+            PATH_Data = f"{PATH_ENV.PATH_Data}\Raw_VIS"
         self.PATH_MAIN = PATH_Data
         self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
         self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")

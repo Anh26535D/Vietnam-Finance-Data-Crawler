@@ -71,7 +71,7 @@ class FinanStatement(setup.Setup):
         return data
 
 class Other(setup.Setup):
-    def __init__(self,symbol) -> None:
+    def __init__(self) -> None:
         super().__init__()
         self.list_symbol_listing = pd.DataFrame({})
 
@@ -116,7 +116,7 @@ class Other(setup.Setup):
                 data_new = self.getNextTable()
                 data= pd.concat([data, data_new])
             return data
-        else: return self.getTableInfor(page)
+        return self.getTableInfor(page)
     
     def getExchangeNormal(self,exchange):
         self.click_select("exchange",exchange)
