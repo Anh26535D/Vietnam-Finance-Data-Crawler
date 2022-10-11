@@ -75,14 +75,14 @@ class Setup():
 
     def find_element_by_xpath(self,something):
         try:
-          element = WebDriverWait(self.driver, 10).until(EC.presence_of_element_located((By.XPATH,something)))
+          element = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.XPATH,something)))
         finally:
             pass
         return element
 
     def click_something_by_xpath(self, something):
         try:
-            element = WebDriverWait(self.driver, 10).until(
+            element = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.XPATH, something))
             )
             element.click()
@@ -92,7 +92,7 @@ class Setup():
 
     def click_something_by_id(self, something):
         try:
-            element = WebDriverWait(self.driver, 10).until(
+            element = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.ID, something))
             )
             element.click()
@@ -101,7 +101,7 @@ class Setup():
             pass
     def send_something_by_id(self,id,somthing):
         try:
-            element = WebDriverWait(self.driver, 10).until(
+            element = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.ID, id))
             )
             element.send_keys(somthing)

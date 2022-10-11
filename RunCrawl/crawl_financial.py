@@ -1,3 +1,5 @@
+import sys
+sys.path.append(r'C:\DataVietNam')
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
@@ -6,9 +8,8 @@ import datetime
 import time
 import json
 
-PATH_ = PATH_env.PATH_ENV()
+PATH_ = PATH_env.PATH_ENV("Ingestion")
 start = PATH_.DateCurrent - datetime.timedelta(days=90)
-end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
 def checkfile(symbol,file_type):
     try:
@@ -48,7 +49,7 @@ def FinancialCafeF(symbol,type_):
     else:
         print(symbol,list_must_crawl_again,end=" ")
     web = CafeF.FinancailStatement()
-    time = 2
+    time = 3
     for i in list_must_crawl_again:
         if i == 1:
             income = web.get_Income(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
@@ -82,6 +83,7 @@ def FinancialVietStock(symbol,type_):
         return 0
     else:
         print(symbol,list_must_crawl_again,end=" ")
+    # list_must_crawl_again = [1,2,3,4]
     webVS.symbol=symbol
     webVS.setupLink()
     for i in list_must_crawl_again:
@@ -103,13 +105,15 @@ def FinancialVietStock(symbol,type_):
     print("Done VS!!",symbol)
 
 def run_reset_cf():
-    global web
-    try:
-        web = CafeF.FinancailStatement()
-    except:
-        print("Tam Nghi CF-------------------")
-        time.sleep(100)
-        run_reset_cf()
+    # global web
+    # try:
+    #     # web = CafeF.FinancailStatement()
+    # except:
+    #     print("Tam Nghi CF-------------------")
+    # time.sleep(20)
+    #     run_reset_cf()
+    pass
+        
 def run_reset_vs():
     global webVS
     try:
@@ -117,7 +121,7 @@ def run_reset_vs():
         webVS.login_VS()
     except:
         print("Tam Nghi VS-------------------")
-        time.sleep(100)
+        time.sleep(10)
         run_reset_vs()
 
 

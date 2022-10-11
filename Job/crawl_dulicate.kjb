@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>Crawl</name>
+  <name>crawl_dulicate</name>
   <description/>
   <extended_description/>
   <job_version/>
-  <job_status>0</job_status>
   <directory>/</directory>
   <created_user>-</created_user>
-  <created_date>2022/09/10 11:21:18.150</created_date>
+  <created_date>2022/10/09 19:35:38.771</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2022/09/10 11:21:18.150</modified_date>
+  <modified_date>2022/10/09 19:35:38.771</modified_date>
   <parameters>
     </parameters>
   <slaveservers>
@@ -294,8 +293,8 @@
       <attributes/>
       <start>Y</start>
       <dummy>N</dummy>
-      <repeat>Y</repeat>
-      <schedulerType>1</schedulerType>
+      <repeat>N</repeat>
+      <schedulerType>0</schedulerType>
       <intervalSeconds>0</intervalSeconds>
       <intervalMinutes>2880</intervalMinutes>
       <hour>0</hour>
@@ -305,8 +304,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>80</xloc>
-      <yloc>208</yloc>
+      <xloc>304</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -330,8 +329,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>208</xloc>
-      <yloc>208</yloc>
+      <xloc>444</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -355,8 +354,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>352</xloc>
-      <yloc>208</yloc>
+      <xloc>588</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -380,8 +379,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>496</xloc>
-      <yloc>208</yloc>
+      <xloc>732</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -405,8 +404,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>752</xloc>
-      <yloc>208</yloc>
+      <xloc>988</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -430,8 +429,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>608</xloc>
-      <yloc>208</yloc>
+      <xloc>844</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -455,8 +454,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>896</xloc>
-      <yloc>208</yloc>
+      <xloc>1132</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -467,8 +466,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1024</xloc>
-      <yloc>208</yloc>
+      <xloc>1260</xloc>
+      <yloc>200</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
