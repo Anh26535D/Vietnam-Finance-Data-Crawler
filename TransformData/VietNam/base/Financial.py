@@ -1,30 +1,59 @@
+import datetime
 import json
 import math
 import pandas as pd
 import re
 import os
 import numpy as np
+pd.options.mode.chained_assignment = None  # default='warn'
+import sys
+sys.path.append(r'C:\DataVietNam')
+from VAR_GLOBAL import *
+
 class TransForm():
     def __init__(self,dict_path_) -> None:
         self.path_object = dict_path_
+        self.time = []
         pass
+    def replace_NaN_0(self,df):
+        df = df.dropna(axis=1, how='all')
+        df = df.fillna(0)
+        for column in self.time:
+            if not(column in df.columns):
+                df[column]=[np.nan for i in df["Feature"]]
+        return df
+        
+    def getTime(self,type_time):
+        if type_time == "Year":
+            return YEAR_KEY
+        elif type_time == "Quarter":
+            return QUARTER_KEY
 
 class CafeF(TransForm):
     def __init__(self,dict_path_cf) -> None:
         super().__init__(dict_path_cf)
-        self.data_field={}
-        df = pd.read_excel("/content/BalanceSheet.xlsx",sheet_name="CafeF")
-        df = df.rename(columns={"Cafef_Raw":"field"})
-        self.data_field["Balance"]=df
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="CafeF")
+        df = df.rename(columns={"VIS_Raw_F1":"field"})
+        self.data_field = df
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Total")
+        self.data_field_default_year = df
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Quarter")
+        self.data_field_default_quarter = df
 
-        df = pd.read_excel("/content/IncomeStatement.xlsx",sheet_name="CafeF")
-        df = df.rename(columns={"Cafef_Raw":"field"})
-        self.data_field["Income"]=df
-
-    def Financial_F0_to_F1(self,symbol,field):
+    def Financial_F0_to_F1(self,symbol,type_time):
         try:
-            with open(f'{self.path_object["F0"][field]}/{symbol}.json', "r",encoding='utf8') as j:
-                    data = json.loads(j.read())
+            data = {}
+            for key in self.path_object["F0"].keys():
+                if key.find(type_time) != -1:
+                    with open(f'{self.path_object["F0"][key]}/{symbol}.json',encoding='utf8') as j:
+                            data1 = json.loads(j.read())
+                    for key,value in data1.items():
+                        try:
+                            data[key] = data[key]+data1[key]
+                        except:
+                            data[key] = []
+                            data[key] = data[key]+data1[key]
+
             temp = pd.DataFrame({"field": []})
             for key in list(data.keys()):
                 try:
@@ -50,41 +79,69 @@ class CafeF(TransForm):
                 try:
                     match = re.findall('([0-9]-[0-9]+)', col)
                     time = match[0].replace("-","/")
+                    time = time.split("-")
+                    time = "-".join([time[i] for i in range(len(time)-1,-1,-1)])
                     arr.append(time)
                 except:
                     arr.append(col)
             temp.columns = arr
-            temp.to_csv(self.path_object["F1"][field]+symbol+".csv",index=False)
+            temp.to_csv(f'{self.path_object["F1"][type_time]}/{symbol}.csv',index=False)
             return temp
         except:
-            print(symbol,field)
+            print(symbol,type_time,"Error at F1")
             return -1
 
-    def Financial_F1_to_F2(self,symbol,field):
+    def Financial_F1_to_F2(self,symbol,type_time):
             try:
-                link ="{}{}.csv".format(self.path_object["F1"][field],symbol)
+                link ="{}/{}.csv".format(self.path_object["F1"][type_time],symbol)
                 data = pd.read_csv(link)
-                temp = pd.merge(self.data_field[field.split("_")[0]],data, on="field",how="outer")
+                temp = pd.merge(self.data_field,data, on="field",how="outer")
                 temp = temp.drop(columns=["field"])
                 for column in temp.columns[1:]:
                     temp[column] = temp[column].astype(float)
                 temp = temp.groupby("Feature").max().reset_index()
-                temp.to_csv(self.path_object["F2"][field]+symbol+".csv",index=False)
+                temp.columns = [col.replace("]","").replace("[","") for col in temp.columns]
+                temp.to_csv(f'{self.path_object["F2"][type_time]}/{symbol}.csv',index=False)
                 return temp
             except:
-                print(symbol)
+                print(symbol,"Error at F2")
                 return -1
 
-    def run(self,func,symbol):
-        func(symbol,"Balance_Quater")
-        func(symbol,"Income_Quater")
-        func(symbol,"Balance_Year")
-        func(symbol,"Income_Year")
+    def Financial_F2_to_F3(self,symbol,type_time):
+            try:
+                if type_time == "Year":
+                    data_field = self.data_field_default_year
+                elif type_time == "Quarter":
+                    data_field = self.data_field_default_quarter
+                link ="{}/{}.csv".format(self.path_object["F2"][type_time],symbol)
+                data = pd.read_csv(link)
+                self.time=data.columns[1:]
+
+                data = self.replace_NaN_0(data)
+
+                temp = pd.merge(data_field,data, on="Feature",how="inner")
+                temp = temp[[data.columns[0],self.getTime(type_time)]]
+                temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
+                return temp
+            except:
+                print(symbol,"Error at F3")
+                return -1
+    
+    def run(self,symbol,type_time):
+        self.Financial_F0_to_F1(symbol,type_time)
+        self.Financial_F1_to_F2(symbol,type_time)
+        self.Financial_F2_to_F3(symbol,type_time)
 
 class VietStock(TransForm):
     def __init__(self,dict_path_vs) -> None:
         super().__init__(dict_path_vs)
-        pass
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="VietStock")
+        df = df.rename(columns={"VIS_Raw_F1":"field"})
+        self.data_field = df
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Total")
+        self.data_field_default_year = df
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Quarter")
+        self.data_field_default_quarter = df
     
     def change_data_BS(self,df_finan):
         first_col = df_finan.columns[0]
@@ -96,98 +153,58 @@ class VietStock(TransForm):
         feature_change.index = feature_change.index+2
         df_finan[first_col].iloc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế (*)'].index] = feature_change
         return df_finan
-    def Financail_F0_to_F1(self,symbol,field):
-        path_in = self.path_object["F0"][field]
-        path_out = self.path_object["F1"][field]
-        if os.path.exists(f'{path_in}{symbol}.csv'):
-            df = pd.read_csv(f'{path_in}{symbol}.csv')
-            df = self.change_data_BS(df)
-            df.to_csv(f'{path_out}{symbol}.csv', index = False)
-    
-    def Financail_F1_to_F2(self,symbol,field):
-        df = pd.read_csv(f'{self.path_object["F1"][field]}/{symbol}.csv')
+    def Financial_F0_to_F1(self,symbol,type_time):
+        data = pd.DataFrame({})
+        for key in self.path_object["F0"].keys():
+            if key.find(type_time) != -1:
+                path_in = self.path_object["F0"][key]
+                if os.path.exists(f'{path_in}/{symbol}.csv'):
+                    df = pd.read_csv(f'{path_in}/{symbol}.csv')
+                    df = self.change_data_BS(df)
+                    data = pd.concat([data,df],ignore_index=True)
+        path_out = self.path_object["F1"][type_time]
+        data.to_csv(f'{path_out}/{symbol}.csv', index = False)
+
+    def Financial_F1_to_F2(self,symbol,type_time):
+        df = pd.read_csv(f'{self.path_object["F1"][type_time]}/{symbol}.csv')
         if len(df.index) == 0:
             return df
         df =df[6:].reset_index(drop = True)
         first_col = df.columns[0]
-        df = df.rename(columns = {first_col:'VIS_Raw'})
-        df_concat = pd.merge(df, df, how = 'right', on = ['VIS_Raw'])
-        if all(df_concat['VIS_Raw'] == df_concat['VIS_Raw']) == True:
-            df = pd.concat([df, df], axis = 1).drop(columns = ['VIS_Raw', 'Unnamed: 1', 'Unnamed: 2', 'Field_Raw'])
+        df = df.rename(columns = {first_col:'field'})
+        df_concat = pd.merge(self.data_field, df, how = 'left', on = ['field'])
+        if all(df_concat['field'] == df_concat['field']) == True:
+            df = df_concat.drop(columns = ["Ingestion", 'Unnamed: 1', 'Unnamed: 2',"field"])
+            df = df.rename(columns={"VIS_Raw_F2":"Feature"})
+            df.columns = [col.replace("Q","") for col in df.columns]
+            path_out = self.path_object["F2"][type_time]
+            df.to_csv(f'{path_out}/{symbol}.csv', index = False)
             return df
         else: 
             return False
 
-def check_dau(a):
-    if a >=0:
-        return 1
-    else:
-        return -1
-        
-class Compare():
-    def __init__(self,symbol,path_) -> None:
-        self.symbol = symbol
-        self.path_main = path_
+    def Financial_F2_to_F3(self,symbol,type_time):
+        try:
+            if type_time == "Year":
+                data_field = self.data_field_default_year
+            elif type_time == "Quarter":
+                data_field = self.data_field_default_quarter
 
-        self.dict_data={
-            "CF":{"path":[self.path_main+"CafeF/Financial/Financial_F3/Quarter/BalanceSheet/",self.path_main+"CafeF/Financial/Financial_F3/Quarter/IncomeStatement/"],"company":pd.DataFrame({}),"money":1000},
-            "VS":{"path":[self.path_main+"Vietstock/Financial/Financial_F3/Quarter/BalanceSheet/",self.path_main+"Vietstock/Financial/Financial_F3/Quarter/IncomeStatement/"],"company":pd.DataFrame({}),"money":1}
-        }
-        self.getDataField()
-        self.getData()
+            link ="{}/{}.csv".format(self.path_object["F2"][type_time],symbol)
+            data = pd.read_csv(link)
 
-    def getDataField(self):
-        data_field = pd.read_excel("/content/Feature_Standard_Library.xlsx",sheet_name="Quarter")
-        data_field = data_field.rename(columns={"column":"Feature"})
-        self.data_field = data_field[["Feature"]]
+            self.time=data.columns[1:]
 
-    def getData(self):
-        for key in self.dict_data.keys():
-            try:
-                df_b = pd.read_csv("{}/{}.csv".format(self.dict_data[key]["path"][0],self.symbol))
-                df_i = pd.read_csv("{}/{}.csv".format(self.dict_data[key]["path"][1],self.symbol))
-                df = pd.concat([df_b,df_i],ignore_index=True)
-            except:
-                df = self.field_basic
-            for column in df.columns[1:]:
-                df[column] = df[column].astype(float)
-            df = pd.merge(self.data_field,df,on=["Feature"],how="left")
-            df.replace(0, np.nan, inplace=True)
-            df = df.dropna(axis=1, how='all')
-            df = df.fillna(0)
-            for column in  self.dict_data["other"]["list_year"]:
-                if not(column in df.columns):
-                    df[column]=[np.nan for i in df["Feature"]]
-            df = df[ self.dict_data['other']["list_year"]]
-            self.dict_data[key]["company"] = df
+            data = self.replace_NaN_0(data)
+            temp = pd.merge(data_field,data, on="Feature",how="inner")
+            temp = temp[[data.columns[0],self.getTime(type_time)]]
+            temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
+            return temp
+        except:
+            print(symbol,"Error at F3")
+            return -1
+    def run(self,symbol,type_time):
+        self.Financial_F0_to_F1(symbol,type_time)
+        self.Financial_F1_to_F2(symbol,type_time)
+        self.Financial_F2_to_F3(symbol,type_time)
 
-    def compare_2_block(self,a,b,s_a,s_b,field):
-        if math.isnan(a) and math.isnan(b):
-            return "N"
-        if math.isnan(a) or math.isnan(b):
-            return "2"
-        if field in ['Basic earnings per share','Diluted earnings per share']:
-            s_a = 1
-            s_b = 1
-        dau_a = check_dau(a)
-        dau_b = check_dau(b)
-        a = abs(a)
-        b = abs(b)
-        x,y = a,b
-        x = a/s_a+0.0000001
-        y = b/s_b+0.0000001
-        x = dau_a*x
-        y = dau_b*y
-        if round(x)-round(y) == 0:
-            return "1"
-        else:
-            return "0"
-    
-    def get_field(self,key_1,key_2):
-        df = pd.merge( self.dict_data[key_1]["company"], self.dict_data[key_2]["company"],on=["Feature"],how="inner")
-        list_year =  self.dict_data["other"]["list_year"]
-        s_a,s_b =  self.dict_data[key_1]["money"], self.dict_data[key_2]["money"]
-        for year in list_year[1:]:
-            df[year] = df.apply(lambda row: self.compare_2_block(row[f"{year}_x"],row[f"{year}_y"],s_a,s_b,row["Feature"]),axis=1)
-            df = df.drop(columns=[f"{year}_x",f"{year}_y"])
-        return df

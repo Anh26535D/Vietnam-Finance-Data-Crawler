@@ -11,5 +11,7 @@ F_END = FU.GetDateUpdate()
 F_BASE = FC.getListPath()
 F_RANGE = []
 for date in F_BASE:
-    if date>F_START and date <= F_END:
+    if date>=F_START and date <= F_END:
         F_RANGE.append(date)
+
+print(F_START,F_END,F_RANGE)

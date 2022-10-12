@@ -5,6 +5,8 @@ from Flow import PATH_env,RUN
 import datetime
 import time
 import json
+import sys
+sys.path.append(r'C:\DataVietNam')
 
 PATH_ = PATH_env.PATH_ENV()
 start = PATH_.DateCurrent - datetime.timedelta(days=90)
@@ -103,13 +105,7 @@ def FinancialVietStock(symbol,type_):
     print("Done VS!!",symbol)
 
 def run_reset_cf():
-    global web
-    try:
-        web = CafeF.FinancailStatement()
-    except:
-        print("Tam Nghi CF-------------------")
-        time.sleep(100)
-        run_reset_cf()
+    pass
 def run_reset_vs():
     global webVS
     try:
@@ -117,7 +113,7 @@ def run_reset_vs():
         webVS.login_VS()
     except:
         print("Tam Nghi VS-------------------")
-        time.sleep(100)
+        time.sleep(20)
         run_reset_vs()
 
 
@@ -143,5 +139,4 @@ for symbol in List_Symbol["Mã CK▲"]:
     except:
         run_reset_vs()
 webVS.turn_off_drive()
-
 # #     break

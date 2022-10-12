@@ -5,6 +5,7 @@ from Flow import Folder
 import math
 from Flow.PATH_env import PATH_ENV
 from Flow.ulis import *
+
 class Price():
     def getClose(self,a,b):
         if math.isnan(a):
@@ -12,7 +13,10 @@ class Price():
         return a
 
 class TransformPrice(Price):
-    def __init__(self) -> None:
+    def __init__(self,FU,FC,F_RANGE) -> None:
+        self.FU = FU
+        self.FC = FC
+        self.F_RANGE = F_RANGE
         pass
     
     def ConcatData(self,LIST_PATH,symbol):
@@ -26,7 +30,7 @@ class TransformPrice(Price):
         return df_close.drop_duplicates(subset=["Ngày"])
 
     def getDataCafeF(self,symbol):
-        data = self.ConcatData([FU.joinPath(FC.PATH_MAIN,date,"Close","CafeF") for date in F_RANGE],symbol)
+        data = self.ConcatData([self.FU.joinPath(self.FC.PATH_MAIN,date,"Close","CafeF") for date in self.F_RANGE],symbol)
         try:
             data = data[["Ngày","Giá đóng cửa"]]
         except:
@@ -34,7 +38,7 @@ class TransformPrice(Price):
         return data[["Ngày","Giá đóng cửa"]].rename(columns={"Ngày":"Date","Giá đóng cửa":"Close"})
 
     def getDataStockBiz(self,symbol):
-        data = self.ConcatData([FU.joinPath(FC.PATH_MAIN,date,"Close","StockBiz") for date in F_RANGE],symbol)
+        data = self.ConcatData([self.FU.joinPath(self.FC.PATH_MAIN,date,"Close","StockBiz") for date in self.F_RANGE],symbol)
         return data[["Ngày","Đóng cửa"]].rename(columns={"Ngày":"Date","Đóng cửa":"Close"})
 
     def concat_source(self,symbol):
@@ -47,22 +51,6 @@ class TransformPrice(Price):
         result["Close"] = result.apply(lambda x: self.getClose(x["Close_x"],x["Close_y"]),axis=1)
         data = result[["Date","Close"]]
         data = data.sort_values(by=['Date'],ascending=False).reset_index(drop=True)
-        data.to_csv(f"{FU.PATH_CLOSE}/{symbol}.csv",index=False)
+        return data
 
-FC = Folder.FolderCrawl()
-FU = Folder.FolderUpdate()
-F_START = FU.GetDateUpdateNearest()
-F_END = FU.GetDateUpdate()
-F_BASE = FC.getListPath()
-F_RANGE = []
-for date in F_BASE:
-    if date>F_START and date <= F_END:
-        F_RANGE.append(date)
 
-TP = TransformPrice()
-List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"]:
-    try:
-        TP.concat_source(symbol)
-    except:
-        pass
