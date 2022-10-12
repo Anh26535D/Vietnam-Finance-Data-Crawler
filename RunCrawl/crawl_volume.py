@@ -20,6 +20,7 @@ def VolumeCafeF(symbol):
             com.getVolumeNow(symbol).to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
         except:
             pass
+        
         try:
             com.getVolumeEvent(symbol).to_csv(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv",index=False)
         except:
@@ -59,4 +60,6 @@ for symbol in List_Symbol["Mã CK▲"]:
     VolumeCafeF(symbol)
     VolumeVietStock(symbol)
     print("Done: ",symbol)
+
+com.turn_off_drive()
     

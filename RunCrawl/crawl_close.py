@@ -1,10 +1,12 @@
-from ..Crawl import CafeF
-from ..Crawl import StockBiz
+import sys
+sys.path.append(r'C:\DataVietNam')
+from Crawl import CafeF
+from Crawl import StockBiz
 import pandas as pd
-from ..Flow import PATH_env
+from Flow import PATH_env
 import datetime
 
-PATH_ = PATH_env.PATH_ENV()
+PATH_ = PATH_env.PATH_ENV("Ingestion")
 start = PATH_.DateCurrent - datetime.timedelta(days=180)
 start = start.strftime("%d/%m/%Y")
 end = PATH_.DateCurrent.strftime("%d/%m/%Y")

@@ -3,17 +3,17 @@ import datetime
 # PATH_Data = "C:\Data"
 PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
-day,month,year=0,0,0
+day,month,year=9,10,2022
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
     date = datetime.datetime.today()
     t = date.timetuple().tm_yday
-    # if t % 2 == 0:
-    #     date = date - datetime.timedelta(days=2)
+    if t % 2 == 1:
+        date = date - datetime.timedelta(days=1)
         
 class PATH_ENV():
-    def __init__(self,Type_,date = date):
+    def __init__(self,Type_):
         self.DateCurrent = date
         self.DayCurrent= date.strftime("%Y-%m-%d")
         self.setTypeForder(Type_)
@@ -24,30 +24,23 @@ class PATH_ENV():
         self.Type_Time = ["Year","Quarter"]
         self.FinancialPartObject = ["BalanceSheet","IncomeStatement","CashFlowDirect","CashFlowInDirect"]
         self.VolumeObject = ["CafeF","VietStock","TVSI"]
-        self.VolumePartObject = ["VolumeNow","TreasuryShares","VolumeAdditionailEvents"]
+        self.VolumePartObject = ["TreasuryShares","VolumeAdditionailEvents","VolumeNow"]
         self.Phase = [f"F{i}" for i in range(4)]
 
     def joinPath(self,*arg):
-        arr = []
-        for i in arg:
-            if i != "":
-                arr.append(i)
-        return "/".join(arr)
+        return "/".join(arg)
     
     def setTypeForder(self,Type):
         if Type == "Ingestion":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
         elif Type == "Raw_VIS":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
-        else:
-            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Data_Rule"
         self.PATH_MAIN = PATH_Data
         self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
         self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")
         self.PATH_FINANCIAL = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Financial")
         self.PATH_DIVIDEND = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Dividend")
         self.PATH_VOLUME = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Volume")
-        self.PATH_COMPARE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Compare")
             
     
 

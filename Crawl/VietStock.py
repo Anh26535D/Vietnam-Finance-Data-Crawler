@@ -16,13 +16,13 @@ class FinanStatement(setup.Setup):
         self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",self.symbol)
         
     def BalanceSheet(self,PeriodType):
-        return self.table_lake(self.link_balance, PeriodType)
+        return self.table_lake(self.link_balance, PeriodType,True)
 
     def IncomStatement(self, PeriodType):
-        return self.table_lake(self.link_income, PeriodType)
+        return self.table_lake(self.link_income, PeriodType,False)
 
     def CashFlows(self, PeriodType):
-        return self.table_lake(self.link_cashflow, PeriodType,"CashFlow")
+        return self.table_lake(self.link_cashflow, PeriodType,False)
     
     def table_lake(self, link, PeriodType,*arg):
         self.request_link(link)
@@ -47,8 +47,10 @@ class FinanStatement(setup.Setup):
                 self.click_select("PeriodType",PeriodType)
                 time.sleep(0.5)
             except: pass
-            if len(arg) != 1:
+            if arg[0] != False:
                 try:
+                    self.click_something_by_xpath('//*[@id="expand-overall-CDKT"]')
+                    time.sleep(0.5)
                     self.click_something_by_xpath('//*[@id="expand-overall-CDKT"]')
                     time.sleep(1)
                 except: pass
@@ -146,7 +148,7 @@ class Other(setup.Setup):
     
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
-        time.sleep(3)
+        time.sleep(2)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 

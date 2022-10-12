@@ -83,13 +83,15 @@ class FolderCrawl(FolderData):
         self.createFolder(path)
         for obj in self.FinancialObject:
             for t_time in self.Type_Time:
-                self.createFolder(self.joinPath(path,obj,t_time))
+                for p_obj in self.FinancialPartObject:
+                        self.createFolder(self.joinPath(path,obj,t_time,p_obj))
                     
     def folderVolume(self):
         path = self.PATH_VOLUME
         self.createFolder(path)
         for obj in self.VolumeObject:
-            self.createFolder(self.joinPath(path,obj))
+            for p_obj in self.VolumePartObject:
+                self.createFolder(self.joinPath(path,obj,p_obj)) 
 
     def Run_Create_Folder(self):
         self.folderClose()
