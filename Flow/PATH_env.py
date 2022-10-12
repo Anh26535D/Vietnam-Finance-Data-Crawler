@@ -3,7 +3,7 @@ import datetime
 # PATH_Data = "C:\Data"
 PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
-day,month,year=9,10,2022
+day,month,year=0,0,0
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
