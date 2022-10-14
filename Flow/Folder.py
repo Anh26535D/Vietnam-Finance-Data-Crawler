@@ -143,8 +143,7 @@ class FolderUpdate(FolderData):
         path = self.PATH_COMPARE
         for time in self.Type_Time:
             self.createFolder(self.joinPath(path,"Financial",time))   
-            self.createFolder(self.joinPath(path,"Financial",time))   
-            self.createFolder(self.joinPath(path,"Financial",time))   
+        self.createFolder(self.joinPath(path,"Dividend"))   
     
     def Run_Create_Folder(self):
         self.folderClose()

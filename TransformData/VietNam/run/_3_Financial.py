@@ -9,7 +9,7 @@ from base.PATH_UPDATE import *
 
 # CafeF
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"][:5]:
+for symbol in List_Symbol["Mã CK▲"]:
     CF = CafeF(dict_path_cf)
     CF.run(symbol,"Year")
     CF.run(symbol,"Quarter")
@@ -29,7 +29,7 @@ def setup_Feature(type_time):
 
 def RunCompare(type_time):
     data_field = setup_Feature(type_time)
-    for symbol in List_Symbol["Mã CK▲"][:5]:
+    for symbol in List_Symbol["Mã CK▲"]:
         try:
             C = Compare.CompareFinancial(symbol,PATH_FT,type_time,data_field)
             C.get_field("CF","VS").to_csv(FU.joinPath(FU.PATH_COMPARE,"Financial",type_time,f"{symbol}.csv"),index=False)

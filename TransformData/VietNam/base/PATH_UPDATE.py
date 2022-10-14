@@ -2,8 +2,8 @@ import sys
 sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
 
-FC = Folder.FolderCrawl("")
-FU = Folder.FolderUpdate("")
+FC = Folder.FolderCrawl("Ingestion")
+FU = Folder.FolderUpdate("Raw_VIS")
 FR = Folder.FolderData("")
 DAY_GET = FC.GetDateUpdate()
 DAY_RUN = FU.GetDateUpdate()

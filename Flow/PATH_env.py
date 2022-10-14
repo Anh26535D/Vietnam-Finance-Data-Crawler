@@ -38,6 +38,7 @@ class PATH_ENV():
         self.PATH_MAIN = PATH_Data
         self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
         self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")
+        self.PATH_COMPARE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Compare")
         self.PATH_FINANCIAL = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Financial")
         self.PATH_DIVIDEND = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Dividend")
         self.PATH_VOLUME = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Volume")
