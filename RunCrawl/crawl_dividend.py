@@ -19,7 +19,9 @@ def DividendCafeF(symbol):
     except:
         try:
             com = CafeF.Dividend()
-            com.get_new(symbol).to_csv(f"{PATH}/{symbol}.csv",index=False)
+            df = com.get_new(symbol)
+            df.to_csv(f"{PATH}/{symbol}.csv",index=False)
+            return df
         except:
             pass
 
@@ -56,6 +58,6 @@ List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_compan
 for symbol in List_Symbol["Mã CK▲"]:
     DividendCafeF(symbol)
     DividendVietStock(symbol)
-
-com.turn_off_drive()
+# print(DividendCafeF("SFI"))
+# com.turn_off_drive()
 

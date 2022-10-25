@@ -325,7 +325,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\create_folder.py"</script>
+      <script>"C:\Users\vangd\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\create_folder.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -350,7 +350,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_list_company.py"</script>
+      <script>"C:\Users\vangd\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_list_company.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -375,7 +375,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_close.py"</script>
+      <script>"C:\Users\vangd\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_close.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
@@ -425,7 +425,7 @@
       <add_date>N</add_date>
       <add_time>N</add_time>
       <insertScript>Y</insertScript>
-      <script>"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_financial.py"</script>
+      <script>"C:\Users\vangd\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_financial.py"</script>
       <loglevel>Basic</loglevel>
       <parallel>N</parallel>
       <draw>Y</draw>
