@@ -1,5 +1,5 @@
-USER = 'wrl72487@xcoxc.com'
-PASSWORD = 'Vang2000'
+USER = 'gza38898@cdfaq.com'
+PASSWORD = 'V@ng2000'
 
 URL_CAFE = {
     "CLOSE": "https://s.cafef.vn/Lich-su-giao-dich-SYMBOL-1.chn#data",

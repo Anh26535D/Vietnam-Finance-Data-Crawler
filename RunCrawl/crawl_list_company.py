@@ -6,24 +6,23 @@ import Flow.PATH_env as PATH_env
 import time
 def run_reset_vs():
     global webVS
-    try:
-        webVS = VietStock.Other("")
-        webVS.login_VS()
-    except:
-        print("Tam Nghi VS-------------------")
-        time.sleep(20)
-        run_reset_vs()
+    webVS.turn_off_drive()
+    print("Tam Nghi VS-------------------")
+    time.sleep(20)
 
 
 PATH_ = PATH_env.PATH_ENV("Ingestion")
-try:
-    List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-except:
+check = False
+while check == False:
     try:
-        webVS = VietStock.Other()
-        webVS.login_VS()
-        data = webVS.Listing()
-        data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
-        webVS.turn_off_drive()
+        List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
     except:
-        run_reset_vs()
+        try:
+            webVS = VietStock.Other()
+            webVS.login_VS()
+            data = webVS.Listing()
+            data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
+            check = True
+        except:
+            run_reset_vs()
+webVS.turn_off_drive()

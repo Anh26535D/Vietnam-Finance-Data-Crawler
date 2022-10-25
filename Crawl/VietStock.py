@@ -101,18 +101,20 @@ class Other(setup.Setup):
 
     def Company_delisting(self, symbol):
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))
-    
+
     def Listing(self):
-        self.getTableForListing(self.CreateLink('LISTING'),"1")
-        self.getTableForListing(self.CreateLink('LISTING'),"2")
-        self.getTableForListing(self.CreateLink('LISTING'),"5")
-        return self.list_symbol_listing
+            data_1 = self.getTableForListing(self.CreateLink('LISTING'),"1")
+            data_2 = self.getTableForListing(self.CreateLink('LISTING'),"2")
+            data_3 = self.getTableForListing(self.CreateLink('LISTING'),"5")
+            data = pd.concat([data_1,data_2],ignore_index=True)
+            data = pd.concat([data,data_3],ignore_index=True)
+            return data
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
 
     def getTable(self, link):
         self.request_link(link)
-        time.sleep(2)
+        time.sleep(1)
         page_source = self.driver.page_source
         page = BeautifulSoup(page_source, 'html.parser')
         number_pages = self.getNumberPage(page)
@@ -138,8 +140,8 @@ class Other(setup.Setup):
         page = BeautifulSoup(page_source, 'html.parser')
         number_pages = self.getNumberPage(page)
         if number_pages > 1:
-            if self.list_symbol_listing.empty:
-                self.list_symbol_listing = self.getTableInfor(page)
+            # if self.list_symbol_listing.empty:
+            self.list_symbol_listing = self.getTableInfor(page)
             for number_page in range(2, number_pages+1):
                 data_new = self.getNextTable()
                 self.list_symbol_listing= pd.concat([self.list_symbol_listing, data_new])
@@ -153,7 +155,7 @@ class Other(setup.Setup):
         return self.getTableInfor(page)
 
     def getTableInfor(self, page):
-        # time.sleep(1)
+        time.sleep(1)
         list_table = page.find_all('table', {'class':
         'table table-striped table-bordered table-hover table-middle pos-relative m-b'})
         try: return pd.read_html(str(list_table))[0]
