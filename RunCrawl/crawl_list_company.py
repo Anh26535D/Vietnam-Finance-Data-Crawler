@@ -23,12 +23,12 @@ while check == False:
         List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
         check = True
     except:
-        try:
+        # try:
             webVS = VietStock.Other()
             webVS.login_VS()
             data = webVS.Listing()
             data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
             webVS.turn_off_drive()
             check = True
-        except:
-            run_reset_vs()
+        # except:
+        #     run_reset_vs()

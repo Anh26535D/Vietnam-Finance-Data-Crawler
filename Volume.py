@@ -8,8 +8,8 @@ FU = Folder.FolderUpdate()
 
 def getVolume(symbol):
     return symbol
-F_START = FU.GetDateUpdateNearest()
-F_END = FU.GetDateUpdate()
+F_START = FU.GetDateUpdateEndStart()
+F_END = FU.GetDateUpdateEnd()
 F_BASE = FC.getListPath()
 F_RANGE = []
 for date in F_BASE:

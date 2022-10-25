@@ -12,7 +12,7 @@ V_VS = VolumeVietStock(dict_path_vs)
 df_volume = pd.DataFrame({})
 
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"][:10]:
+for symbol in List_Symbol["Mã CK▲"]:
     temp = pd.DataFrame({"Cafef":[V_CF.getVolumeNow(symbol)],"VietStock":[V_VS.getVolumeNow(symbol)],"Symbol":[symbol]})
     df_volume = pd.concat([df_volume,temp],ignore_index=True)
 df_volume["Compare"] = df_volume.apply(lambda row: C.CompareNumber(row["Cafef"],row["VietStock"]),axis=1)

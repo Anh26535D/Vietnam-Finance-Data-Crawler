@@ -4,6 +4,8 @@ from typing import Type
 from Flow import PATH_env
 import json
 
+
+
 class FolderData(PATH_env.PATH_ENV):
     def __init__(self,Type_,date=""):
         if len(date) == 0:
@@ -17,7 +19,9 @@ class FolderData(PATH_env.PATH_ENV):
             os.makedirs(path)
         return path
     
-    def GetDateUpdate(self):
+    def GetDateUpdateEnd(self,day=None):
+        if not day is None:
+            return day
         list_date = os.listdir(self.PATH_MAIN)
         print(self.PATH_MAIN)
         arr = []
@@ -26,7 +30,9 @@ class FolderData(PATH_env.PATH_ENV):
                 arr.append(day)
         arr.sort()
         return arr[-1]
-    def GetDateUpdateNearest(self):
+    def GetDateUpdateEndStart(self,day=None):
+        if not day is None:
+            return day
         list_date = os.listdir(self.PATH_MAIN)
         arr = []
         for day in list_date:
@@ -34,8 +40,8 @@ class FolderData(PATH_env.PATH_ENV):
                 arr.append(day)
         arr.sort()
         if len(arr)== 1:
-            return self.GetDateUpdate()
-        return arr[-2]
+            return self.GetDateUpdateEnd()
+        return arr[-3]
     def GetDateNotUpdate(self,path):
         list_date = os.listdir(self.PATH_MAIN)
         arr_new = []
@@ -136,7 +142,7 @@ class FolderUpdate(FolderData):
         path = self.PATH_VOLUME
         for obj in self.VolumeObject:
             for PHASE in self.Phase[:2]:
-                for p_obj in self.VolumePartObject[:1]:
+                for p_obj in self.VolumePartObject:
                     self.createFolder(self.joinPath(path,obj,PHASE,p_obj))
 
     def folderCompare(self):

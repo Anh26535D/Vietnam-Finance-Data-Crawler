@@ -153,11 +153,12 @@ class Volume(setup.Setup):
 
     def getVolumeNow(self,link):
         self.setupLink(link)
-        self.request_link(self.URL_VOLUME_NOW,5)
+        self.request_link(self.URL_VOLUME_NOW,10)
         try:
            element = self.find_element_by_xpath('//*[@id="content"]/div/div[7]/div[5]/div/ul')
         except:
             try:
+
                 element = self.find_element_by_xpath('//*[@id="content"]/div/div[6]/div[5]/div/ul')
             except:
                 element = self.find_element_by_xpath('//*[@id="contentV1"]/div[4]/div[5]/div/ul')

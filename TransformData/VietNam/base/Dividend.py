@@ -188,7 +188,6 @@ def get_datetime(text):
 def get_cash(path):
     try:
         dat = pd.read_csv(path)
-        print(dat)
         cash = dat[['Ngày GDKHQ▼','Tỷ lệ']]
         cash.columns = ['Time', 'Money']
         if cash.shape[0] > 0:

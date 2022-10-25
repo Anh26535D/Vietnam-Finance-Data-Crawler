@@ -41,7 +41,6 @@ class CafeF(TransForm):
         self.data_field_default_quarter = df
 
     def Financial_F0_to_F1(self,symbol,type_time):
-        try:
             data = {}
             for key in self.path_object["F0"].keys():
                 if key.find(type_time) != -1:
@@ -87,12 +86,8 @@ class CafeF(TransForm):
             temp.columns = arr
             temp.to_csv(f'{self.path_object["F1"][type_time]}/{symbol}.csv',index=False)
             return temp
-        except:
-            print(symbol,type_time,"Error at F1")
-            return -1
 
     def Financial_F1_to_F2(self,symbol,type_time):
-            try:
                 link ="{}/{}.csv".format(self.path_object["F1"][type_time],symbol)
                 data = pd.read_csv(link)
                 temp = pd.merge(self.data_field,data, on="field",how="outer")
@@ -103,12 +98,7 @@ class CafeF(TransForm):
                 temp.columns = [col.replace("]","").replace("[","") for col in temp.columns]
                 temp.to_csv(f'{self.path_object["F2"][type_time]}/{symbol}.csv',index=False)
                 return temp
-            except:
-                print(symbol,"Error at F2")
-                return -1
-
     def Financial_F2_to_F3(self,symbol,type_time):
-            try:
                 if type_time == "Year":
                     data_field = self.data_field_default_year
                 elif type_time == "Quarter":
@@ -123,14 +113,17 @@ class CafeF(TransForm):
                 temp = temp[[data.columns[0],self.getTime(type_time)]]
                 temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
                 return temp
-            except:
-                print(symbol,"Error at F3")
-                return -1
     
     def run(self,symbol,type_time):
-        self.Financial_F0_to_F1(symbol,type_time)
-        self.Financial_F1_to_F2(symbol,type_time)
-        self.Financial_F2_to_F3(symbol,type_time)
+        try:
+            self.Financial_F0_to_F1(symbol,type_time)
+            self.Financial_F1_to_F2(symbol,type_time)
+            self.Financial_F2_to_F3(symbol,type_time)
+        except:
+            print(symbol,type_time)
+            return False
+        return True
+
 
 class VietStock(TransForm):
     def __init__(self,dict_path_vs) -> None:
@@ -184,7 +177,6 @@ class VietStock(TransForm):
             return False
 
     def Financial_F2_to_F3(self,symbol,type_time):
-        try:
             if type_time == "Year":
                 data_field = self.data_field_default_year
             elif type_time == "Quarter":
@@ -200,11 +192,13 @@ class VietStock(TransForm):
             temp = temp[[data.columns[0],self.getTime(type_time)]]
             temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
             return temp
-        except:
-            print(symbol,"Error at F3")
-            return -1
     def run(self,symbol,type_time):
-        self.Financial_F0_to_F1(symbol,type_time)
-        self.Financial_F1_to_F2(symbol,type_time)
-        self.Financial_F2_to_F3(symbol,type_time)
+        try:
+            self.Financial_F0_to_F1(symbol,type_time)
+            self.Financial_F1_to_F2(symbol,type_time)
+            self.Financial_F2_to_F3(symbol,type_time)
+        except:
+            print(symbol,type_time)
+            return False
+        return True
 

@@ -102,11 +102,7 @@ class Other(setup.Setup):
     def Company_delisting(self, symbol):
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))
     
-    def Listing(self):
-        self.getTableForListing(self.CreateLink('LISTING'),"1")
-        self.getTableForListing(self.CreateLink('LISTING'),"2")
-        self.getTableForListing(self.CreateLink('LISTING'),"5")
-        return self.list_symbol_listing
+             
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
 
@@ -138,9 +134,9 @@ class Other(setup.Setup):
         page = BeautifulSoup(page_source, 'html.parser')
         number_pages = self.getNumberPage(page)
         if number_pages > 1:
-            if self.list_symbol_listing.empty:
-                self.list_symbol_listing = self.getTableInfor(page)
-            for number_page in range(2, number_pages+1):
+            # if self.list_symbol_listing.empty:
+            self.list_symbol_listing = self.getTableInfor(page)
+            for number_page in range(1, number_pages+1):
                 data_new = self.getNextTable()
                 self.list_symbol_listing= pd.concat([self.list_symbol_listing, data_new])
             return self.list_symbol_listing
