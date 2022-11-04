@@ -12,9 +12,7 @@ VS = DividendVS(dict_path_vs)
 
 
 
-
-List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"]:
+for symbol in SYMBOL:
     CF.Dividend_CF(symbol).to_csv(f'{dict_path_cf["F1"]["Dividend"]}/{symbol}.csv',index=False)
     VS.Dividend_VS(symbol).to_csv(f'{dict_path_vs["F1"]["Dividend"]}/{symbol}.csv',index=False)
 
@@ -26,7 +24,7 @@ def CreateCode(df,field):
     return df
 
 
-for symbol in List_Symbol["Mã CK▲"]:
+for symbol in SYMBOL:
     df_cf =  pd.read_csv(f'{dict_path_cf["F1"]["Dividend"]}/{symbol}.csv')
     df_vs =  pd.read_csv(f'{dict_path_vs["F1"]["Dividend"]}/{symbol}.csv')
     df_cf = CreateCode(df_cf,"Code_CF")
