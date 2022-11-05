@@ -61,7 +61,6 @@ dict_path_vs = { "Feature": FR.PATH_MAIN,
                     'Dividend': FC.joinPath(PATH_FT,DIVIDEND,"VietStock","F1"),
                     "Year": FC.joinPath(PATH_FT,"Financial/VietStock","F1",LINK_YEAR),
                     "Quarter": FC.joinPath(PATH_FT,"Financial/VietStock","F1",LINK_QUATER),
-
                     },
                 "F2":{
                     "Year": FC.joinPath(PATH_FT,"Financial/VietStock","F2",LINK_YEAR),

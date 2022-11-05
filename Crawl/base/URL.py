@@ -1,4 +1,4 @@
-USER = 'gza38898@cdfaq.com'
+USER = 'xwo34288@xcoxc.com'
 PASSWORD = 'V@ng2000'
 
 URL_CAFE = {

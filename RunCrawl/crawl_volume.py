@@ -16,12 +16,11 @@ def VolumeCafeF(symbol):
         df = pd.read_csv(f"{PATH}/VolumeNow/{symbol}.csv")
     except:
         com = CafeF.Volume()
-        # try:
         data = com.getVolumeNow(symbol)
-        print(f"{PATH}/VolumeNow/{symbol}.csv")
-        data.to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
-        # except:
-        #     pass
+        try:
+            data.to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
+        except:
+            pass
         
         try:
             com.getVolumeEvent(symbol).to_csv(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv",index=False)
@@ -37,13 +36,12 @@ def run_reset_vs():
         run_reset_vs()
         
             
-# com = VietStock.Other()
+com = VietStock.Other()
 def VolumeVietStock(symbol):
     PATH = PATH_.joinPath(PATH_.PATH_VOLUME,"VietStock")
     try:
-        df = pd.read_csv(f"{PATH}/{symbol}.csv")
+        df = pd.read_csv(f"{PATH}/VolumeNow/{symbol}.csv")
     except:
-        print(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv")
         try:
             com.AdditionalListing(symbol).to_csv(f"{PATH}/VolumeAdditionailEvents/{symbol}.csv",index=False)
         except:
@@ -56,13 +54,13 @@ def VolumeVietStock(symbol):
             com.TreasuryStockTransactions(symbol).to_csv(f"{PATH}/TreasuryShares/{symbol}.csv",index=False)
         except:
             run_reset_vs()
+        time.sleep(1)
 
-# List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-# for symbol in List_Symbol["Mã CK▲"]:
-symbol = "DPM"
-VolumeCafeF(symbol)
-# VolumeVietStock(symbol)
-print("Done: ",symbol)
+List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+for symbol in List_Symbol["Mã CK▲"]:
+    VolumeCafeF(symbol)
+    VolumeVietStock(symbol)
+    print("Done: ",symbol)
 
-# com.turn_off_drive()
+com.turn_off_drive()
     

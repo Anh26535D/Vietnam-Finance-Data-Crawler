@@ -125,23 +125,25 @@ def run_reset_vs():
         run_reset_vs()
 
 
-List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"]:
+# List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+# List_Symbol = pd.read_excel('G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2022-10-21/Compare/Financial_Quarter_CheckList.xlsx')
+# SYMBOL = List_Symbol[List_Symbol["VietStock"] == False]["Symbol"].values
+for symbol in SYMBOL:
     try:
         FinancialCafeF(symbol,"Q")
     except:
         run_reset_cf()
 
-    try:
-        FinancialCafeF(symbol,"Y")
-    except:
-        run_reset_cf()
+    # try:
+    #     FinancialCafeF(symbol,"Y")
+    # except:
+    #     run_reset_cf()
 
-    try:
-        FinancialVietStock(symbol,"NAM")
-    except:
-        run_reset_vs()
-        
+    # try:
+    #     FinancialVietStock(symbol,"NAM")
+    # except:
+    #     run_reset_vs()
+    print(symbol)
     try:
         FinancialVietStock(symbol,"QUY")
     except:

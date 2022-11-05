@@ -14,7 +14,9 @@ VS = DividendVS(dict_path_vs)
 
 
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"]:
+List_Symbol = ["EBS"]
+# ["Mã CK▲"]
+for symbol in List_Symbol:
     CF.Dividend_CF(symbol).to_csv(f'{dict_path_cf["F1"]["Dividend"]}/{symbol}.csv',index=False)
     VS.Dividend_VS(symbol).to_csv(f'{dict_path_vs["F1"]["Dividend"]}/{symbol}.csv',index=False)
 
@@ -25,12 +27,12 @@ def CreateCode(df,field):
         df[field] = ["NAN" for i in df.index]
     return df
 
-
-for symbol in List_Symbol["Mã CK▲"]:
+# ["Mã CK▲"]
+for symbol in List_Symbol:
     df_cf =  pd.read_csv(f'{dict_path_cf["F1"]["Dividend"]}/{symbol}.csv')
     df_vs =  pd.read_csv(f'{dict_path_vs["F1"]["Dividend"]}/{symbol}.csv')
     df_cf = CreateCode(df_cf,"Code_CF")
-    df_cf = CreateCode(df_cf,"Code_VS")
+    df_vs = CreateCode(df_vs,"Code_VS")
     data = pd.merge(df_cf,df_vs,on="Time",how="outer").replace(np.nan,"NAN")
     try:
         data["Compare"] = data.apply(lambda row: C.compare_2_string(row["Code_CF"],row["Code_VS"]),axis=1)

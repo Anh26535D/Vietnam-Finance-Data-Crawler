@@ -16,6 +16,7 @@ check = False
 while check == False:
     try:
         List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+        break
     except:
         try:
             webVS = VietStock.Other()
@@ -25,4 +26,7 @@ while check == False:
             check = True
         except:
             run_reset_vs()
-webVS.turn_off_drive()
+try:
+    webVS.turn_off_drive()
+except:
+    pass

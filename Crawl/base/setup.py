@@ -47,7 +47,7 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:\\web_driver/chromedriver.exe"):
+    def reset_driver(self, path="C:\webdriver/chromedriver.exe"):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--disable-blink-features=AutomationControlled')
         self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
