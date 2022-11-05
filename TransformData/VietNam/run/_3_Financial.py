@@ -8,6 +8,7 @@ from base.Financial import CafeF,VietStock
 from base.PATH_UPDATE import *
 from base.Setup import *
 Type_Time = "Quarter"
+# SYMBOL = ["JVC"]
 # CafeF
 df_check_list = pd.DataFrame()
 def transform(symbol,field):
@@ -21,14 +22,11 @@ def transform(symbol,field):
                         "CafeF": [cf],
                         "VietStock":[vs]})
     df_check_list = pd.concat([df_check_list,df],ignore_index=True)
-
-List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
-
+    
 for symbol in SYMBOL:
     transform(symbol,"Quarter")
 
 df_check_list.to_excel(FU.joinPath(FU.PATH_COMPARE,f"Financial_{Type_Time}_CheckList.xlsx"))
-
 def setup_Feature(type_time):
     if type_time == "Year":
         sheet_name = "Total"
@@ -47,8 +45,6 @@ def RunCompare(type_time):
             C.get_field("CF","VS").to_csv(FU.joinPath(FU.PATH_COMPARE,"Financial",type_time,f"{symbol}.csv"),index=False)
         except:
             can_t_compare.append(symbol)
-    pd.DataFrame({"Error_Compare":symbol}).to_excel(FU.joinPath(FU.PATH_COMPARE,"Error",f"{type_time}.xlsx"),index=False)        
-
-
+    pd.DataFrame({"Error_Compare":can_t_compare}).to_excel(FU.joinPath(FU.PATH_COMPARE,"Error",f"{type_time}.xlsx"),index=False)        
 
 RunCompare("Quarter")
