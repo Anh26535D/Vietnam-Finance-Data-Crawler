@@ -1,12 +1,13 @@
 import sys
 sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
+from VAR_GLOBAL import *
 
 FC = Folder.FolderCrawl()
 FU = Folder.FolderUpdate()
 FR = Folder.FolderData("")
 DAY_GET = FC.GetDateUpdateEnd()
-DAY_RUN = FU.GetDateUpdateEnd()
+DAY_RUN = END_DAY_UPDATE
 
 PATH_FI = FC.joinPath(FC.PATH_MAIN, DAY_GET)
 PATH_FT = FU.joinPath(FU.PATH_MAIN,DAY_RUN)

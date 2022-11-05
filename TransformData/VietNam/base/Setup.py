@@ -1,4 +1,5 @@
 import sys
+import pandas as pd
 sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
 from VAR_GLOBAL import *
@@ -11,9 +12,19 @@ F_START = FU.GetDateUpdateEndStart(day=START_DAY_UPDATE)
 F_END = FU.GetDateUpdateEnd(day=END_DAY_UPDATE)
 F_BASE = FC.getListPath()
 F_RANGE = []
+
 for date in F_BASE:
     if date>=F_START and date <= F_END:
         F_RANGE.append(date)
+
+List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
+SYMBOL = List_Symbol["Mã CK▲"]
+TOTAL = len(SYMBOL)
+
+# List_Symbol = pd.read_excel(f'G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2022-11-04/Compare/Financial_Quarter_CheckList.xlsx')
+# SYMBOL = List_Symbol[List_Symbol["VietStock"] == False]["Symbol"]
+# TOTAL = len(SYMBOL)
+
 
 class TieuChuan():
     def __init__(self) -> None:
@@ -37,7 +48,5 @@ class TieuChuan():
         if  self.Financial[source][key]["Max_row"] < rows:
             return False
         return True
-    
         
-
 print(F_START,F_END,F_RANGE)

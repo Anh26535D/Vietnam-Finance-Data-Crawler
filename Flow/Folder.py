@@ -111,9 +111,9 @@ class FolderUpdate(FolderData):
         self.NeedFolderUpdate = []
     def folderClose(self):
         path = self.PATH_CLOSE
-        for obj in self.CloseObject:
-            for PHASE in self.Phase[:2]:
-                self.createFolder(self.joinPath(path,obj))
+        # for obj in self.CloseObject:
+        #     for PHASE in self.Phase[:2]:
+        self.createFolder(self.joinPath(path))
         
     def folderDividend(self):
         path = self.PATH_DIVIDEND
@@ -150,6 +150,7 @@ class FolderUpdate(FolderData):
         for time in self.Type_Time:
             self.createFolder(self.joinPath(path,"Financial",time))   
         self.createFolder(self.joinPath(path,"Dividend"))   
+        self.createFolder(self.joinPath(path,"Error"))   
     
     def Run_Create_Folder(self):
         self.folderClose()

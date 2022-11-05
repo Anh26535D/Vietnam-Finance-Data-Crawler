@@ -184,12 +184,15 @@ class VietStock(TransForm):
 
             link ="{}/{}.csv".format(self.path_object["F2"][type_time],symbol)
             data = pd.read_csv(link)
-
             self.time=data.columns[1:]
 
             data = self.replace_NaN_0(data)
             temp = pd.merge(data_field,data, on="Feature",how="inner")
-            temp = temp[[data.columns[0],self.getTime(type_time)]]
+            try:
+                temp = temp[[data.columns[0],self.getTime(type_time)]]
+            except KeyError:
+                temp[QUARTER_KEY] = [np.NaN for i in temp.index]
+                temp = temp[[data.columns[0],self.getTime(type_time)]]
             temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
             return temp
     def run(self,symbol,type_time):
