@@ -1,10 +1,10 @@
 import math
 import pandas as pd
 import sys
-
+import numpy as np
 sys.path.append(r'C:\DataVietNam')
 
-from VAR_GLOBAL import *
+from VAR_GLOBAL_CONFIG import *
 
 
 def check_dau(a):
@@ -12,6 +12,10 @@ def check_dau(a):
         return 1
     else:
         return -1
+
+
+
+
 
 class Compare():
     def __init__(self) -> None:
@@ -58,10 +62,11 @@ class Compare():
             return "0"
 
 class CompareFinancial(Compare):
+
     def __init__(self,symbol,path_,type_time,data_field) -> None:
         self.symbol = symbol
         self.path_main = path_
-
+        self.type_time = type_time
         self.dict_data={
             "CF":{"path":[self.path_main+f"/Financial/CafeF/F3/{type_time}/"],"company":pd.DataFrame({}),"money":1000},
             "VS":{"path":[self.path_main+f"/Financial/VietStock/F3/{type_time}/"],"company":pd.DataFrame({}),"money":1}
@@ -77,22 +82,21 @@ class CompareFinancial(Compare):
         for key in self.dict_data.keys():
             try:
                 df = pd.read_csv("{}/{}.csv".format(self.dict_data[key]["path"][0],self.symbol))
+                for column in df.columns[1:]:
+                    df[column] = df[column].astype(float)
             except:
-                df = self.field_basic
-            for column in df.columns[1:]:
-                df[column] = df[column].astype(float)
+                df = self.data_field.copy()
+                df[QUARTER_KEY] = [np.NAN for i in df.index]
             df = pd.merge(self.data_field,df,on=["Feature"],how="left")
             self.dict_data[key]["company"] = df
 
     def getTime(self,data):
         return data.columns[1:]
 
-    
     def get_field(self,key_1,key_2):
         df = pd.merge( self.dict_data[key_1]["company"], self.dict_data[key_2]["company"],on=["Feature"],how="inner")
         list_year = self.getTime(self.dict_data["CF"]["company"])
         s_a,s_b =  self.dict_data[key_1]["money"], self.dict_data[key_2]["money"]
-        print(list_year)
         for year in list_year:
             df["Compare"] = df.apply(lambda row: self.compare_2_block(row[f"{year}_x"],row[f"{year}_y"],s_a,s_b,row["Feature"]),axis=1)
         return df

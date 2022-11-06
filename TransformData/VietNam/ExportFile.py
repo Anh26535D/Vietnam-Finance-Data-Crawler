@@ -4,19 +4,22 @@ import sys
 sys.path.append(r'C:\DataVietNam')
 sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
 from base.PATH_UPDATE import *
-from VAR_GLOBAL import *
+from VAR_GLOBAL_CONFIG import *
 from base.Setup import *
 from Flow.ulis import *
 
 PRICE = pd.read_json(f"{FU.PATH_MAIN_CURRENT}/PRICE.json").rename(columns={"Date":"Time"})
-# PRICE["Time"]=PRICE["Time"].astype(str)
+# PRICE = pd.read_json(f"G:\My Drive\DataVIS\VietNam\Data Lake\Distillation\All_Real/PRICE.json")
 DIVIDEND = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/DIVIDEND.xlsx")
 FINANCIAL = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{QUARTER_KEY.replace('/','_')}.xlsx")
+Value_Volume = pd.read_csv(f"{FU.PATH_MAIN_CURRENT}/VALUE_ARG.csv")
 INFOR = List_Symbol[["Mã CK▲","Sàn"]].rename(columns={"Mã CK▲":"Symbol",
                                                     "Sàn":"Exchange"})
+
 FILE_TOTAL = pd.merge(FINANCIAL,INFOR,on=["Symbol"],how="outer")
 FILE_TOTAL["Time"] = [f'{QUARTER_KEY.split("/")[1]}/{QUARTER_KEY.split("/")[0]}' for i in FILE_TOTAL.index]
 FILE_TOTAL["Time_Investment_Number"] = FILE_TOTAL["Time"].apply(lambda x: int(x.split("/")[1]) + (int(x.split("/")[0])-2000)*4)
+Volume = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/Volume.xlsx")
 
 def count_company(dt):
     count = 0
@@ -27,23 +30,25 @@ def count_company(dt):
 
 def checkTime(number):
     start,e = CoverTime(number,TYPE_TIME)
-    df = pd.DataFrame()
-    temp = FILE_TOTAL[(FILE_TOTAL["Time_Investment_Number"] == number)]
-    on_exchange = count_company(temp)+1
-    count_ = 0
-    t = 0
-    while count_/on_exchange < 0.5 and t <30:
-        time_str = start.strftime("%Y-%m-%d")
-        df = PRICE[PRICE["Time"] == time_str]
-        count_ = count_company(df)
-        start += datetime.timedelta(days=1)
-        t +=1
-    if t == 30:
-        return None
-    try:
-        return df["Time"][df.index[0]].strftime("%Y-%m-%d")
-    except:
-        return None
+    start -= datetime.timedelta(days=2)
+    return start.strftime("%Y-%m-%d")
+    # df = pd.DataFrame()
+    # temp = FILE_TOTAL[(FILE_TOTAL["Time_Investment_Number"] == number)]
+    # on_exchange = count_company(temp)+1
+    # count_ = 0
+    # t = 0
+    # while count_/on_exchange < 0.5 and t <30:
+    #     time_str = start.strftime("%Y-%m-%d")
+    #     df = PRICE[PRICE["Time"] == time_str]
+    #     count_ = count_company(df)
+    #     start += datetime.timedelta(days=1)
+    #     t +=1
+    # if t == 30:
+    #     return None
+    # try:
+    #     return df["Time"][df.index[0]].strftime("%Y-%m-%d")
+    # except:
+    #     return None
 
 def getDay(arr_):
     arr = []
@@ -94,8 +99,7 @@ def getSale(start,time,symbol,Close,dividend):
     return buy,value*cp+sum
 Data_Buy = getDay(pd.unique(FILE_TOTAL["Time_Investment_Number"]))
 FILE_TOTAL = pd.merge(FILE_TOTAL,Data_Buy,on=["Time_Investment_Number"],how="left")
-
-# Ghép Giá
+print(FILE_TOTAL)
 arr_tb=[]
 arr_m=[]
 arr_b=[]
@@ -119,18 +123,17 @@ FILE_TOTAL["BUY"] = arr_m
 FILE_TOTAL["SELL"] = arr_b
 
 
-Volume = pd.read_csv("G:/My Drive/DataVIS/VietNam/Data Lake/Distillation/All_Real/Base/Volume.csv").dropna(subset=["Date"])
-Volume['Date'] = Volume["Date"].apply(lambda x: coverTime(x))
-def getVolume(time,symbol):
+def getVolume(symbol):
     try:
-        df = Volume[(Volume["Symbol"]==symbol)&(Volume["Date"]<=time)]
-        return df["Volume"][df.index[-1]]
+        df = Volume[Volume["Symbol"]==symbol]
+        # print(df)
+        return df["Volume"][df.index[0]]
     except:
+        print(f"{symbol}_loi_volume")
         return
+# print(getVolume("KPF"))
 
-Volume[Volume["Symbol"]=="SDH"]
-FILE_TOTAL["Volume"] = FILE_TOTAL.apply(lambda row: getVolume(row["Date_Buy"],row["Symbol"]),axis=1)
-Value_Volume = pd.read_csv("G:/My Drive/DataVIS/VietNam/Data Lake/Distillation/All_Real/Base/ValueTrading.csv")
+FILE_TOTAL["Volume"] = FILE_TOTAL.apply(lambda row: getVolume(row["Symbol"]),axis=1)
 
 def tbc(arr):
     return sum(arr)/len(arr)
@@ -166,4 +169,8 @@ FILE_TOTAL["VolumeARG"] = arr_vo
 FILE_TOTAL["ValueARG"] = arr_va
 FILE_TOTAL['PROFIT'] = FILE_TOTAL['SELL']/FILE_TOTAL['BUY']
 FILE_TOTAL['MARKET_CAP'] = FILE_TOTAL['BUY']*FILE_TOTAL['Volume']*1000
-FILE_TOTAL.to_csv(f"{PATH_DISTILLATION_VIETNAM_ADDITIONALDATA}/{QUARTER_KEY.replace('/','_')}.csv",index=False)
+
+FILE_TOTAL["check"] = FILE_TOTAL["Symbol"].apply(lambda row: row in COMPANY_DELETE)
+FILE_TOTAL = FILE_TOTAL[FILE_TOTAL["check"]==False].reset_index(drop=True)
+FILE_TOTAL.drop('check', inplace=True, axis=1)
+FILE_TOTAL.to_csv(f"{PATH_DISTILLATION_VIETNAM_ALLREAL}/{QUARTER_KEY.replace('/','_')}.csv",index=False)

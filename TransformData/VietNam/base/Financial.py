@@ -8,7 +8,7 @@ import numpy as np
 pd.options.mode.chained_assignment = None  # default='warn'
 import sys
 sys.path.append(r'C:\DataVietNam')
-from VAR_GLOBAL import *
+from VAR_GLOBAL_CONFIG import *
 
 class TransForm():
     def __init__(self,dict_path_) -> None:

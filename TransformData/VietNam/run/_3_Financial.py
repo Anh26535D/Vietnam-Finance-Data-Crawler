@@ -8,8 +8,8 @@ from base.Financial import CafeF,VietStock
 from base.PATH_UPDATE import *
 from base.Setup import *
 Type_Time = "Quarter"
-# SYMBOL = ["JVC"]
 # CafeF
+SYMBOL = ["SFI"]
 df_check_list = pd.DataFrame()
 def transform(symbol,field):
     global df_check_list
@@ -42,7 +42,8 @@ def RunCompare(type_time):
     for symbol in SYMBOL:
         try:
             C = Compare.CompareFinancial(symbol,PATH_FT,type_time,data_field)
-            C.get_field("CF","VS").to_csv(FU.joinPath(FU.PATH_COMPARE,"Financial",type_time,f"{symbol}.csv"),index=False)
+            data = C.get_field("CF","VS")
+            data.to_csv(FU.joinPath(FU.PATH_COMPARE,"Financial",type_time,f"{symbol}.csv"),index=False)
         except:
             can_t_compare.append(symbol)
     pd.DataFrame({"Error_Compare":can_t_compare}).to_excel(FU.joinPath(FU.PATH_COMPARE,"Error",f"{type_time}.xlsx"),index=False)        

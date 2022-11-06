@@ -2,14 +2,14 @@ import sys
 import pandas as pd
 sys.path.append(r'C:\DataVietNam')
 from Flow import Folder
-from VAR_GLOBAL import *
+from VAR_GLOBAL_CONFIG import *
 
 FC = Folder.FolderCrawl()
 FU = Folder.FolderUpdate()
 
 # F_START = FU.GetDateUpdateEndStart()
-F_START = FU.GetDateUpdateEndStart(day=START_DAY_UPDATE)
-F_END = FU.GetDateUpdateEnd(day=END_DAY_UPDATE)
+F_START = FU.GetDateUpdate(START_DAY_UPDATE)
+F_END = FU.GetDateUpdate(END_DAY_UPDATE)
 F_BASE = FC.getListPath()
 F_RANGE = []
 
@@ -21,32 +21,45 @@ List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.c
 SYMBOL = List_Symbol["Mã CK▲"]
 TOTAL = len(SYMBOL)
 
-# List_Symbol = pd.read_excel(f'G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2022-11-04/Compare/Financial_Quarter_CheckList.xlsx')
-# SYMBOL = List_Symbol[List_Symbol["VietStock"] == False]["Symbol"]
+# List_Symbol = pd.read_excel(f'G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS/2022-11-01\Compare/1_Financial_Quarter.xlsx',sheet_name="Trang tính1")
+# SYMBOL = List_Symbol["Symbol_Thieu"]
 # TOTAL = len(SYMBOL)
 
 
 class TieuChuan():
     def __init__(self) -> None:
         self.Financial = {
-            "VS":{
+            "VietStock":{
                 "BalanceSheet": {"Min_row":120,"Max_row":135,"Columns":5},
                 "IncomeStatement": {"Min_row":25,"Max_row":35,"Columns":5}
+            },
+            "CafeF":{
+                "BalanceSheet": {"Min_row":120,"Max_row":135},
+                "IncomeStatement": {"Min_row":20,"Max_row":30}
             }
         }
     
-    def CheckDataFinancial(self,key,data,source="VS"):
+    def CheckDataFinancial(self,key,data,source="VietStock"):
         if not key in self.Financial[source].keys():
             return True
-            
-        cols = data.columns
-        rows = len(data.index)
-        if len(cols) != self.Financial[source][key]["Columns"]:
-            return False
-        if self.Financial[source][key]["Min_row"] > rows:
-            return False
-        if  self.Financial[source][key]["Max_row"] < rows:
-            return False
-        return True
+        if source == "VietStock":    
+            cols = data.columns
+            rows = len(data.index)
+            if len(cols) != self.Financial[source][key]["Columns"]:
+                return False
+            if self.Financial[source][key]["Min_row"] > rows:
+                return False
+            if  self.Financial[source][key]["Max_row"] < rows:
+                return False
+            return True
+        elif source == "CafeF":
+            keys = list(data.keys())
+            rows = len(data[keys[0]])
+            if self.Financial[source][key]["Min_row"] > rows:
+                return False
+            if  self.Financial[source][key]["Max_row"] < rows:
+                return False
+            return True
+        return False
         
 print(F_START,F_END,F_RANGE)

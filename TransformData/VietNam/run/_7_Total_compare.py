@@ -11,9 +11,9 @@ from base.Setup import *
 
 
 dict_compare = {
-    # "Financial_Quarter": pd.DataFrame(),
+    "Financial_Quarter": pd.DataFrame(),
     # "Financial_Year": pd.DataFrame(),
-    "Dividend": pd.DataFrame()
+    # "Dividend": pd.DataFrame()
 }
 
 def GetResultCompare(symbol,field):

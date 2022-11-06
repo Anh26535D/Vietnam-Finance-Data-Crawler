@@ -19,47 +19,17 @@ class FolderData(PATH_env.PATH_ENV):
             os.makedirs(path)
         return path
     
-    def GetDateUpdateEnd(self,day=None):
-        if not day is None:
-            return day
-        list_date = os.listdir(self.PATH_MAIN)
-        print(self.PATH_MAIN)
-        arr = []
-        for day in list_date:
-            if len(day) == 10:
-                arr.append(day)
-        arr.sort()
-        return arr[-1]
-    def GetDateUpdateEndStart(self,day=None):
-        if not day is None:
-            return day
+    def GetDateUpdate(self,DAY):
         list_date = os.listdir(self.PATH_MAIN)
         arr = []
         for day in list_date:
             if len(day) == 10:
                 arr.append(day)
-        arr.sort()
-        if len(arr)== 1:
-            return self.GetDateUpdateEnd()
-        return arr[-3]
-    def GetDateNotUpdate(self,path):
-        list_date = os.listdir(self.PATH_MAIN)
-        arr_new = []
-        for day in list_date:
-            if len(day) == 10:
-                arr_new.append(day)
-        
-        list_date = os.listdir(path)
-        arr_old = []
-        for day in list_date:
-            if len(day) == 10:
-                arr_old.append(day)
-
-        arr_result = []
-        for date in arr_old:
-            if date in arr_new:
-                arr_result.append(date)
-        return arr_result
+        arr.sort(reverse=True)
+        for i in arr:
+            if i <= DAY:
+                return i
+        return DAY
 
     def getListPath(self):
         return os.listdir(self.PATH_MAIN)
@@ -112,8 +82,9 @@ class FolderUpdate(FolderData):
     def folderClose(self):
         path = self.PATH_CLOSE
         # for obj in self.CloseObject:
-        #     for PHASE in self.Phase[:2]:
-        self.createFolder(self.joinPath(path))
+        #     for PHASE in self.Phase[]:
+        self.createFolder(self.joinPath(path,"CafeF","F0"))
+        self.createFolder(self.joinPath(path,"CafeF","F1"))
         
     def folderDividend(self):
         path = self.PATH_DIVIDEND
