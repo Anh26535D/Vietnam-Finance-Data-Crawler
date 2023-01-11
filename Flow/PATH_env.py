@@ -3,13 +3,14 @@ import datetime
 # PATH_Data = "C:\Data"
 PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
-day,month,year=3,11,2022
+day,month,year=0,0,0
+# day,month,year=8,12,2022
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
     date = datetime.datetime.today()
-    t = date.timetuple().tm_yday
-    if t % 2 == 0:
+    t = date.timetuple().tm_wday
+    if t % 2 != 0:
         date = date - datetime.timedelta(days=1)
         
 class PATH_ENV():

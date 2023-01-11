@@ -15,9 +15,9 @@ def VolumeCafeF(symbol):
     try:
         df = pd.read_csv(f"{PATH}/VolumeNow/{symbol}.csv")
     except:
-        com = CafeF.Volume()
-        data = com.getVolumeNow(symbol)
         try:
+            com = CafeF.Volume()
+            data = com.getVolumeNow(symbol)
             data.to_csv(f"{PATH}/VolumeNow/{symbol}.csv",index=False)
         except:
             pass
