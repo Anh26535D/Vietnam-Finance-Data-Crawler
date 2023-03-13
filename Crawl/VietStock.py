@@ -7,7 +7,7 @@ from .base import setup
 
 class FinanStatement(setup.Setup):
     def __init__(self,symbol):
-        super().__init__()
+        super().__init__(source="VS")
         self.symbol = symbol
     
     def setupLink(self):
@@ -150,7 +150,7 @@ class Other(setup.Setup):
     
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
-        time.sleep(2)
+        time.sleep(5)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 
