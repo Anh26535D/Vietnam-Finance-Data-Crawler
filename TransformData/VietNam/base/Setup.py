@@ -18,23 +18,25 @@ for date in F_BASE:
         F_RANGE.append(date)
 
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
+# SYMBOL = List_Symbol[List_Symbol["Sàn"]=="HOSE"]["Mã CK▲"]
 SYMBOL = List_Symbol["Mã CK▲"]
+# SYMBOL = ["SBT"]
 TOTAL = len(SYMBOL)
+print(TOTAL,SYMBOL)
 
 # List_Symbol = pd.read_excel(f'G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS/2022-11-01\Compare/1_Financial_Quarter.xlsx',sheet_name="Trang tính1")
 # SYMBOL = List_Symbol["Symbol_Thieu"]
 # TOTAL = len(SYMBOL)
 
-
 class TieuChuan():
     def __init__(self) -> None:
         self.Financial = {
             "VietStock":{
-                "BalanceSheet": {"Min_row":120,"Max_row":135,"Columns":5},
-                "IncomeStatement": {"Min_row":25,"Max_row":35,"Columns":5}
+                "BalanceSheet": {"Min_row":115,"Max_row":135,"Columns":5},
+                "IncomeStatement": {"Min_row":20,"Max_row":35,"Columns":5}
             },
             "CafeF":{
-                "BalanceSheet": {"Min_row":120,"Max_row":135},
+                "BalanceSheet": {"Min_row":115,"Max_row":135},
                 "IncomeStatement": {"Min_row":20,"Max_row":30}
             }
         }
@@ -55,6 +57,7 @@ class TieuChuan():
         elif source == "CafeF":
             keys = list(data.keys())
             rows = len(data[keys[0]])
+            # print(rows,self.Financial[source][key]["Min_row"])
             if self.Financial[source][key]["Min_row"] > rows:
                 return False
             if  self.Financial[source][key]["Max_row"] < rows:

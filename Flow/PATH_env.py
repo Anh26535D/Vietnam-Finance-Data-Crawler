@@ -3,8 +3,8 @@ import datetime
 # PATH_Data = "C:\Data"
 PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
-day,month,year=0,0,0
-# day,month,year=1,11,2022
+# day,month,year=0,0,0
+day,month,year=11,3,2023
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
@@ -14,7 +14,7 @@ else:
         date = date - datetime.timedelta(days=1)
         
 class PATH_ENV():
-    def __init__(self,Type_,date=date):
+    def __init__(self,Type_,date=date,RealDay=False):
         self.DateCurrent = date
         self.DayCurrent= date.strftime("%Y-%m-%d")
         self.setTypeForder(Type_)
@@ -28,6 +28,8 @@ class PATH_ENV():
         self.VolumePartObject = ["TreasuryShares","VolumeAdditionailEvents","VolumeNow"]
         self.Phase = [f"F{i}" for i in range(4)]
 
+
+
     def joinPath(self,*arg):
         arr = []
         for i in arg:
@@ -40,6 +42,11 @@ class PATH_ENV():
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
         elif Type == "Raw_VIS":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
+        elif Type == "WH":
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data WareHouse"
+            self.PATH_MAIN = PATH_Data
+            self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,"Close")
+            return 
         else:
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Data_Rule"
         self.PATH_MAIN = PATH_Data
@@ -49,6 +56,7 @@ class PATH_ENV():
         self.PATH_FINANCIAL = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Financial")
         self.PATH_DIVIDEND = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Dividend")
         self.PATH_VOLUME = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Volume")
-            
+        self.REAl_DAY = self.joinPath(self.PATH_MAIN,"RealDay")
+        self.REAl_DAY_CLOSE = self.joinPath(self.REAl_DAY,'Close')
     
 

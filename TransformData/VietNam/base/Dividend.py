@@ -277,9 +277,9 @@ class DividendVS():
         self.dict_path_ = dict_path_
         pass
     def Dividend_VS(self,sym):
-        share = get_share(f'{self.dict_path_["F0"]["BonusShare"]}/{sym}.csv')
-        cash = get_cash(f'{self.dict_path_["F0"]["CashDividend"]}/{sym}.csv')
-        bonus = get_bonus(f'{self.dict_path_["F0"]["StockDividend"]}/{sym}.csv')
+        share = get_share(f'{self.dict_path_["F0"]["BonusShare"]}/{sym}.csv').drop_duplicates()
+        cash = get_cash(f'{self.dict_path_["F0"]["CashDividend"]}/{sym}.csv').drop_duplicates()
+        bonus = get_bonus(f'{self.dict_path_["F0"]["StockDividend"]}/{sym}.csv').drop_duplicates()
         stock = pd.merge(share, bonus, on = ['Time'],how = 'outer')
         stock = stock.fillna('NAN')
         dat = pd.merge(cash, stock, on = ['Time'], how = 'outer')

@@ -34,6 +34,8 @@ def File(list_symbol,F_RANGE,source,type_time,field,file_type=".csv",type_data =
             date = F_RANGE[index]
             path = FC.joinPath(FC.PATH_MAIN,date,type_data,source,type_time,field,f"{symbol}{file_type}")
             if read_file(path,file_type,field,source) == True:
+                # print(date,path)
+                # raise 1
                 path_from = path
                 path_to = FC.joinPath(FU.PATH_MAIN,F_END,type_data,source,"F0",type_time,field)
                 shutil.copy2(path_from, path_to)
@@ -44,8 +46,8 @@ def File(list_symbol,F_RANGE,source,type_time,field,file_type=".csv",type_data =
 # File(SYMBOL,F_RANGE,"VietStock","Quarter","IncomeStatement")
 # File(SYMBOL,F_RANGE,"CafeF","Year","BalanceSheet",".json")
 # File(SYMBOL,F_RANGE,"CafeF","Year","IncomeStatement",".json")
-File(SYMBOL,F_RANGE,"CafeF","Quarter","BalanceSheet",".json")
-File(SYMBOL,F_RANGE,"CafeF","Quarter","IncomeStatement",".json")
+# File(SYMBOL,F_RANGE,"CafeF","Quarter","BalanceSheet",".json")
+# File(SYMBOL,F_RANGE,"CafeF","Quarter","IncomeStatement",".json")
 # File(SYMBOL,F_RANGE,source="CafeF",type_time="",field="",type_data="Close")
 # File(SYMBOL,F_RANGE,source="CafeF",type_time="",field="VolumeNow",type_data="Volume")
 # File(SYMBOL,F_RANGE,source="VietStock",type_time="",field="VolumeNow",type_data="Volume")

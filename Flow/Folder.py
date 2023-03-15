@@ -108,7 +108,6 @@ class FolderUpdate(FolderData):
                     else:
                         for p_o in self.FinancialPartObject:
                             self.createFolder(self.joinPath(path,obj,P_F,t_time))
-    
     def folderVolume(self):
         path = self.PATH_VOLUME
         for obj in self.VolumeObject:
@@ -129,3 +128,7 @@ class FolderUpdate(FolderData):
         self.folderFinancial()
         self.folderVolume()
         self.folderCompare()
+
+class FolderWH(FolderData):
+    def __init__(self, date=""):
+        super().__init__("WH", date)

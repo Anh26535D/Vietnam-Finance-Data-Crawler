@@ -6,6 +6,7 @@ from VAR_GLOBAL_CONFIG import *
 FC = Folder.FolderCrawl()
 FU = Folder.FolderUpdate()
 FR = Folder.FolderData("")
+
 DAY_GET = FC.GetDateUpdate(END_DAY_UPDATE)
 DAY_RUN = END_DAY_UPDATE
 

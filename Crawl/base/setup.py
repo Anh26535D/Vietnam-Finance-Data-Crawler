@@ -16,7 +16,7 @@ requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 pd.set_option('mode.chained_assignment', None)
 
 class Setup():
-    def __init__(self,type_tech = "Selenium") -> None:
+    def __init__(self,type_tech = "Selenium",source="CF") -> None:
         self.user = USER
         self.password = PASSWORD
         self.year = 0
@@ -27,15 +27,22 @@ class Setup():
         self.VS = URL_VIETSTOCK["LOGIN"] 
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
         if type_tech == "Selenium":
+            self.reset_driver(source = source)
+        elif type_tech == "Colab":
+            self.reset_colab()
+        else:
+            pass
+        if type_tech == "Selenium":
             try:
                 self.reset_colab()
             except:
-                self.reset_driver()
+                self.reset_driver(source = source)
     def turn_off_drive(self):
         try:
             self.driver.quit()
         except:
             pass
+        
     def reset_colab(self):
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_argument('--headless')
@@ -47,9 +54,16 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:\\web_driver/chromedriver.exe"):
+    def reset_driver(self, path="C:\webdriver/chromedriver.exe",source="CF"):
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        if source=="CF":
+            chrome_options.add_argument('--headless')
+            chrome_options.add_argument('--no-sandbox')
+            chrome_options.add_argument('--start-maximized')
+            chrome_options.add_argument('enable-automation')
+            chrome_options.add_argument('--disable-dev-shm-usage')
+            chrome_options.add_argument('--disable-browser-side-navigation')
+            chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
 
     def request_link(self,link,time=5):
@@ -107,7 +121,12 @@ class Setup():
         except:
             # self.driver.refresh()
             pass
-
+    
+    def r_get(self,url):
+        return requests.get(url, headers = self.HEADERS)
+    
+    def r_post(self,url,data,cookie={}, headers = {}):
+        return requests.post(url, headers = headers,data = data, cookies=cookie)
 
     def click_select(self,name,value):
         select = Select(self.driver.find_element(By.NAME,name))
