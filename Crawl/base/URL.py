@@ -1,4 +1,4 @@
-USER = 'xcs11178@xcoxc.com'
+USER = 'qlu45775@omeie.com'
 PASSWORD = 'V@ng2000'
 
 URL_CAFE = {
@@ -24,7 +24,6 @@ URL_TVSI = {
   "INCOME_STATEMENT_YEAR":"https://finance.tvsi.com.vn/Enterprises/BaoCaoKetQuaKd?symbol=SYMBOL&YearView=YEAR&period=1&donvi=1",
   # "CASH_FLOWS_INDIRECT":"https://finance.tvsi.com.vn/Enterprises/LuuChuyenTienTegiantiep?symbol=AAA&YearView=2022&period=2&donvi=1",
   # "CASH_FLOWS_DIRECT":"https://finance.tvsi.com.vn/Enterprises/LuuChuyenTienTe?symbol=AAA&YearView=2022&period=2&donvi=1",
-
 }
 
 URL_VIETSTOCK = {

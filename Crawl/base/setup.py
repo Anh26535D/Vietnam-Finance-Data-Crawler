@@ -66,7 +66,7 @@ class Setup():
             chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
 
-    def request_link(self,link,time=5):
+    def request_link(self,link,time=10):
         try:
             self.driver.set_page_load_timeout(time)
             self.driver.get(link)

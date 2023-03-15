@@ -59,5 +59,4 @@ for symbol in List_Symbol["Mã CK▲"]:
     DividendCafeF(symbol)
     DividendVietStock(symbol)
 # print(DividendCafeF("SFI"))
-# com.turn_off_drive()
-
+com.turn_off_drive()

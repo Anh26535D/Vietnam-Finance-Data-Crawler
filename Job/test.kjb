@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <job>
-  <name>crawl_dulicate</name>
+  <name>test</name>
   <description/>
   <extended_description/>
   <job_version/>
   <directory>/</directory>
   <created_user>-</created_user>
-  <created_date>2022/10/09 19:35:38.771</created_date>
+  <created_date>2022/10/31 20:02:32.124</created_date>
   <modified_user>-</modified_user>
-  <modified_date>2022/10/09 19:35:38.771</modified_date>
+  <modified_date>2022/10/31 20:02:32.124</modified_date>
   <parameters>
     </parameters>
   <slaveservers>
@@ -304,7 +304,7 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>304</xloc>
+      <xloc>192</xloc>
       <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
@@ -329,8 +329,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>444</xloc>
-      <yloc>200</yloc>
+      <xloc>336</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -354,8 +354,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>588</xloc>
-      <yloc>200</yloc>
+      <xloc>464</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -379,8 +379,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>732</xloc>
-      <yloc>200</yloc>
+      <xloc>736</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -404,8 +404,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>988</xloc>
-      <yloc>200</yloc>
+      <xloc>864</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -429,8 +429,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>844</xloc>
-      <yloc>200</yloc>
+      <xloc>592</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -454,8 +454,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1132</xloc>
-      <yloc>200</yloc>
+      <xloc>1008</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
     <entry>
@@ -466,8 +466,8 @@
       <parallel>N</parallel>
       <draw>Y</draw>
       <nr>0</nr>
-      <xloc>1260</xloc>
-      <yloc>200</yloc>
+      <xloc>1104</xloc>
+      <yloc>192</yloc>
       <attributes_kjc/>
     </entry>
   </entries>
@@ -492,15 +492,6 @@
     </hop>
     <hop>
       <from>GetListCompany</from>
-      <to>Price</to>
-      <from_nr>0</from_nr>
-      <to_nr>0</to_nr>
-      <enabled>Y</enabled>
-      <evaluation>Y</evaluation>
-      <unconditional>N</unconditional>
-    </hop>
-    <hop>
-      <from>Price</from>
       <to>Financial</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>
@@ -510,6 +501,15 @@
     </hop>
     <hop>
       <from>Financial</from>
+      <to>Price</to>
+      <from_nr>0</from_nr>
+      <to_nr>0</to_nr>
+      <enabled>Y</enabled>
+      <evaluation>Y</evaluation>
+      <unconditional>N</unconditional>
+    </hop>
+    <hop>
+      <from>Price</from>
       <to>Dividend</to>
       <from_nr>0</from_nr>
       <to_nr>0</to_nr>

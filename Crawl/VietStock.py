@@ -7,7 +7,7 @@ from .base import setup
 
 class FinanStatement(setup.Setup):
     def __init__(self,symbol):
-        super().__init__()
+        super().__init__(source="VS")
         self.symbol = symbol
     
     def setupLink(self):
@@ -101,14 +101,20 @@ class Other(setup.Setup):
 
     def Company_delisting(self, symbol):
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))
-    
-             
+
+    def Listing(self):
+            data_1 = self.getTableForListing(self.CreateLink('LISTING'),"1")
+            data_2 = self.getTableForListing(self.CreateLink('LISTING'),"2")
+            data_3 = self.getTableForListing(self.CreateLink('LISTING'),"5")
+            data = pd.concat([data_1,data_2],ignore_index=True)
+            data = pd.concat([data,data_3],ignore_index=True)
+            return data
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
 
     def getTable(self, link):
         self.request_link(link)
-        time.sleep(2)
+        time.sleep(1)
         page_source = self.driver.page_source
         page = BeautifulSoup(page_source, 'html.parser')
         number_pages = self.getNumberPage(page)
@@ -136,7 +142,7 @@ class Other(setup.Setup):
         if number_pages > 1:
             # if self.list_symbol_listing.empty:
             self.list_symbol_listing = self.getTableInfor(page)
-            for number_page in range(1, number_pages+1):
+            for number_page in range(2, number_pages+1):
                 data_new = self.getNextTable()
                 self.list_symbol_listing= pd.concat([self.list_symbol_listing, data_new])
             return self.list_symbol_listing
@@ -144,12 +150,12 @@ class Other(setup.Setup):
     
     def getNextTable(self):
         self.click_something_by_id('btn-page-next')
-        time.sleep(2)
+        time.sleep(5)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 
     def getTableInfor(self, page):
-        # time.sleep(1)
+        time.sleep(1)
         list_table = page.find_all('table', {'class':
         'table table-striped table-bordered table-hover table-middle pos-relative m-b'})
         try: return pd.read_html(str(list_table))[0]
