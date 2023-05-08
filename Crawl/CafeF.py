@@ -13,6 +13,7 @@ class ListCompany(setup.Setup):
         self.request_link(self.link)
         self.table = None
         self.drop_field = ["QUỸ",  "CHỨNG QUYỀN", "NGÂN HÀNG", "BẢO HIỂM","TRÁI PHIẾU","'","CHỨNG KHOÁN"]
+        
     def get_all_symbol(self):
         self.click_something_by_xpath('//*[@id="CafeF_ThiTruongNiemYet_Trang"]/a[2]')
         time.sleep(2)

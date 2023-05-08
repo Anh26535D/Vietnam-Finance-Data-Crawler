@@ -8,7 +8,7 @@ import numpy as np
 pd.options.mode.chained_assignment = None  # default='warn'
 import sys
 sys.path.append(r'C:\DataVietNam')
-from VAR_GLOBAL import *
+from VAR_GLOBAL_CONFIG import *
 
 class TransForm():
     def __init__(self,dict_path_) -> None:
@@ -32,13 +32,25 @@ class TransForm():
 class CafeF(TransForm):
     def __init__(self,dict_path_cf) -> None:
         super().__init__(dict_path_cf)
-        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="CafeF")
+        file = FILE_FEATURE
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/{file}',sheet_name="CafeF")
         df = df.rename(columns={"VIS_Raw_F1":"field"})
         self.data_field = df
-        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Total")
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/{file}',sheet_name="Total")
         self.data_field_default_year = df
-        df = pd.read_excel(f'{dict_path_cf["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Quarter")
+        df = pd.read_excel(f'{dict_path_cf["Feature"]}/{file}',sheet_name="Quarter")
         self.data_field_default_quarter = df
+    def CheckData(self,symbol,type_time,time_detail):
+        for key in self.path_object["F0"].keys():
+            if key.find(type_time) != -1:
+                    with open(f'{self.path_object["F0"][key]}/{symbol}.json',encoding='utf8') as j:
+                            data1 = json.loads(j.read())
+                    if pd.isna(data1[time_detail][1][time_detail]):
+                        return False
+                    else:
+                        return True
+        return False
+
 
     def Financial_F0_to_F1(self,symbol,type_time):
             data = {}
@@ -76,8 +88,8 @@ class CafeF(TransForm):
             arr = []
             for col in temp.columns:
                 try:
-                    match = re.findall('([0-9]-[0-9]+)', col)
-                    time = match[0].replace("-","/")
+                    match = re.findall('([0-9]- [0-9]+)', col)
+                    time = match[0].replace("-","/").replace(" ","")
                     time = time.split("-")
                     time = "-".join([time[i] for i in range(len(time)-1,-1,-1)])
                     arr.append(time)
@@ -135,7 +147,21 @@ class VietStock(TransForm):
         self.data_field_default_year = df
         df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Quarter")
         self.data_field_default_quarter = df
-    
+
+    def CheckData(self,symbol,type_time,time_detail):
+        for key in self.path_object["F0"].keys():
+            if key.find(type_time) != -1:
+                path_in = self.path_object["F0"][key]
+                if os.path.exists(f'{path_in}/{symbol}.csv'):
+                    df = pd.read_csv(f'{path_in}/{symbol}.csv')
+                    try:
+                        df[time_detail]
+                        return True
+                    except:
+                        return False
+                    
+                else:
+                    return False
     def change_data_BS(self,df_finan):
         first_col = df_finan.columns[0]
         feature_change  = '- Nguyên giá__' + df_finan[first_col].loc[df_finan[df_finan[first_col]=='- Nguyên giá'].index-1]
@@ -181,15 +207,18 @@ class VietStock(TransForm):
                 data_field = self.data_field_default_year
             elif type_time == "Quarter":
                 data_field = self.data_field_default_quarter
-
             link ="{}/{}.csv".format(self.path_object["F2"][type_time],symbol)
             data = pd.read_csv(link)
-
             self.time=data.columns[1:]
 
             data = self.replace_NaN_0(data)
             temp = pd.merge(data_field,data, on="Feature",how="inner")
-            temp = temp[[data.columns[0],self.getTime(type_time)]]
+            try:
+                temp = temp[[data.columns[0],self.getTime(type_time)]]
+            except KeyError:
+                temp[self.getTime(type_time)] = [np.NaN for i in temp.index]
+                # temp[QUARTER_KEY] = [np.NaN for i in temp.index]
+                temp = temp[[data.columns[0],self.getTime(type_time)]]
             temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
             return temp
     def run(self,symbol,type_time):

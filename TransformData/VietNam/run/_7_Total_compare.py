@@ -1,3 +1,4 @@
+import code
 import pandas as pd
 import sys
 
@@ -10,25 +11,29 @@ from base.Setup import *
 
 
 dict_compare = {
-    "Financial_Quarter": pd.DataFrame(),
-    # "Financial_Year": pd.DataFrame(),
-    "Dividend": pd.DataFrame()
+    # "Financial_Quarter": pd.DataFrame(),
+    "Financial_Year": pd.DataFrame(),
+    # "Dividend": pd.DataFrame(),
+    # "Volume": pd.DataFrame()
 }
 
-def GetError(symbol,field):
+def GetResultCompare(symbol,field):
     path = field.replace("_","/")
     df_current = pd.read_csv(f"{PATH_COMPARE}/{path}/{symbol}.csv")
     df_current["Symbol"] = [symbol for i in df_current.index]
-    df_error = df_current[(df_current["Compare"]==2) | (df_current["Compare"]==0) ].reset_index(drop = True)
-    # df_error = df_current.reset_index(drop = True)
-    dict_compare[field] = pd.concat([dict_compare[field],df_error],ignore_index=True)
-    return df_error
+    dict_compare[field] = pd.concat([dict_compare[field],df_current],ignore_index=True)
+    return df_current
 
-List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
+def GetError(data,CodeError):
+    data["Check"] = data["Compare"].apply(lambda row: row in CodeError)
+    return data[data["Check"]==True]
+
+CodeError = [2,0,"2","0","N"]
 for key in dict_compare.keys():
-    for symbol in List_Symbol["Mã CK▲"]:
+    for symbol in SYMBOL:
         try:
-            GetError(symbol,key)
+            GetResultCompare(symbol,key)
         except:
             continue
-    dict_compare[key].to_excel(f"{PATH_COMPARE}/{key}.xlsx",index=False)
+    dict_compare[key].to_excel(f"{PATH_COMPARE}/{key}_HOSE_4-5.xlsx",index=False)
+    GetError(dict_compare[key],CodeError).to_excel(f"{PATH_COMPARE}/Error/{key}{CodeError}_HOSE_4-5.xlsx",index=False)
