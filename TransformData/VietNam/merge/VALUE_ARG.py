@@ -15,7 +15,6 @@ for symbol in SYMBOL:
     try:
         df = pd.read_csv(FU.joinPath(FU.PATH_MAIN_CURRENT,"Close","CafeF","F1",f"{symbol}.csv"))
         df["Symbol"] = [symbol for i in df.index]
-
     except:
         print(symbol)
         continue

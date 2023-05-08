@@ -15,4 +15,4 @@ for symbol in SYMBOL:
     temp = pd.DataFrame({"Cafef":[V_CF.getVolumeNow(symbol)],"VietStock":[V_VS.getVolumeNow(symbol)],"Symbol":[symbol]})
     df_volume = pd.concat([df_volume,temp],ignore_index=True)
 df_volume["Compare"] = df_volume.apply(lambda row: C.CompareNumber(row["Cafef"],row["VietStock"]),axis=1)
-df_volume.to_excel(f"{PATH_COMPARE}/Volume_NotHOSE.xlsx",index=False)
+df_volume.to_excel(f"{PATH_COMPARE}/Volume.xlsx",index=False)

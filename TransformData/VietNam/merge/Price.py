@@ -21,4 +21,4 @@ for symbol in SYMBOL:
     PRICE = pd.concat([PRICE,df], ignore_index=True)
     progress_bar(CURRENT,TOTAL,text="Gom Giá")
 
-PRICE.to_json(f"{FU.PATH_MAIN_CURRENT}/PRICE_HSX.json",index="orient")
+PRICE.to_json(f"{FU.PATH_MAIN_CURRENT}/PRICE.json",index="orient")

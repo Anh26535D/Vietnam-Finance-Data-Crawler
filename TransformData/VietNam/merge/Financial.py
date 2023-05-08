@@ -9,7 +9,21 @@ from base.Financial import CafeF,VietStock
 from base.Setup import *
 from Flow.ulis import *
 
-Data = pd.read_excel(f"{PATH_COMPARE}/{QUARTER_FINANCAIL_FIX_FILE}.xlsx",sheet_name="Total_FIXED")
+# Data = pd.read_excel(f"{PATH_COMPARE}/{QUARTER_FINANCAIL_FIX_FILE}.xlsx",sheet_name="Total_FIXED")
+Data1 = pd.read_excel(f"C:/Users/vangd/Downloads/Financial_Year.xlsx",sheet_name="Phiên bản 1 (31032023)")
+# print(len(Data1.index))
+Data3 = pd.read_excel(f"{PATH_COMPARE}/Financial_Year_HOSE.xlsx",sheet_name="Financial_phiên bản 3")
+# print(len(Data3.index))
+Data4 = pd.read_excel(f"C:/Users/vangd/Downloads/Financial_Year (3).xlsx",sheet_name="Financial_ Phiên bản 4")
+# print(len(Data4.index))
+Data5 = pd.read_excel(f"{PATH_COMPARE}/Financial_Year.xlsx",sheet_name="Financial_Phiên bản 5")
+Data6 = pd.read_excel(f"C:/Users/vangd/Downloads/Financial_Year_HOSE_4-2.xlsx",sheet_name="Financial_Phiên bản 6")
+
+Data7 = pd.read_excel(f"{PATH_COMPARE}/Financial_Year_HOSE_4-3.xlsx",sheet_name="Financial_Phiên bản 7")
+Data8 = pd.read_excel(f"{PATH_COMPARE}/Financial_Year_HOSE_4-4.xlsx",sheet_name="Financial_Phiên bản 8")
+Data = pd.concat([Data1,Data3,Data4,Data5,Data6,Data7,Data8],ignore_index=True)
+print(len(pd.unique(Data["Symbol"])))
+
 # DataFix = pd.read_excel(f"{PATH_COMPARE}/{QUARTER_FINANCAIL_FIX_FILE_BY_HUMAN}.xlsx",sheet_name="Sheet1")
 current = 0
 def read_file(path):
@@ -44,16 +58,14 @@ DATA = pd.DataFrame()
 for com in SYMBOL:
     current+=1
     df = Data_Source[Data_Source["Symbol"] == com]
-    df = df[["Feature","FIXED"]].reset_index(drop=True).T
+    df = df[["Feature","FIX"]].reset_index(drop=True).T
     df = df.rename(columns=df.iloc[0])
     df = df.drop(df.index[0])
     df["Symbol"] = [com for i in df.index]
     DATA = pd.concat([DATA,df],ignore_index=True)
     progress_bar(current,TOTAL,text="Bien doi hang")
-DATA["Time"] = [QUARTER_KEY for i in DATA.index]
-print(DATA)
-
-
+DATA["Time"] = [YEAR_KEY for i in DATA.index]
+DATA.to_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{YEAR_KEY.replace('/','_')}.xlsx",index=False)
 
 
 # Data["Source"] = Data["Compare"].apply(lambda row: alalyst_code(row))
@@ -71,4 +83,4 @@ print(DATA)
 #     df["Symbol"] = [com for i in df.index]
 #     DATA = pd.concat([DATA,df],ignore_index=True)
 #     progress_bar(current,TOTAL,text="Bien doi hang")
-DATA.to_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{QUARTER_KEY.replace('/','_')}.xlsx",index=False)
+# DATA.to_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{QUARTER_KEY.replace('/','_')}.xlsx",index=False)

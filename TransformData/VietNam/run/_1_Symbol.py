@@ -11,10 +11,10 @@ FC = FolderCrawl()
 FU = FolderUpdate()
 
 def GetListSymbol(FROM,TO):
-    print(FROM,TO)
     PATH_FROM = FC.joinPath(FC.PATH_MAIN,FROM,"List_company.csv")
     PATH_TO = FU.joinPath(FU.PATH_MAIN,TO,"List_company.csv")
+    print(PATH_FROM,PATH_TO)
     pd.read_csv(PATH_FROM).to_csv(PATH_TO,index=False)
-FROM = FC.GetDateUpdate(START_DAY_UPDATE)
+FROM = FC.GetDateUpdate(START_DAY_LIST_UPDATE)
 TO = FU.GetDateUpdate(END_DAY_UPDATE)
 GetListSymbol(FROM,TO)

@@ -20,7 +20,7 @@ for date in F_BASE:
 List_Symbol = pd.read_csv(f'{FU.joinPath(FU.PATH_MAIN_CURRENT,"List_company")}.csv')
 # SYMBOL = List_Symbol[List_Symbol["Sàn"]=="HOSE"]["Mã CK▲"]
 SYMBOL = List_Symbol["Mã CK▲"]
-# SYMBOL = ["SBT"]
+# SYMBOL = ["ASP","DAH","VNE"]
 TOTAL = len(SYMBOL)
 print(TOTAL,SYMBOL)
 

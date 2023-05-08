@@ -35,5 +35,5 @@ for key in dict_compare.keys():
             GetResultCompare(symbol,key)
         except:
             continue
-    dict_compare[key].to_excel(f"{PATH_COMPARE}/{key}.xlsx",index=False)
-    GetError(dict_compare[key],CodeError).to_excel(f"{PATH_COMPARE}/Error/{key}{CodeError}.xlsx",index=False)
+    dict_compare[key].to_excel(f"{PATH_COMPARE}/{key}_HOSE_4-5.xlsx",index=False)
+    GetError(dict_compare[key],CodeError).to_excel(f"{PATH_COMPARE}/Error/{key}{CodeError}_HOSE_4-5.xlsx",index=False)

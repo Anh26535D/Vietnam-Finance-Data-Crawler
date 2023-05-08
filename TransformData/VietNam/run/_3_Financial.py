@@ -23,7 +23,7 @@ def transform(symbol,field):
                         "VietStock":[vs]})
     df_check_list = pd.concat([df_check_list,df],ignore_index=True)
     return df_check_list
-# transform("LSS","Year")
+# transform("ABS","Year")
 for symbol in SYMBOL:
     transform(symbol,"Year")
 
