@@ -26,6 +26,7 @@ class FolderData(PATH_env.PATH_ENV):
             if len(day) == 10:
                 arr.append(day)
         arr.sort(reverse=True)
+        print(arr)
         for i in arr:
             if i <= DAY:
                 return i

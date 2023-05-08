@@ -8,8 +8,10 @@ FC = Folder.FolderCrawl()
 FU = Folder.FolderUpdate()
 
 # F_START = FU.GetDateUpdateEndStart()
-F_START = FU.GetDateUpdate(START_DAY_UPDATE)
-F_END = FU.GetDateUpdate(END_DAY_UPDATE)
+# F_START = FU.GetDateUpdate(START_DAY_UPDATE)
+# F_END = FU.GetDateUpdate(END_DAY_UPDATE)
+F_START = START_DAY_UPDATE
+F_END = END_DAY_UPDATE
 F_BASE = FC.getListPath()
 F_RANGE = []
 

@@ -22,7 +22,7 @@ MergePrice = pd.merge(df_symbol,PriceGet,how="left",left_on="SYMBOL",right_on="S
 MergePrice["Price"] = MergePrice["Price"]/1000.0
 # PriceTotal[today.strftime('%Y-%m-%d')] = MergePrice["Price"]
 print(MergePrice)
-# PriceTotal.to_csv(LinkFilePriceAppend,index=False)
+PriceTotal.to_csv(LinkFilePriceAppend,index=False)
 
 
 

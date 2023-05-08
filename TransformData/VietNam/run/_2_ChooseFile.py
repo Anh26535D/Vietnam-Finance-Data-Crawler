@@ -34,8 +34,6 @@ def File(list_symbol,F_RANGE,source,type_time,field,file_type=".csv",type_data =
             date = F_RANGE[index]
             path = FC.joinPath(FC.PATH_MAIN,date,type_data,source,type_time,field,f"{symbol}{file_type}")
             if read_file(path,file_type,field,source) == True:
-                # print(date,path)
-                # raise 1
                 path_from = path
                 path_to = FC.joinPath(FU.PATH_MAIN,F_END,type_data,source,"F0",type_time,field)
                 shutil.copy2(path_from, path_to)

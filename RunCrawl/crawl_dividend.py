@@ -56,7 +56,7 @@ def DividendVietStock(symbol):
 def DividendAllVietStock():
     PATH = PATH_.joinPath(PATH_.PATH_DIVIDEND,"VietStock")
     # try:
-    com.Dividend().to_csv(f'{PATH}/dividend_test.csv',index=False)
+    com.Dividend().to_csv(f'{PATH}/dividend.csv',index=False)
     # except:
     #     run_reset_vs()
        
