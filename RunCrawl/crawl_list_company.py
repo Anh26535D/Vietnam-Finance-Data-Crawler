@@ -4,6 +4,8 @@ import pandas as pd
 from Crawl import VietStock
 import Flow.PATH_env as PATH_env
 import time
+
+
 def run_reset_vs():
     global webVS
     webVS.turn_off_drive()
@@ -12,20 +14,48 @@ def run_reset_vs():
 
 
 PATH_ = PATH_env.PATH_ENV("Ingestion")
-check = False
-while check == False:
+
+
+def crawl(path):
+    global webVS
     try:
-        List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-        break
+        webVS = VietStock.Other()
+        webVS.login_VS()
+        data = webVS.Listing()
+        data.to_csv(path, index=False)
+        check = True
     except:
+        run_reset_vs()
+
+# webVS = VietStock.Other()
+
+
+def crawl_list_com(path, real=False):
+    global webVS
+    check = False
+    while check == False:
         try:
-            webVS = VietStock.Other()
-            webVS.login_VS()
-            data = webVS.Listing()
-            data.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
-            check = True
+            List_Symbol = pd.read_csv(path)
+            if real == True:
+                raise 1
+            break
         except:
-            run_reset_vs()
+            crawl(path)
+    try:
+        webVS.turn_off_drive()
+    except:
+        pass
+
+
+PATH_ = PATH_env.PATH_ENV("Ingestion")
+batch = sys.argv[1]
+
+if batch == "normal":
+    crawl_list_com(
+        f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+elif batch == "realday":
+    crawl_list_com(
+        f'{PATH_.joinPath(PATH_.REAl_DAY,"List_company")}.csv', real=True)
 try:
     webVS.turn_off_drive()
 except:

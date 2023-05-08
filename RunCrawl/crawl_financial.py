@@ -10,6 +10,15 @@ import json
 
 PATH_ = PATH_env.PATH_ENV("Ingestion")
 start = PATH_.DateCurrent - datetime.timedelta(days=90)
+y = start.year
+if start.month in [1,2,3]:
+    q = 1
+elif start.month in [4,5,6]:
+    q = 2
+elif start.month in [7,8,9]:
+    q = 3
+elif start.month in [10,11,12]:
+    q = 4
 
 def checkfile(symbol,file_type):
     try:
@@ -44,6 +53,7 @@ def FinancialCafeF(symbol,type_):
     global PATH
     PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"CafeF",dict_time[type_])
     list_must_crawl_again = list(test_data(symbol))
+    # list_must_crawl_again = [1,2,3,4]
     if len(list_must_crawl_again) == 0:
         return 0
     else:
@@ -88,11 +98,9 @@ def FinancialVietStock(symbol,type_):
     webVS.setupLink()
     for i in list_must_crawl_again:
         if i == 1:
-            # pass
             income = webVS.IncomStatement(type_)
             income.to_csv(f"{PATH}IncomeStatement/{symbol}.csv",index=False)
         elif i == 2:
-            # pass
             balan = webVS.BalanceSheet(type_)
             balan.to_csv(f"{PATH}BalanceSheet/{symbol}.csv",index=False)
         elif i == 3:
@@ -103,6 +111,7 @@ def FinancialVietStock(symbol,type_):
         else:
             print("loi nang, dell lap trinh nua")
     print("Done VS!!",symbol)
+
 
 def run_reset_cf():
     pass
@@ -136,9 +145,19 @@ def RunCrawl(func_crawl,func_reset,symbol,type_,state):
         return False
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-temp = [False for i in List_Symbol.index]
-List_Symbol = setUpList(List_Symbol,CF_Q = temp,CF_Y = temp,VS_Q = temp,VS_Y = temp)
-List_Symbol.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
+
+list_symbol = List_Symbol["Mã CK▲"]
+PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"VietStock")
+webVS.CrawlWithBatch(list_symbol,q,"{PATH}/Q")
+webVS.CrawlWithBatch(list_symbol,y,"{PATH}/Y")
+
+
+# List_Symbol = List_Symbol[(List_Symbol["Mã CK▲"] == "DAH")]
+#                             # (List_Symbol["Mã CK▲"] == "VNE")]
+
+# temp = [False for i in List_Symbol.index]
+# List_Symbol = setUpList(List_Symbol,CF_Q = temp,CF_Y = temp,VS_Q = temp,VS_Y = temp)
+# List_Symbol.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
 
 
 for i in range(3):    
@@ -152,12 +171,12 @@ for i in range(3):
         symbol = List_Symbol["Mã CK▲"][idx]
         state_CF_Q = RunCrawl(FinancialCafeF,run_reset_cf,symbol,"Q",state_CF_Q)
         state_CF_Y = RunCrawl(FinancialCafeF,run_reset_cf,symbol,"Y",state_CF_Y)
-        state_VS_Q = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
-        state_VS_Y = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
+        # state_VS_Q = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
+        # state_VS_Y = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
         CheckStateCF_QUARTER.append(state_CF_Q)
         CheckStateCF_YEAR.append(state_CF_Y)
-        CheckStateVS_QUARTER.append(state_VS_Q)
-        CheckStateVS_YEAR.append(state_VS_Y)
+        # CheckStateVS_QUARTER.append(state_VS_Q)
+        # CheckStateVS_YEAR.append(state_VS_Y)
     List_Symbol = setUpList(List_Symbol,CF_Q = CheckStateCF_QUARTER,CF_Y = CheckStateCF_YEAR,VS_Q = CheckStateVS_QUARTER,VS_Y = CheckStateVS_YEAR)
     List_Symbol.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
 

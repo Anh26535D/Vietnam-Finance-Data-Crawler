@@ -1,4 +1,5 @@
-USER = 'qlu45775@omeie.com'
+# USER = 'bwt90798@zslsz.com'
+USER = 'jgb48995@omeie.com'
 PASSWORD = 'V@ng2000'
 
 URL_CAFE = {
@@ -29,6 +30,7 @@ URL_TVSI = {
 URL_VIETSTOCK = {
     "LOGIN":  "https://finance.vietstock.vn/",
     "CLOSE":"",
+    "DIVIDEND":"https://finance.vietstock.vn/lich-su-kien.htm?page=1",
     "CASH_DIVIDEND":"https://finance.vietstock.vn/lich-su-kien.htm?page=1&tab=1&code=SYMBOL&group=13",
     "BONUS_SHARE":"https://finance.vietstock.vn/lich-su-kien.htm?page=1&tab=1&code=SYMBOL&group=14",
     "STOCK_DIVIDEND":"https://finance.vietstock.vn/lich-su-kien.htm?page=1&tab=1&code=SYMBOL&group=15",

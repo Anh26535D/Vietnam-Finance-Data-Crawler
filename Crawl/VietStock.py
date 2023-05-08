@@ -1,9 +1,18 @@
+import datetime
 import time
 
 from bs4 import BeautifulSoup
 import pandas as pd
 from Crawl.base.URL import URL_VIETSTOCK
 from .base import setup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 class FinanStatement(setup.Setup):
     def __init__(self,symbol):
@@ -71,11 +80,65 @@ class FinanStatement(setup.Setup):
         except:
             data = pd.DataFrame({'Nothing':[]})
         return data
+    
+    def clickInit(self,str_symbol,checkClick,type_time):
+        self.click_something_by_id("txt-search-code")
+        element = self.find_element_by_other("txt-search-code",By.ID)
+        element.clear()
+        self.send_something_by_id("txt-search-code",str_symbol)
+
+        if checkClick:
+            ClickInput = ['//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[2]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[1]/label/input',
+                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input']            
+            if type_time == 1:
+                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input')
+            elif type_time == 2:
+                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input')
+            elif type_time == 3:
+                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input')
+            elif type_time == 4:
+                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input')
+            else:
+                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input')
+            
+            for i in ClickInput[::-1]:
+                # time.sleep(3)
+                self.click_something_by_xpath(i)
+        self.click_something_by_other(".div-statement-button > .btn",By.CSS_SELECTOR)
+        time.sleep(60)
+
+    def CrawlWithBatch(self,list_symbol,type_time,PATH):
+        self.request_link("https://finance.vietstock.vn/truy-xuat-du-lieu/bao-cao-tai-chinh.htm")
+        checkClick = True
+        for i in range(0,len(list_symbol),50):
+            str_symbol = ",".join(list_symbol[i:i+50])
+            self.clickInit(str_symbol,checkClick,type_time)
+            checkClick = False
+            page_sourse = self.driver.page_source
+            page = BeautifulSoup(page_sourse, "html.parser")
+            list_table = page.find_all(
+                "table", {"class": "table table-striped table-hover"})
+            data = pd.read_html(str(list_table))
+            try:
+                data = pd.concat([data[0], data[1]])
+            except:
+                data = data[0]
+            data.to_csv(f'{PATH}/{i}.csv',index=False)
+        return
 
 class Other(setup.Setup):
     def __init__(self) -> None:
-        super().__init__()
+        # super().__init__("Selenium")
+        super().__init__(type_tech = "Selenium",source="VS")
         self.list_symbol_listing = pd.DataFrame({})
+        self.time_end = datetime.datetime.today()
+        self.time_start = self.time_end - datetime.timedelta(days=160)
+
 
     def CreateLink(self,type_,symbol=""):
         return  URL_VIETSTOCK[type_].replace("SYMBOL",symbol)
@@ -111,6 +174,27 @@ class Other(setup.Setup):
             return data
     def Delisting(self):
         return self.getTable(self.CreateLink('DELISTING'))
+    
+    def Dividend(self):
+        self.request_link(URL_VIETSTOCK['DIVIDEND'])
+        start_txt = self.time_start.strftime("%d/%m/%Y")
+        end_txt = self.time_end.strftime("%d/%m/%Y")
+        self.send_something_by_other(start_txt,'//*[@id="txtFromDate"]/input',By.XPATH)
+        self.send_something_by_other(end_txt,'//*[@id="txtToDate"]/input',By.XPATH)
+        self.click_something_by_xpath('//*[@id="event-calendar-content"]/div/div[3]/div/button')
+        time.sleep(2)
+        page_source = self.driver.page_source
+        page = BeautifulSoup(page_source, 'html.parser')
+        number_pages = self.getNumberPage(page)
+        if number_pages > 1:
+            data = self.getTableInfor(page)
+            for number_page in range(2, number_pages+1):
+                data_new = self.getNextTable()
+                data= pd.concat([data, data_new])
+            return data
+        return self.getTableInfor(page)
+
+
 
     def getTable(self, link):
         self.request_link(link)
@@ -162,8 +246,8 @@ class Other(setup.Setup):
         except: return pd.DataFrame(columns=[i.text for i in list_table])
             
     def getNumberPage(self, page):
-        try:number_pages = int(page.find_all('span', {'class':'m-r-xs'})[1].find_all('span')[1].text)
-        except: number_pages = 0
+        try:number_pages=int(page.find_all('span', {'class':'m-r-xs'})[1].find_all('span')[1].text)
+        except: number_pages=0
         return int(number_pages)
 
     def lst_infor(self, symbol):
@@ -177,3 +261,6 @@ class Other(setup.Setup):
         if len(list_table) == 0: 
             return pd.DataFrame({'Nothing':[]})
         return pd.read_html(str(list_table))[0]
+    
+    
+  

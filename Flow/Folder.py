@@ -157,3 +157,7 @@ class FolderUpdate(FolderData):
         self.folderFinancial()
         self.folderVolume()
         self.folderCompare()
+
+class FolderWH(FolderData):
+    def __init__(self, date=""):
+        super().__init__("WH", date)

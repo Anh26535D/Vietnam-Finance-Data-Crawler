@@ -52,11 +52,19 @@ def DividendVietStock(symbol):
             com.StockDividend(symbol).to_csv(f"{PATH}/StockDividend/{symbol}.csv",index=False)
         except:
             run_reset_vs()
+
+def DividendAllVietStock():
+    PATH = PATH_.joinPath(PATH_.PATH_DIVIDEND,"VietStock")
+    # try:
+    com.Dividend().to_csv(f'{PATH}/dividend_test.csv',index=False)
+    # except:
+    #     run_reset_vs()
        
+
+DividendAllVietStock()
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 for symbol in List_Symbol["Mã CK▲"]:
     DividendCafeF(symbol)
-    DividendVietStock(symbol)
 # print(DividendCafeF("SFI"))
 com.turn_off_drive()

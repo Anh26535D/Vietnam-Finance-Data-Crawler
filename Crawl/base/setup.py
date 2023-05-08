@@ -24,8 +24,14 @@ class Setup():
         self.day = 0
         self.symbol = ""
         self.form_data = {}
-        self.VS = URL_VIETSTOCK["LOGIN"] 
+        self.VS = URL_VIETSTOCK["LOGIN"]
         self.HEADERS = {'content-type': 'application/x-www-form-urlencoded', 'User-Agent': 'Mozilla'}
+        if type_tech == "Selenium":
+            self.reset_driver(source = source)
+        elif type_tech == "Colab":
+            self.reset_colab()
+        else:
+            pass
         if type_tech == "Selenium":
             try:
                 self.reset_colab()
@@ -48,7 +54,7 @@ class Setup():
         chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome('chromedriver',chrome_options=chrome_options)
 
-    def reset_driver(self, path="C:\webdriver/chromedriver.exe",source="CF"):
+    def reset_driver(self, path="C:\web_driver/chromedriver.exe",source="CF"):
         chrome_options = webdriver.ChromeOptions()
         if source=="CF":
             chrome_options.add_argument('--headless')
@@ -60,7 +66,7 @@ class Setup():
             chrome_options.add_argument('--disable-gpu')
         self.driver = webdriver.Chrome(executable_path=path,chrome_options=chrome_options)
 
-    def request_link(self,link,time=10):
+    def request_link(self,link,time=5):
         try:
             self.driver.set_page_load_timeout(time)
             self.driver.get(link)
@@ -86,6 +92,12 @@ class Setup():
         finally:
             pass
         return element
+    def find_element_by_other(self,something,other):
+        try:
+          element = WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((other,something)))
+        finally:
+            pass
+        return element
 
     def click_something_by_xpath(self, something):
         try:
@@ -106,16 +118,43 @@ class Setup():
         except:
             self.driver.refresh()
             pass
+    
+    def click_something_by_other(self, something,other):
+        try:
+            element = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located((other, something))
+            )
+            element.click()
+        except:
+            self.driver.refresh()
+            pass
     def send_something_by_id(self,id,somthing):
         try:
             element = WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.ID, id))
             )
+            element.clear()
             element.send_keys(somthing)
         except:
             # self.driver.refresh()
             pass
-
+    def send_something_by_other(self,somthing,other_txt,other):
+        try:
+            element = WebDriverWait(self.driver, 5).until(
+                EC.presence_of_element_located((other, other_txt))
+            )
+            element.click()
+            element.clear()
+            element.send_keys(somthing)
+        except:
+            # self.driver.refresh()
+            pass
+    
+    def r_get(self,url):
+        return requests.get(url, headers = self.HEADERS)
+    
+    def r_post(self,url,data,cookie={}, headers = {}):
+        return requests.post(url, headers = headers,data = data, cookies=cookie)
 
     def click_select(self,name,value):
         select = Select(self.driver.find_element(By.NAME,name))

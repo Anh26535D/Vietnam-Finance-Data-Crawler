@@ -54,7 +54,7 @@ class ListCompany(setup.Setup):
 
 class FinancailStatement(setup.Setup):
     def __init__(self):
-        super().__init__()
+        super().__init__('Selenium')
         self.link = URL_CAFE["FINANCIAL"]
 
     def setup_link(self, symbol, year,month,day, type_):
