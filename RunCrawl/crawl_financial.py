@@ -1,10 +1,10 @@
 import sys
-sys.path.append(r'E:\vis\vis_vietnamese_data\Vis_Data_VietNam')
+sys.path.append(r'E:\vis\vis_vietnamese_data\DataVietNam')
 
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
-from Flow import PATH_env, RUN
+from Flow import PATH_env
 import datetime
 import time
 import json
@@ -30,8 +30,9 @@ time_formats = {
     "NAM":"Year/"
 }
 
-webVS = VietStock.FinanStatement("")
-webVS.login_VS()
+# webVS = VietStock.FinanStatement("")
+webVS = None
+# webVS.login_VS()
 
 def check_file_existence(symbol, document_type):
     '''
@@ -268,11 +269,10 @@ for i in range(3):
         f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
     CheckStateCF_QUARTER = []
     CheckStateCF_YEAR = []
-    list_symbol_df = list_symbol_df["Mã CK▲"]
     PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL, "VietStock")
 
-    webVS.CrawlWithBatch(list_symbol_df, q, f"{PATH}/Quarter")
-    webVS.CrawlWithBatch(list_symbol_df, y, f"{PATH}/Year")
+    # webVS.CrawlWithBatch(list_symbol_df, q, f"{PATH}/Quarter")
+    # webVS.CrawlWithBatch(list_symbol_df, y, f"{PATH}/Year")
 
     for idx in list_symbol_df.index:
         state_CF_Q, state_CF_Y = list_symbol_df["CF_Q"][idx], list_symbol_df["CF_Y"][idx]
