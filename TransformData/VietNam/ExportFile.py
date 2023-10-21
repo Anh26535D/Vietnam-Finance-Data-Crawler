@@ -1,24 +1,35 @@
 import pandas as pd
 import sys
 import math
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 from base.PATH_UPDATE import *
 from VAR_GLOBAL_CONFIG import *
 from base.Setup import *
-from Flow.ulis import *
+from Flow.utils import *
 pd.options.mode.chained_assignment = None
 print("Path get data: ",FU.PATH_MAIN_CURRENT)
-PRICE_1 = pd.read_json(f"{FU.PATH_MAIN_CURRENT}/PRICE.json").rename(columns={"Date":"Time"})
-PRICE_2 = pd.read_json(f"{FU.PATH_MAIN_CURRENT}/PRICE_HSX.json").rename(columns={"Date":"Time"})
-PRICE = pd.concat([PRICE_1,PRICE_2])
-PRICE = PRICE.drop_duplicates()
+# PRICE_1 = pd.read_json(f"{FU.PATH_MAIN_CURRENT}/PRICE.json").rename(columns={"Date":"Time"})
+# PRICE_2 = pd.read_json(f"{FU.PATH_MAIN_CURRENT}/PRICE_HSX.json").rename(columns={"Date":"Time"})
+# PRICE = pd.concat([PRICE_1,PRICE_2])
+# PRICE = PRICE.drop_duplicates()
 DIVIDEND = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/DIVIDEND.xlsx")
+# print(DIVIDEND)
+FINANCIAL = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{QUARTER_KEY.replace('/','_')}.xlsx",)
+# print(FINANCIAL)
+Volume = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/Volume.xlsx")
+
+
+
+
+
+
+# print(Volume)
+# raise 1
 # DIVIDEND = pd.DataFrame()
 # DIVIDEND = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/DIVIDEND.xlsx")
-# FINANCIAL = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/FINANCAIL_{QUARTER_KEY.replace('/','_')}.xlsx",)
-# Value_Volume = pd.read_csv(f"{FU.PATH_MAIN_CURRENT}/VALUE_ARG.csv")
 # Volume = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/Volume_NotHOSE.xlsx")
+# Value_Volume = pd.read_csv(f"{FU.PATH_MAIN_CURRENT}/VALUE_ARG.csv")
 # INFOR = List_Symbol[["Mã CK▲","Sàn"]].rename(columns={"Mã CK▲":'Symbol',
 #                                                     "Sàn":"Exchange"})
 # print(INFOR)
@@ -26,20 +37,19 @@ DIVIDEND = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/DIVIDEND.xlsx")
 # FINANCIAL = pd.read_csv(f"G:\My Drive\DataVIS\VietNam\Data Lake\Distillation\All_Real/3_2022.csv")
 # PRICE = pd.read_json(f"G:\My Drive\DataVIS\VietNam\Data Lake\Distillation\All_Real\Base/Close_CafeF_STOCKBIZ.json").rename(columns={"Date":"Time"})
 # Value_Volume = pd.read_csv(f"G:\My Drive\DataVIS\VietNam\Data Lake\Distillation\All_Real\Base\ValueTrading.csv")
-FINANCIAL = pd.read_csv(f"G:/My Drive\DataVIS/VietNam/Data WareHouse/Data Year/Data_Year.csv")
-DIVIDEND_1 = pd.read_csv(f"G:\My Drive\DataVIS\VietNam\Data Lake\Stogare\Dividend\Dividend_0.csv")
-DIVIDEND_2 = pd.read_excel(f"G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2022-11-06/DIVIDEND.xlsx")
-DIVIDEND_3 = pd.read_excel(f"G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2023-02-04/DIVIDEND.xlsx")
+# FINANCIAL = pd.read_csv(f"G:/My Drive\DataVIS/VietNam/Data WareHouse/Data Year/Data_Year.csv")
+# DIVIDEND_1 = pd.read_csv(f"G:\My Drive\DataVIS\VietNam\Data Lake\Stogare\Dividend\Dividend_0.csv")
+# DIVIDEND_2 = pd.read_excel(f"G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2022-11-06/DIVIDEND.xlsx")
+# DIVIDEND_3 = pd.read_excel(f"G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2023-02-04/DIVIDEND.xlsx")
 # DIVIDEND_4 = pd.read_excel(f"G:/My Drive/DataVIS/VietNam/Data Lake/Raw_VIS/2023-03-03/DIVIDEND.xlsx")
-DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_1])
-DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_2])
-DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_3])
+# DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_1])
+# DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_2])
+# DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_3])
 # DIVIDEND = pd.concat([DIVIDEND,DIVIDEND_4])
-DIVIDEND = DIVIDEND.drop_duplicates()
-DIVIDEND = DIVIDEND.sort_values(by=['Time'])
+# DIVIDEND = DIVIDEND.drop_duplicates()
+# DIVIDEND = DIVIDEND.sort_values(by=['Time'])
 # print(PRICE)
 # print(DIVIDEND)
-# Volume = pd.read_excel(f"{FU.PATH_MAIN_CURRENT}/Volume.xlsx")
 # FILE_TOTAL = FINANCIAL
 # FILE_TOTAL = pd.merge(FINANCIAL,INFOR,on=['Symbol'],how="left")
 # FILE_TOTAL["Time_Investment_Number"] = FILE_TOTAL["Time"].apply(lambda row: row)
@@ -48,7 +58,7 @@ DIVIDEND = DIVIDEND.sort_values(by=['Time'])
 # FILE_TOTAL.to_csv(f"C:/Users/vangd/OneDrive/Desktop/Data({KEY}).csv",index=False)
 # raise 1
 #Moi .................
-FILE_TOTAL = FINANCIAL
+# FILE_TOTAL = FINANCIAL
 # def tryUpper(exchange):
 #     try:
 #         return exchange.upper()

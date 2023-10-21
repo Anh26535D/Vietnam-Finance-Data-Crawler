@@ -1,6 +1,6 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 
 from base.Volume import *
 from base.PATH_UPDATE import *
@@ -16,3 +16,4 @@ for symbol in SYMBOL:
     df_volume = pd.concat([df_volume,temp],ignore_index=True)
 df_volume["Compare"] = df_volume.apply(lambda row: C.CompareNumber(row["Cafef"],row["VietStock"]),axis=1)
 df_volume.to_excel(f"{PATH_COMPARE}/Volume.xlsx",index=False)
+print(df_volume)

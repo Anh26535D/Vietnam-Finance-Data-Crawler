@@ -1,16 +1,16 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 from Flow import Folder
 from VAR_GLOBAL_CONFIG import *
 
 FC = Folder.FolderCrawl()
-FU = Folder.FolderUpdate()
-FR = Folder.FolderData("")
+FU = Folder.FolderUpdate(END_DAY_UPDATE)
+FR = Folder.FolderData("","")
 
 DAY_GET = FC.GetDateUpdate(END_DAY_UPDATE)
 DAY_RUN = END_DAY_UPDATE
 
-PATH_FI = FC.joinPath(FC.PATH_MAIN, DAY_GET)
+# PATH_FI = FC.joinPath(FC.PATH_MAIN, DAY_GET)
 PATH_FT = FU.joinPath(FU.PATH_MAIN,DAY_RUN)
 PATH_COMPARE = FU.joinPath(FU.PATH_MAIN,DAY_RUN,"Compare")
 LINK_QUATER = "Quarter"

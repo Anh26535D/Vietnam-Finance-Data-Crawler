@@ -1,12 +1,13 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 import pandas as pd
 from Crawl import VietStock
 import Flow.PATH_env as PATH_env
 import time
 
-
 def run_reset_vs():
+    '''
+    Reset VietStock\n'''
     global webVS
     webVS.turn_off_drive()
     print("Tam Nghi VS-------------------")
@@ -15,22 +16,48 @@ def run_reset_vs():
 
 PATH_ = PATH_env.PATH_ENV("Ingestion")
 
+# def crawl(path):
+#     '''
+#     Crawl List Company \n'''
+#     global webVS
+#     # for i in range(5):
+#     try:
+#         webVS = VietStock.Other()
+#         webVS.login_VS()
+#         data = webVS.Listing()
+#         data.to_csv(path, index=False)
+#         check = True
+#     except:
+#         run_reset_vs()
+#         check = False
+#     return check
+
 
 def crawl(path):
+    '''
+    Crawl List Company \n'''
     global webVS
-    try:
-        webVS = VietStock.Other()
-        webVS.login_VS()
-        data = webVS.Listing()
-        data.to_csv(path, index=False)
-        check = True
-    except:
-        run_reset_vs()
+    check = False
+    for i in range(5):
+        if check == False:
+            try:
+                webVS = VietStock.Other()
+                webVS.login_VS()
+                data = webVS.Listing()
+                data.to_csv(path, index=False)
+                check = True
+            except:
+                run_reset_vs()
+        # check = False
+    return check
 
-# webVS = VietStock.Other()
 
+
+webVS = VietStock.Other()
 
 def crawl_list_com(path, real=False):
+    '''
+    Crawl List Company \n'''
     global webVS
     check = False
     while check == False:
@@ -40,23 +67,28 @@ def crawl_list_com(path, real=False):
                 raise 1
             break
         except:
-            crawl(path)
+            check = crawl(path)
     try:
         webVS.turn_off_drive()
     except:
         pass
 
-
 PATH_ = PATH_env.PATH_ENV("Ingestion")
-batch = sys.argv[1]
 
-if batch == "normal":
-    crawl_list_com(
-        f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-elif batch == "realday":
-    crawl_list_com(
-        f'{PATH_.joinPath(PATH_.REAl_DAY,"List_company")}.csv', real=True)
-try:
-    webVS.turn_off_drive()
-except:
-    pass
+path = f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv'
+# path = 'H:\My Drive\DataVIS_\VietNam\Data Lake\Ingestion/2023-09-20/List_company.csv'
+# print(path)
+crawl_list_com(path)
+
+# PATH_ = PATH_env.PATH_ENV("Ingestion")
+# batch = sys.argv[1]
+# if batch == "normal":
+#     crawl_list_com(
+#         f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+# elif batch == "realday":
+#     crawl_list_com(
+# #         f'{PATH_.joinPath(PATH_.REAl_DAY,"List_company")}.csv', real=True)
+# try:
+#     webVS.turn_off_drive()
+# except:
+#     pass

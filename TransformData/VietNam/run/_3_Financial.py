@@ -1,17 +1,26 @@
 import pandas as pd
 import sys
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 
 from base import Compare
 from base.Financial import CafeF,VietStock
 from base.PATH_UPDATE import *
 from base.Setup import *
-Type_Time = "Year"
+# Type_Time = "Year"
+Type_Time = 'Quarter'
 # CafeF
 # SYMBOL = ["SFI"]
 df_check_list = pd.DataFrame()
 def transform(symbol,field):
+    '''
+    Chuyển đổi data từ CafeF và VietStock\n
+    Input:\n
+    symbol: mã cổ phiếu\n
+    field: tên loại thời gian \n
+    Output:\n
+    df_check_list: DataFrame
+    '''
     global df_check_list
     CF = CafeF(dict_path_cf)
     cf = CF.run(symbol,field)
@@ -24,12 +33,19 @@ def transform(symbol,field):
     df_check_list = pd.concat([df_check_list,df],ignore_index=True)
     return df_check_list
 # transform("ABS","Year")
+
 for symbol in SYMBOL:
-    transform(symbol,"Year")
+    transform(symbol,"Quarter")
 
 df_check_list.to_excel(FU.joinPath(FU.PATH_COMPARE,f"Financial_{Type_Time}_CheckList.xlsx"))
 
 def setup_Feature(type_time):
+    '''
+    Lấy dữ liệu cần lấy \n
+    Input: \n
+    type_time: loại thời gian \n
+    Output: \n
+    data_field: dữ liệu cần lấy \n'''
     if type_time == "Year":
         sheet_name = "Total"
     else:
@@ -39,6 +55,12 @@ def setup_Feature(type_time):
     return data_field
 
 def RunCompare(type_time):
+    '''
+    Chạy so sánh \n
+    Input: \n
+    type_time: loại thời gian \n
+    Output: None \n
+    '''
     can_t_compare = []
     data_field = setup_Feature(type_time)
     for symbol in SYMBOL:
@@ -50,4 +72,4 @@ def RunCompare(type_time):
             can_t_compare.append(symbol)
     pd.DataFrame({"Error_Compare":can_t_compare}).to_excel(FU.joinPath(FU.PATH_COMPARE,"Error",f"{type_time}.xlsx"),index=False)        
 
-RunCompare("Year")
+RunCompare("Quarter")

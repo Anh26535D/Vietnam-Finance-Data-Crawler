@@ -8,38 +8,82 @@ from .base import setup
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.support import expected_conditions
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 class FinanStatement(setup.Setup):
+    '''
+    Crawl Financial from VietStock
+    '''
     def __init__(self,symbol):
+        '''
+        symbol: Mã Cổ phiếu \n
+        URL_BALANCED: link tài chính cân đối quý'''
         super().__init__(source="VS")
         self.symbol = symbol
     
     def setupLink(self):
+        '''
+        tạo lại link cho phù hợp với yêu cầu
+        '''
         self.link_balance = URL_VIETSTOCK["BALANCE_SHEET"].replace("SYMBOL",self.symbol)
         self.link_income = URL_VIETSTOCK["INCOME_STATEMENT"].replace("SYMBOL",self.symbol)
         self.link_cashflow = URL_VIETSTOCK["CASH_FLOWS"].replace("SYMBOL",self.symbol)
-        
+    
+    def get_FinancialReportPDF(self,symbol,year, cookie,data):
+             
+        rs = self.r_post(f"https://finance.vietstock.vn/data/getdocument",data=data,cookies=cookie,headers=self.headers)
+        df = pd.DataFrame({"symbol":[],"year":[],"tilteVS":[],"LinkVS":[]})
+        for row in rs.json():
+            try:
+                if self.check_new(row['FullName']):
+                    df = df.append({"symbol":symbol,"year":year,"tilteVS":row['FullName'],"LinkVS":row['Url']},ignore_index=True)
+            except:
+                pass
+        if df.empty:
+            df = df.append({"symbol":symbol,"year":year,"tilteVS":"","LinkVS":""},ignore_index=True)
+        return df
+ 
     def BalanceSheet(self,PeriodType):
+        '''
+        Lấy báo cáo tài chính cân đối\n
+        Input: PeriodType: 1: Quý, 2: 6 tháng, 4: năm\n
+        Output: DataFrame'''
         return self.table_lake(self.link_balance, PeriodType,True)
 
     def IncomStatement(self, PeriodType):
+        '''
+        Lấy báo cáo kết quả kinh doanh\n
+        Input: PeriodType: 1: Quý, 2: 6 tháng, 4: năm\n
+        Output: DataFrame'''
         return self.table_lake(self.link_income, PeriodType,False)
 
     def CashFlows(self, PeriodType):
+        '''
+        Lấy báo cáo lưu chuyển tiền tệ\n
+        Input: PeriodType: 1: Quý, 2: 6 tháng, 4: năm\n
+        Output: DataFrame'''
         return self.table_lake(self.link_cashflow, PeriodType,False)
     
     def table_lake(self, link, PeriodType,*arg):
+        '''
+        Lấy bảng dữ liệu\n
+        Input: link: link\n
+        PeriodType: 1: Quý, 2: 6 tháng, 4: năm\n
+        Output: DataFrame'''
         self.request_link(link)
         self.click_to_all_year(PeriodType,*arg)
         data = self.getTable()
         return data
 
     def check_page(self):
+        '''
+        Kiểm tra trang có bị lỗi không\n
+        Output: True: không bị lỗi, False: bị lỗi\n
+        '''
         page_sourse = self.driver.page_source
         page = BeautifulSoup(page_sourse, "html.parser")
         check = page.find_all('div', {'class':'container m-b'})
@@ -47,6 +91,11 @@ class FinanStatement(setup.Setup):
             return True
 
     def click_to_all_year(self, PeriodType,*arg):
+        '''
+        Chọn tất cả các năm\n
+        Input: PeriodType: 1: Quý, 2: 6 tháng, 4: năm\n
+        Output: DataFrame\n
+        '''
         try:
             try:
                 self.click_select("period","2")
@@ -67,6 +116,10 @@ class FinanStatement(setup.Setup):
             pass
 
     def getTable(self):
+        '''
+        Lấy dữ liệu từ bảng\n
+        Output: DataFrame \n
+        '''
         page_sourse = self.driver.page_source
         page = BeautifulSoup(page_sourse, "html.parser")
         list_table = page.find_all(
@@ -82,37 +135,100 @@ class FinanStatement(setup.Setup):
         return data
     
     def clickInit(self,str_symbol,checkClick,type_time):
+        '''
+        Click vào các nút để lấy dữ liệu\n
+        Input: 
+            str_symbol: chuỗi các mã cổ phiếu\n
+            checkClick: 
+                True: có click, 
+                False: không click \n
+            type_time: 
+                1: Quý 1, 
+                2: Quý 2, 
+                3: Quý 3
+                4: Quý 4\n
+        Output: DataFrame \n
+        '''
+        try: # turn off ad
+            wait = WebDriverWait(self.driver, 10)
+            close_btn_ele = wait.until(EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div[1]/div[9]/div[2]/div/div/div/div[1]/button")))
+
+            close_btn_ele.click()
+        except:
+            pass
         self.click_something_by_id("txt-search-code")
         element = self.find_element_by_other("txt-search-code",By.ID)
         element.clear()
         self.send_something_by_id("txt-search-code",str_symbol)
 
         if checkClick:
-            ClickInput = ['//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[2]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[1]/label/input',
-                          '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input']            
-            if type_time == 1:
-                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input')
-            elif type_time == 2:
-                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input')
-            elif type_time == 3:
-                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input')
-            elif type_time == 4:
-                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input')
-            else:
-                ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input')
+            checkbox_xpaths = {
+                "Quý 1": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input',
+                "Quý 2": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input',
+                "Quý 3": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input',
+                "Quý 4": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input',
+                "6 tháng": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[2]/label/input',
+                "9 tháng": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[1]/label/input',
+                "Năm": '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input' 
+            }
+
+            selected_checkboxes = []
+            if type_time == 1: # Nếu chọn quý 1
+                selected_checkboxes.append("Quý 1")
+            elif type_time == 2: # Nếu chọn quý 2
+                selected_checkboxes.append("Quý 2")
+            elif type_time == 3: # Nếu chọn quý 3
+                selected_checkboxes.append("Quý 3")
+            elif type_time == 4: # Nếu chọn quý 4
+                selected_checkboxes.append("Quý 4")
+            else: # Nếu chọn cả năm
+                selected_checkboxes.append("Năm")
+
+            dict_checkbox = {}
+            for k in checkbox_xpaths.keys():
+                dict_checkbox[k] = self.driver.find_element(by=By.XPATH, value=checkbox_xpaths[k])
+
+            for k in dict_checkbox.keys():
+                if k in selected_checkboxes:
+                    if not dict_checkbox[k].is_selected():
+                        dict_checkbox[k].click()
+                else:
+                    if dict_checkbox[k].is_selected():
+                        dict_checkbox[k].click()
+              
+            # ClickInput = ['//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[2]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[1]/label/input',
+            #               '//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input']            
+            # if type_time == 1: # Nếu chọn quý 1
+            #     ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[1]/label/input')
+            # elif type_time == 2: # Nếu chọn quý 2
+            #     ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[2]/label/input')
+            # elif type_time == 3: # Nếu chọn quý 3
+            #     ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[3]/label/input')
+            # elif type_time == 4: # Nếu chọn quý 4
+            #     ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[1]/td[4]/label/input')
+            # else: # Nếu chọn cả năm
+            #     ClickInput.remove('//*[@id="group-option-multi"]/div[2]/table/tbody/tr[2]/td[3]/label/input')
             
-            for i in ClickInput[::-1]:
-                # time.sleep(3)
-                self.click_something_by_xpath(i)
+            # for i in ClickInput[::-1]:
+            #     self.click_something_by_xpath(i)
         self.click_something_by_other(".div-statement-button > .btn",By.CSS_SELECTOR)
         time.sleep(60)
 
     def CrawlWithBatch(self,list_symbol,type_time,PATH):
+        '''
+            Crawl dữ liệu với nhiều mã cổ phiếu \n
+            Input: \n
+                list_symbol: danh sách các mã cổ phiếu\n
+                type_time: 1: Quý, 2: 6 tháng, 3:  4: năm\n
+                PATH: đường dẫn lưu file\n
+            Output: DataFrame
+        '''
+
         self.request_link("https://finance.vietstock.vn/truy-xuat-du-lieu/bao-cao-tai-chinh.htm")
         checkClick = True
         for i in range(0,len(list_symbol),50):
@@ -132,6 +248,9 @@ class FinanStatement(setup.Setup):
         return
 
 class Other(setup.Setup):
+    '''
+    Crawl Other from VietStock
+    '''
     def __init__(self) -> None:
         # super().__init__("Selenium")
         super().__init__(type_tech = "Selenium",source="VS")
@@ -141,31 +260,68 @@ class Other(setup.Setup):
 
 
     def CreateLink(self,type_,symbol=""):
+        '''
+        Tạo link cho phù hợp với yêu cầu\n
+        Input: \n
+        type_: loại link \n
+        symbol: mã cổ phiếu'''
         return  URL_VIETSTOCK[type_].replace("SYMBOL",symbol)
 
     def CashDividend(self, symbol):
+        '''
+        Lấy thông tin cổ tức bằng tiền mặt\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.getTable(self.CreateLink('CASH_DIVIDEND',symbol))
 
     def BonusShare(self, symbol):
+        '''
+        Lấy thông tin thưởng cổ phiếu\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.getTable(self.CreateLink('BONUS_SHARE',symbol))
 
     def StockDividend(self, symbol):
+        '''
+        Lấy thông tin cổ tức bằng cổ phiếu\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.getTable(self.CreateLink('STOCK_DIVIDEND',symbol))
 
     def AdditionalListing(self, symbol):
+        '''
+        Lấy thông tin niêm yết bổ sung\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame
+        '''
         return self.getTable(self.CreateLink('ADDITIONAL_LISTING',symbol))
     
     def TreasuryStockTransactions(self, symbol):
+        '''
+        Lấy thông tin giao dịch cổ phiếu quỹ\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.getTable(self.CreateLink('TREASURY_STOCK_TRANSACTIONS',symbol))
 
     def VolumeNow(self,symbol):
+        '''
+        Lấy thông tin khối lượng giao dịch hiện tại\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.download_batch_get_request(self.CreateLink('LIST_INFOR',symbol),{"class":"table table-hover"})
 
 
     def Company_delisting(self, symbol):
+        '''
+        Lấy thông tin hủy niêm yết\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         return self.getTable(self.CreateLink('COMPANY_DELISTING',symbol))
 
     def Listing(self):
+            '''
+            Lấy thông tin niêm yết\n
+            Output: DataFrame'''
             data_1 = self.getTableForListing(self.CreateLink('LISTING'),"1")
             data_2 = self.getTableForListing(self.CreateLink('LISTING'),"2")
             data_3 = self.getTableForListing(self.CreateLink('LISTING'),"5")
@@ -173,10 +329,18 @@ class Other(setup.Setup):
             data = pd.concat([data,data_3],ignore_index=True)
             return data
     def Delisting(self):
+        '''
+        Lấy thông tin hủy niêm yết\n
+        Output: DataFrame
+        '''
         return self.getTable(self.CreateLink('DELISTING'))
     
-    def Dividend(self):
-        self.request_link(URL_VIETSTOCK['DIVIDEND'])
+    def DividendPart(self,part_dividend):
+        '''
+        Lấy thông tin cổ tức\n
+        Input: part_dividend: loại cổ tức\n
+        Output: DataFrame'''
+        self.request_link(URL_VIETSTOCK[part_dividend])
         start_txt = self.time_start.strftime("%d/%m/%Y")
         end_txt = self.time_end.strftime("%d/%m/%Y")
         self.send_something_by_other(start_txt,'//*[@id="txtFromDate"]/input',By.XPATH)
@@ -194,9 +358,24 @@ class Other(setup.Setup):
             return data
         return self.getTableInfor(page)
 
-
+    def Dividend(self):
+        '''
+        Lấy thông tin cổ tức\n
+        Output: DataFrame'''
+        df1 = self.DividendPart("CASH_DIVIDEND")
+        df1["Loại Sự kiện"] = ["Trả cổ tức bằng tiền mặt" for i in df1.index]
+        df2 = self.DividendPart("BONUS_SHARE")
+        df2["Loại Sự kiện"] = ["Thưởng cổ phiếu" for i in df2.index]
+        df3 = self.DividendPart("STOCK_DIVIDEND")
+        df3["Loại Sự kiện"] = ["Trả cổ tức bằng cổ phiếu" for i in df3.index]
+        df = pd.concat([df1,df2,df3],ignore_index=True)
+        return df
 
     def getTable(self, link):
+        '''
+        Lấy bảng dữ liệu\n
+        Input: link: link\n
+        Output: DataFrame'''
         self.request_link(link)
         time.sleep(1)
         page_source = self.driver.page_source
@@ -211,12 +390,20 @@ class Other(setup.Setup):
         return self.getTableInfor(page)
     
     def getExchangeNormal(self,exchange):
+        '''
+        Chọn sàn\n
+        Input: exchange: sàn\n
+        Output: DataFrame'''
         self.click_select("exchange",exchange)
         self.click_select("businessTypeID","1")
         self.click_something_by_xpath('//*[@id="corporate-az"]/div/div[1]/div[1]/button')
         time.sleep(2)
 
     def getTableForListing(self, link,exchange):
+        '''
+        Lấy bảng dữ liệu\n
+        Input: link: link\n
+        Output: DataFrame'''
         self.request_link(link)
         time.sleep(1)
         self.getExchangeNormal(exchange)
@@ -233,12 +420,19 @@ class Other(setup.Setup):
         else: return self.getTableInfor(page)
     
     def getNextTable(self):
+        '''
+        Lấy bảng dữ liệu\n
+        Output: DataFrame
+        '''
         self.click_something_by_id('btn-page-next')
         time.sleep(5)
         page = BeautifulSoup(self.driver.page_source, 'html.parser')
         return self.getTableInfor(page)
 
     def getTableInfor(self, page):
+        '''
+        Lấy bảng dữ liệu\n
+        Output: DataFrame'''
         time.sleep(1)
         list_table = page.find_all('table', {'class':
         'table table-striped table-bordered table-hover table-middle pos-relative m-b'})
@@ -246,15 +440,26 @@ class Other(setup.Setup):
         except: return pd.DataFrame(columns=[i.text for i in list_table])
             
     def getNumberPage(self, page):
+        '''
+        Lấy số trang\n
+        Output: int'''
         try:number_pages=int(page.find_all('span', {'class':'m-r-xs'})[1].find_all('span')[1].text)
         except: number_pages=0
         return int(number_pages)
 
     def lst_infor(self, symbol):
+        '''
+        Lấy thông tin cơ bản\n
+        Input: symbol: mã cổ phiếu\n
+        Output: DataFrame'''
         self.request_link(self.CreateLink("LIST_INFOR",symbol))
         return self.getTableInforcom()
 
     def getTableInforcom(self):
+        '''
+        Lấy bảng dữ liệu\n
+        Output: DataFrame'''
+
         page_source = self.driver.page_source
         page = BeautifulSoup(page_source, 'html.parser')
         list_table = page.find_all('table', {'class':'table table-hover'})

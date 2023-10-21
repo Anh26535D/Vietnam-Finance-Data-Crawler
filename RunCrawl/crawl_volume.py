@@ -1,6 +1,6 @@
 import sys
 import time
-sys.path.append("C:\DataVietNam")
+sys.path.append("A:\DataVietNam")
 
 from Crawl import CafeF
 from Crawl import VietStock
@@ -11,6 +11,9 @@ import datetime
 PATH_ = PATH_env.PATH_ENV("Ingestion")
 
 def VolumeCafeF(symbol):
+    '''
+    Lấy dữ liệu từ link CafeF \n
+    '''
     PATH = PATH_.joinPath(PATH_.PATH_VOLUME,"CafeF")
     try:
         df = pd.read_csv(f"{PATH}/VolumeNow/{symbol}.csv")
@@ -28,6 +31,8 @@ def VolumeCafeF(symbol):
             pass
 
 def run_reset_vs():
+    '''
+    Reset VietStock\n'''
     global com
     try:
         com = VietStock.Other()
@@ -38,6 +43,9 @@ def run_reset_vs():
             
 com = VietStock.Other()
 def VolumeVietStock(symbol):
+    '''
+    Lấy dữ liệu từ link VietStock \n
+    Output: DataFrame'''
     PATH = PATH_.joinPath(PATH_.PATH_VOLUME,"VietStock")
     try:
         df = pd.read_csv(f"{PATH}/VolumeNow/{symbol}.csv")

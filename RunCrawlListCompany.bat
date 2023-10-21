@@ -1,1 +1,1 @@
-"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "C:\DataVietNam\RunCrawl\crawl_list_company.py" realday
+"C:\Users\ADMIN\AppData\Local\Programs\Python\Python310\python.exe" "A:\DataVietNam\RunCrawl\crawl_list_company.py" realday

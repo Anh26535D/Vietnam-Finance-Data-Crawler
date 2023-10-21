@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 import datetime
 from Flow import PATH_env
 from Crawl import SSI

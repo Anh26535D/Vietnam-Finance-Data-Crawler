@@ -1,121 +1,199 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
+
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
-from Flow import PATH_env,RUN
+from Flow import PATH_env, RUN
 import datetime
 import time
 import json
 
+
 PATH_ = PATH_env.PATH_ENV("Ingestion")
-start = PATH_.DateCurrent - datetime.timedelta(days=90)
-y = start.year
-if start.month in [1,2,3]:
+start_date = PATH_.DateCurrent - datetime.timedelta(days=90)
+y = start_date.year
+
+if start_date.month in [1,2,3]:
     q = 1
-elif start.month in [4,5,6]:
+elif start_date.month in [4,5,6]:
     q = 2
-elif start.month in [7,8,9]:
+elif start_date.month in [7,8,9]:
     q = 3
-elif start.month in [10,11,12]:
+elif start_date.month in [10,11,12]:
     q = 4
 
-def checkfile(symbol,file_type):
-    try:
-        with open(f"{PATH}/{file_type}/{symbol}.json", 'r',encoding='utf-8') as j:
-            temp = json.loads(j.read())
-    except:
-        try:
-            pd.read_csv(f"{PATH}/{file_type}/{symbol}.csv")
-        except:
-            return False
-    return True
-
-def test_data(symbol):
-  if checkfile(symbol,"IncomeStatement")==False:
-      yield 1
-  if checkfile(symbol,"BalanceSheet")==False:
-      yield 2
-  if checkfile(symbol,"CashFlowInDirect")==False:
-    yield 3
-  if checkfile(symbol,"CashFlowDirect")==False:
-    yield 4
-
-dict_time = {
+time_formats = {
     "Q":"Quarter/",
     "Y":"Year/",
     "QUY":"Quarter/",
     "NAM":"Year/"
 }
 
-
-def FinancialCafeF(symbol,type_):
-    global PATH
-    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"CafeF",dict_time[type_])
-    list_must_crawl_again = list(test_data(symbol))
-    # list_must_crawl_again = [1,2,3,4]
-    if len(list_must_crawl_again) == 0:
-        return 0
-    else:
-        print(symbol,list_must_crawl_again,end=" ")
-    web = CafeF.FinancailStatement()
-    time = 3
-    for i in list_must_crawl_again:
-        if i == 1:
-            income = web.get_Income(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
-            with open(f"{PATH}IncomeStatement/{symbol}.json", "w",encoding='utf8') as outfile:
-                    json.dump(income, outfile, ensure_ascii=False)
-        elif i == 2:
-            balan = web.get_Balance(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
-            with open(f"{PATH}BalanceSheet/{symbol}.json", "w",encoding='utf8') as outfile:
-                    json.dump(balan, outfile, ensure_ascii=False)
-        elif i == 3:
-            CFID = web.get_CashFlowIndirect(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
-            with open(f"{PATH}CashFlowInDirect/{symbol}.json", "w",encoding='utf8') as outfile:
-                    json.dump(CFID, outfile, ensure_ascii=False)
-        elif i == 4:
-            CFD = web.get_CashFlowDirect(symbol, year=start.year,month=start.month,day=start.day, type_=type_, times=time)
-            with open(f"{PATH}CashFlowDirect/{symbol}.json", "w",encoding='utf8') as outfile:
-                    json.dump(CFD, outfile, ensure_ascii=False)
-        else:
-            print("loi nang, dell lap trinh nua")
-    print("Done CF!!",symbol)
-    web.turn_off_drive()
-
 webVS = VietStock.FinanStatement("")
 webVS.login_VS()
 
-def FinancialVietStock(symbol,type_):
+def check_file_existence(symbol, document_type):
+    '''
+    Check the existence of a file.
+
+    Parameters
+    ----------
+    symbol : str
+        Stock symbol.
+    document_type : str
+        Document type.
+
+    Returns
+    -------
+    bool
+        Returns True if the file exists; otherwise, returns False.
+    '''
+    
+    try:
+        with open(f"{PATH}/{document_type}/{symbol}.json", 'r', encoding='utf-8') as j:
+            temp_data = json.loads(j.read())
+    except:
+        try:
+            temp_data = pd.read_csv(f"{PATH}/{document_type}/{symbol}.csv")
+        except:
+            return False
+    return True
+
+
+def check_crawled_data(symbol):
+    '''
+    Check if financial data has been crawled for the given stock symbol.
+
+    Parameters
+    ----------
+    symbol : str
+        Stock symbol.
+
+    Yields
+    -------
+    int
+        Yields integers corresponding to uncrawled data types:
+        1 - Income Statement
+        2 - Balance Sheet
+        3 - Cash Flow (Indirect Method)
+        4 - Cash Flow (Direct Method)
+    '''
+    
+    if not check_file_existence(symbol, "IncomeStatement"):
+        yield 1
+    if not check_file_existence(symbol, "BalanceSheet"):
+        yield 2
+    if not check_file_existence(symbol, "CashFlowInDirect"):
+        yield 3
+    if not check_file_existence(symbol, "CashFlowDirect"):
+        yield 4
+
+
+def FinancialCafeF(symbol, type_):
+    '''
+    Fetches financial data from CafeF website and saves it as JSON files.
+
+    Parameters:
+    symbol : str
+        Stock symbol.
+    data_type : str
+        Type of financial data to fetch (e.g., "Q" for quarterly, "Y" for yearly).
+
+    Returns:
+    None
+    '''
+
     global PATH
-    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"VietStock",dict_time[type_])
-    list_must_crawl_again = list(test_data(symbol))
-    if len(list_must_crawl_again) == 0:
+
+    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL, "CafeF", time_formats[type_])
+    uncrawled_data_types = list(check_crawled_data(symbol))
+
+    if len(uncrawled_data_types) == 0:
         return 0
-    else:
-        print(symbol,list_must_crawl_again,end=" ")
-    # list_must_crawl_again = [1,2,3,4]
-    webVS.symbol=symbol
-    webVS.setupLink()
-    for i in list_must_crawl_again:
+
+    print(symbol, uncrawled_data_types, end=" ")
+
+    web = CafeF.FinancailStatement()
+    time = 3
+    for i in uncrawled_data_types:
         if i == 1:
-            income = webVS.IncomStatement(type_)
-            income.to_csv(f"{PATH}IncomeStatement/{symbol}.csv",index=False)
+            income_data = web.get_Income(
+                symbol, year=start_date.year, month=start_date.month, day=start_date.day, type_=type_, times=time)
+            with open(f"{PATH}IncomeStatement/{symbol}.json", "w", encoding='utf8') as outfile:
+                json.dump(income_data, outfile, ensure_ascii=False)
         elif i == 2:
-            balan = webVS.BalanceSheet(type_)
-            balan.to_csv(f"{PATH}BalanceSheet/{symbol}.csv",index=False)
+            balance_sheet_data = web.get_Balance(
+                symbol, year=start_date.year, month=start_date.month, day=start_date.day, type_=type_, times=time)
+            with open(f"{PATH}BalanceSheet/{symbol}.json", "w", encoding='utf8') as outfile:
+                json.dump(balance_sheet_data, outfile, ensure_ascii=False)
         elif i == 3:
-            CFID = webVS.CashFlows(type_)
-            CFID.to_csv(f"{PATH}CashFlowInDirect/{symbol}.csv",index=False)
+            cash_flow_indirect_data = web.get_CashFlowIndirect(
+                symbol, year=start_date.year, month=start_date.month, day=start_date.day, type_=type_, times=time)
+            with open(f"{PATH}CashFlowInDirect/{symbol}.json", "w", encoding='utf8') as outfile:
+                json.dump(cash_flow_indirect_data, outfile, ensure_ascii=False)
+        elif i == 4:
+            cash_flow_direct_data = web.get_CashFlowDirect(
+                symbol, year=start_date.year, month=start_date.month, day=start_date.day, type_=type_, times=time)
+            with open(f"{PATH}CashFlowDirect/{symbol}.json", "w", encoding='utf8') as outfile:
+                json.dump(cash_flow_direct_data, outfile, ensure_ascii=False)
+        else:
+            print("Error: Invalid data type encountered during data retrieval.")
+
+    print(f"Done fetching financial data for {symbol}")
+    web.turn_off_drive()
+
+
+def FinancialVietStock(symbol, type_):
+    '''
+    Fetches financial data from VietStock website and saves it as CSV files.
+    
+    Parameters:
+    symbol : str
+        Stock symbol.
+    data_type : str
+        Type of financial data to fetch (e.g., "Q" for quarterly, "Y" for yearly).
+    
+    Returns:
+    None
+    '''
+
+    global PATH
+
+    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL, "VietStock", time_formats[type_])
+    uncrawled_data_types = list(check_crawled_data(symbol))
+
+    if len(uncrawled_data_types) == 0:
+        return 0
+
+    print(symbol,uncrawled_data_types,end=" ")
+
+    webVS.symbol = symbol
+    webVS.setupLink()
+    for i in uncrawled_data_types:
+        if i == 1:
+            income_statement = webVS.IncomStatement(type_)
+            income_statement.to_csv(
+                f"{PATH}IncomeStatement/{symbol}.csv", index=False)
+        elif i == 2:
+            balance_sheet = webVS.BalanceSheet(type_)
+            balance_sheet.to_csv(
+                f"{PATH}BalanceSheet/{symbol}.csv", index=False)
+        elif i == 3:
+            cash_flow_indirect = webVS.CashFlows(type_)
+            cash_flow_indirect.to_csv(
+                f"{PATH}CashFlowInDirect/{symbol}.csv", index=False)
         elif i == 4:
             pass
         else:
-            print("loi nang, dell lap trinh nua")
-    print("Done VS!!",symbol)
+            print("Error: Invalid data type encountered during data retrieval.")
+    print(f"Done fetching financial data for {symbol}")
 
 
 def run_reset_cf():
     pass
-        
+
+
 def run_reset_vs():
     global webVS
     try:
@@ -127,65 +205,93 @@ def run_reset_vs():
         run_reset_vs()
 
 
+def update_stock_symbols_status(stock_symbols, **kwargs):
+    '''
+    Updates the status of stock symbols in the given list.
 
+    Parameters:
+    stock_symbols : dict
+        Dictionary containing stock symbols as keys and their statuses as values.
 
-def setUpList(List_Symbol,**arg):
-    for key,value in arg.items():
-        List_Symbol[key] = value
-    return List_Symbol
+    Returns:
+    dict
+        Updated dictionary of stock symbols with their statuses.
+    '''
 
-def RunCrawl(func_crawl,func_reset,symbol,type_,state):
+    for key,value in kwargs.items():
+        stock_symbols[key] = value
+
+    return stock_symbols
+
+def run_crawl(func_crawl, func_reset, symbol, type_, state):
+    '''
+    Executes the crawling process.
+
+    Parameters:
+    func_crawl : function
+        Function to crawl financial data.
+    func_reset : function
+        Function to reset the crawl state.
+    symbol : str
+        Stock symbol.
+    data_type : str
+        Type of financial data to crawl.
+    state : bool
+        Crawl state (True for successfully crawled, False for failed crawl).
+
+    Returns:
+    bool
+        True if crawl is successful, False otherwise.
+    '''
+    
     if state:
         return True
     try:
-        func_crawl(symbol,type_)
+        func_crawl(symbol, type_)
         return True
     except:
         func_reset()
         return False
 
 
-
-# List_Symbol = List_Symbol[(List_Symbol["Mã CK▲"] == "DAH")]
-#                             # (List_Symbol["Mã CK▲"] == "VNE")]
-
-# temp = [False for i in List_Symbol.index]
-# List_Symbol = setUpList(List_Symbol,CF_Q = temp,CF_Y = temp,VS_Q = temp,VS_Y = temp)
-# List_Symbol.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
-
-List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+list_symbol_df = pd.read_csv(
+    f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+initial_status = [False for _ in list_symbol_df.index]
+list_symbol_df = update_stock_symbols_status(
+    list_symbol_df, CF_Q=initial_status, CF_Y=initial_status, VS_Q=initial_status, VS_Y=initial_status)
+list_symbol_df.to_csv(
+    f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv', index=False)
 
 
-for i in range(3):    
-    List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+for i in range(3):
+    list_symbol_df = pd.read_csv(
+        f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
     CheckStateCF_QUARTER = []
     CheckStateCF_YEAR = []
-    list_symbol = List_Symbol["Mã CK▲"]
-    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL,"VietStock")
-    try:
-        webVS.CrawlWithBatch(list_symbol,q,f"{PATH}/Quarter")
-    except:
-        run_reset_vs()
-    
-    try:
-        webVS.CrawlWithBatch(list_symbol,y,f"{PATH}/Year")
-    except:
-        run_reset_vs()
-   
-    for idx in List_Symbol.index:
-        state_CF_Q,state_CF_Y = List_Symbol["CF_Q"][idx],List_Symbol["CF_Y"][idx]
-        symbol = List_Symbol["Mã CK▲"][idx]
-        state_CF_Q = RunCrawl(FinancialCafeF,run_reset_cf,symbol,"Q",state_CF_Q)
-        state_CF_Y = RunCrawl(FinancialCafeF,run_reset_cf,symbol,"Y",state_CF_Y)
-        # state_VS_Q = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
-        # state_VS_Y = RunCrawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
+    list_symbol_df = list_symbol_df["Mã CK▲"]
+    PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL, "VietStock")
+
+    webVS.CrawlWithBatch(list_symbol_df, q, f"{PATH}/Quarter")
+    webVS.CrawlWithBatch(list_symbol_df, y, f"{PATH}/Year")
+
+    for idx in list_symbol_df.index:
+        state_CF_Q, state_CF_Y = list_symbol_df["CF_Q"][idx], list_symbol_df["CF_Y"][idx]
+        symbol = list_symbol_df["Mã CK▲"][idx]
+        print(symbol)
+        state_CF_Q = run_crawl(
+            FinancialCafeF, run_reset_cf, symbol, "Q", state_CF_Q)
+        state_CF_Y = run_crawl(
+            FinancialCafeF, run_reset_cf, symbol, "Y", state_CF_Y)
+        # state_VS_Q = run_crawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
+        # state_VS_Y = run_crawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
         CheckStateCF_QUARTER.append(state_CF_Q)
         CheckStateCF_YEAR.append(state_CF_Y)
         # CheckStateVS_QUARTER.append(state_VS_Q)
         # CheckStateVS_YEAR.append(state_VS_Y)
-    List_Symbol = setUpList(List_Symbol,CF_Q = CheckStateCF_QUARTER,CF_Y = CheckStateCF_YEAR)
-    List_Symbol.to_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv',index=False)
+    list_symbol_df = update_stock_symbols_status(
+        list_symbol_df, CF_Q=CheckStateCF_QUARTER, CF_Y=CheckStateCF_YEAR)
+    list_symbol_df.to_csv(
+        f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv', index=False)
+
 
 webVS.turn_off_drive()
-
-#     break

@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 from Flow import Folder
 try:
     create = Folder.FolderCrawl()

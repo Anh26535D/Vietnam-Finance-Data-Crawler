@@ -1,6 +1,6 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 
 from base.PATH_UPDATE import *
 from base.Dividend import *
@@ -13,12 +13,14 @@ VS = DividendVS(dict_path_vs)
 for symbol in SYMBOL:
     CF.Dividend_CF(symbol).to_csv(f'{dict_path_cf["F1"]["Dividend"]}/{symbol}.csv',index=False)
     VS.Dividend_VS(symbol).to_csv(f'{dict_path_vs["F1"]["Dividend"]}/{symbol}.csv',index=False)
+
 def CreateCode(df,field):
     try:
         df[field] = df.apply(lambda row: "_".join([row["Money"],row["Stock"]]),axis=1)
     except ValueError:
         df[field] = ["NAN" for i in df.index]
     return df
+
 print(F_START,F_END)
 
 for symbol in SYMBOL:

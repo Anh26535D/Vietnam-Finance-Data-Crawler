@@ -1,6 +1,6 @@
 import pandas as pd
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 
 from datetime import datetime
 from Flow.Folder import FolderCrawl, FolderData, FolderUpdate
@@ -8,7 +8,7 @@ from Flow.PATH_env import PATH_ENV
 from VAR_GLOBAL_CONFIG import *
 
 FC = FolderCrawl()
-FU = FolderUpdate()
+FU = FolderUpdate(date=END_DAY_UPDATE)
 
 def GetListSymbol(FROM,TO):
     PATH_FROM = FC.joinPath(FC.PATH_MAIN,FROM,"List_company.csv")

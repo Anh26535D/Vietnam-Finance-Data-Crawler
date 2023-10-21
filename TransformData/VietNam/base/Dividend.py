@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 from Flow import Folder
-from Flow.ulis import *
+from Flow.utils import *
 # import PATH_UPDATE
 import re
 import math
@@ -120,7 +120,7 @@ def loc_nan_nan_support(v1, v2):
     return 'Valid'
 
 class DividendCF():
-    def __init__(self,dict_path_) -> None:
+    def __init__(self,dict_path_={}) -> None:
         self.path_object = dict_path_
         pass
     
@@ -178,6 +178,7 @@ class DividendCF():
         pivot = pivot.reset_index()
         pivot = loc_nan_nan(pivot)
         return pivot
+    
 def get_datetime(text):
     text = f'{text}'
     split = text.split('/')

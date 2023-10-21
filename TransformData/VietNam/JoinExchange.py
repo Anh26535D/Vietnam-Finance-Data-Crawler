@@ -1,7 +1,7 @@
 import pandas as pd
 import sys
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 
 from base import Compare
 from base.Financial import CafeF,VietStock

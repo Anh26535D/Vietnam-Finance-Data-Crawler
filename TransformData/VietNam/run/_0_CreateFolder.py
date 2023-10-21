@@ -1,7 +1,8 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 
 from Flow import Folder
+from VAR_GLOBAL_CONFIG import *
 
-create = Folder.FolderUpdate()
+create = Folder.FolderUpdate(date=END_DAY_UPDATE)
 create.Run_Create_Folder()

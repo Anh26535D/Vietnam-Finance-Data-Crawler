@@ -1,7 +1,7 @@
 import datetime
 import sys
-sys.path.append(r'C:\DataVietNam')
-sys.path.append(r'C:\DataVietNam\TransformData\VietNam')
+sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'A:\DataVietNam\TransformData\VietNam')
 import pandas as pd
 from Flow import Folder
 

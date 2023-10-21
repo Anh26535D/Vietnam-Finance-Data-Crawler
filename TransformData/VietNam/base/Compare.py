@@ -2,7 +2,7 @@ import math
 import pandas as pd
 import sys
 import numpy as np
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 
 from VAR_GLOBAL_CONFIG import *
 
@@ -14,14 +14,23 @@ def check_dau(a):
         return -1
 
 
-
-
-
 class Compare():
+    '''
+    So sánh đối chiếu các nguồn dữ liệu \n
+    '''
     def __init__(self) -> None:
         pass
 
     def CompareNumber(self,a,b):
+        '''
+        So sánh 2 số \n
+        Input: a: số thứ nhất \n
+        b: số thứ hai \n
+        Output: 
+        1: a = b \n
+        0: a != b \n
+        2: a hoặc b là NaN \n
+        N: a và b là NaN \n'''
         if math.isnan(a) and math.isnan(b):
             return "N"
         if math.isnan(a) or math.isnan(b):
@@ -31,6 +40,20 @@ class Compare():
         else:
             return "0"
     def compare_2_block(self,a,b,s_a=1,s_b=1,field=""):
+        '''
+        So sánh 2 số \n
+        Input: \n
+        a: số thứ nhất \n
+        b: số thứ hai \n
+        s_a: đơn vị tiền của a \n
+        s_b: đơn vị tiền của b \n
+        field: tên cột \n
+        Output: \n
+        1: a = b \n
+        0: a != b \n
+        2: a hoặc b là NaN \n
+        N: a và b là NaN \n
+        '''
         if math.isnan(a) and math.isnan(b):
             return "N"
         if math.isnan(a) or math.isnan(b):
@@ -52,6 +75,18 @@ class Compare():
         else:
             return "0"
     def compare_2_string(self,a,b):
+        '''
+        So sánh 2 chuỗi \n
+        Input: \n
+        a: chuỗi thứ nhất \n
+        b: chuỗi thứ hai \n
+        Output: \n
+        1: a = b \n
+        0: a != b \n
+        2: a hoặc b là NaN \n
+        N: a và b là NaN \n
+
+        '''
         # if math.isnan(a) and math.isnan(b):
         #     return "N"
         # if math.isnan(a) or math.isnan(b):
@@ -62,13 +97,23 @@ class Compare():
             return "0"
 
 class CompareFinancial(Compare):
-
+    '''
+    So sánh đối chiếu các nguồn dữ liệu tài chính \n
+    '''
     def __init__(self,symbol,path_,type_time,data_field) -> None:
+        '''
+        Input: \n
+        symbol: mã cổ phiếu \n
+        path_: đường dẫn \n
+        type_time: loại thời gian \n
+        data_field: dữ liệu cần lấy \n
+        Output: None \n
+        '''
         self.symbol = symbol
         self.path_main = path_
         self.type_time = type_time
         self.dict_data={
-            "CF":{"path":[self.path_main+f"/Financial/CafeF/F3/{type_time}/"],"company":pd.DataFrame({}),"money":1000},
+            "CF":{"path":[self.path_main+f"/Financial/CafeF/F3/{type_time}/"],"company":pd.DataFrame({}),"money":1},
             "VS":{"path":[self.path_main+f"/Financial/VietStock/F3/{type_time}/"],"company":pd.DataFrame({}),"money":1}
         }
         self.getDataField(data_field)
@@ -76,9 +121,18 @@ class CompareFinancial(Compare):
 
 
     def getDataField(self,data_field):
+        '''
+        Lấy dữ liệu cần lấy \n
+        Input: data_field: dữ liệu cần lấy \n
+        Output: None \n'''
         self.data_field = data_field[["Feature"]]
 
     def getData(self):
+        '''
+        Lấy dữ liệu từ các nguồn \n
+        Input: None \n
+        Output: None \n
+        '''
         for key in self.dict_data.keys():
             try:
                 df = pd.read_csv("{}/{}.csv".format(self.dict_data[key]["path"][0],self.symbol))
@@ -91,9 +145,20 @@ class CompareFinancial(Compare):
             self.dict_data[key]["company"] = df
 
     def getTime(self,data):
+        '''
+        Lấy danh sách thời gian \n
+        Input: data: dữ liệu \n
+        Output: list thời gian \n'''
         return data.columns[1:]
 
     def get_field(self,key_1,key_2):
+        '''
+        Lấy dữ liệu từ 2 nguồn \n
+        Input: \n
+        key_1: nguồn thứ nhất \n
+        key_2: nguồn thứ hai \n
+        Output: DataFrame \n
+        '''
         df = pd.merge( self.dict_data[key_1]["company"], self.dict_data[key_2]["company"],on=["Feature"],how="inner")
         list_year = self.getTime(self.dict_data["CF"]["company"])
         s_a,s_b =  self.dict_data[key_1]["money"], self.dict_data[key_2]["money"]

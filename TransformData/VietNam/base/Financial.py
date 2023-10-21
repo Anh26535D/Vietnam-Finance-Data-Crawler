@@ -7,15 +7,21 @@ import os
 import numpy as np
 pd.options.mode.chained_assignment = None  # default='warn'
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 from VAR_GLOBAL_CONFIG import *
 
 class TransForm():
+    '''
+    Chuyển đổi dữ liệu từ dạng F0 sang F3 \n'''
     def __init__(self,dict_path_) -> None:
         self.path_object = dict_path_
         self.time = []
         pass
     def replace_NaN_0(self,df):
+        '''
+        Thay thế NaN bằng 0 \n
+        Input: df: DataFrame \n
+        Output: DataFrame \n'''
         df = df.dropna(axis=1, how='all')
         df = df.fillna(0)
         for column in self.time:
@@ -24,13 +30,30 @@ class TransForm():
         return df
         
     def getTime(self,type_time):
+        '''
+        Lấy thời gian \n
+        Input: type_time: loại thời gian \n
+        Output: thời gian \n'''
         if type_time == "Year":
             return YEAR_KEY
         elif type_time == "Quarter":
             return QUARTER_KEY
 
 class CafeF(TransForm):
+    '''
+    Chuyển đổi dữ liệu từ dạng F0 sang F3 nguồn CafeF\n
+
+    '''
     def __init__(self,dict_path_cf) -> None:
+        '''
+        Khởi tạo \n
+        Input:\n 
+        self.data_field: dữ liệu trường cần lấy \n
+        self.data_field_default_year: dữ liệu trường mặc định năm \n
+        self.data_field_default_quarter: dữ liệu trường mặc định quý \n
+        dict_path_cf: đường dẫn \n
+        Output: None \n
+        '''
         super().__init__(dict_path_cf)
         file = FILE_FEATURE
         df = pd.read_excel(f'{dict_path_cf["Feature"]}/{file}',sheet_name="CafeF")
@@ -40,7 +63,15 @@ class CafeF(TransForm):
         self.data_field_default_year = df
         df = pd.read_excel(f'{dict_path_cf["Feature"]}/{file}',sheet_name="Quarter")
         self.data_field_default_quarter = df
+    
     def CheckData(self,symbol,type_time,time_detail):
+        '''
+        Kiểm tra dữ liệu đã được crawl chưa \n
+        Input: symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        time_detail: thời gian chi tiết \n
+        Output: True: đã được crawl, False: chưa được crawl \n
+        '''
         for key in self.path_object["F0"].keys():
             if key.find(type_time) != -1:
                     with open(f'{self.path_object["F0"][key]}/{symbol}.json',encoding='utf8') as j:
@@ -53,6 +84,12 @@ class CafeF(TransForm):
 
 
     def Financial_F0_to_F1(self,symbol,type_time):
+            '''
+            Chuyển đổi dữ liệu từ dạng F0 sang F1 \n
+            Input: \n
+            symbol: mã cổ phiếu \n
+            type_time: loại thời gian \n
+            Output: DataFrame \n'''
             data = {}
             for key in self.path_object["F0"].keys():
                 if key.find(type_time) != -1:
@@ -100,6 +137,13 @@ class CafeF(TransForm):
             return temp
 
     def Financial_F1_to_F2(self,symbol,type_time):
+                '''
+                Chuyển đổi dữ liệu từ dạng F1 sang F2 \n
+                Input: \n
+                symbol: mã cổ phiếu \n
+                type_time: loại thời gian \n
+                Output: DataFrame \n
+                '''
                 link ="{}/{}.csv".format(self.path_object["F1"][type_time],symbol)
                 data = pd.read_csv(link)
                 temp = pd.merge(self.data_field,data, on="field",how="outer")
@@ -111,6 +155,12 @@ class CafeF(TransForm):
                 temp.to_csv(f'{self.path_object["F2"][type_time]}/{symbol}.csv',index=False)
                 return temp
     def Financial_F2_to_F3(self,symbol,type_time):
+                '''
+                Chuyển đổi dữ liệu từ dạng F2 sang F3 \n
+                Input: \n
+                symbol: mã cổ phiếu \n
+                type_time: loại thời gian \n
+                Output: DataFrame \n'''
                 if type_time == "Year":
                     data_field = self.data_field_default_year
                 elif type_time == "Quarter":
@@ -127,28 +177,54 @@ class CafeF(TransForm):
                 return temp
     
     def run(self,symbol,type_time):
+        '''
+        Chạy chuyển đổi dữ liệu \n
+        Input: \n
+        symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        Output: True: thành công, False: thất bại \n
+        '''
         try:
             self.Financial_F0_to_F1(symbol,type_time)
             self.Financial_F1_to_F2(symbol,type_time)
             self.Financial_F2_to_F3(symbol,type_time)
         except:
-            print(symbol,type_time)
+            print(symbol,type_time,"CF")
             return False
         return True
 
 
 class VietStock(TransForm):
+    '''
+    Chuyển đổi dữ liệu từ dạng F0 sang F3 nguồn VietStock\n
+    '''
     def __init__(self,dict_path_vs) -> None:
+        '''
+        Khởi tạo \n
+        Input:\n
+        self.data_field: dữ liệu trường cần lấy \n
+        self.data_field_default_year: dữ liệu trường mặc định năm \n
+        self.data_field_default_quarter: dữ liệu trường mặc định quý \n
+        dict_path_vs: đường dẫn \n
+        Output: None \n
+        '''
         super().__init__(dict_path_vs)
-        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="VietStock")
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/{FILE_FEATURE}',sheet_name="VietStock")
         df = df.rename(columns={"VIS_Raw_F1":"field"})
         self.data_field = df
-        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Total")
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/{FILE_FEATURE}',sheet_name="Total")
         self.data_field_default_year = df
-        df = pd.read_excel(f'{dict_path_vs["Feature"]}/Feature_Standard_Library.xlsx',sheet_name="Quarter")
+        df = pd.read_excel(f'{dict_path_vs["Feature"]}/{FILE_FEATURE}',sheet_name="Quarter")
         self.data_field_default_quarter = df
 
     def CheckData(self,symbol,type_time,time_detail):
+        '''
+        Kiểm tra dữ liệu đã được crawl chưa \n
+        Input: symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        time_detail: thời gian chi tiết \n
+        Output: True: đã được crawl, False: chưa được crawl \n
+        '''
         for key in self.path_object["F0"].keys():
             if key.find(type_time) != -1:
                 path_in = self.path_object["F0"][key]
@@ -163,16 +239,35 @@ class VietStock(TransForm):
                 else:
                     return False
     def change_data_BS(self,df_finan):
+        '''
+        Chuyển đổi dữ liệu báo cáo tài chính cân đối \n
+        Input: df_finan: dữ liệu báo cáo tài chính cân đối \n
+        Output: dữ liệu báo cáo tài chính cân đối \n
+        '''
         first_col = df_finan.columns[0]
         feature_change  = '- Nguyên giá__' + df_finan[first_col].loc[df_finan[df_finan[first_col]=='- Nguyên giá'].index-1]
         feature_change.index = feature_change.index+1
         df_finan[first_col].iloc[df_finan[df_finan[first_col]=='- Nguyên giá'].index] = feature_change
 
-        feature_change  = '- Giá trị hao mòn lũy kế (*)__' + df_finan[first_col].loc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế (*)'].index-2]
+        feature_change  = '- Giá trị hao mòn lũy kế__' + df_finan[first_col].loc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế '].index-2]
         feature_change.index = feature_change.index+2
-        df_finan[first_col].iloc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế (*)'].index] = feature_change
+        df_finan[first_col].iloc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế '].index] = feature_change
+
+        feature_change  = '- Giá trị hao mòn lũy kế__' + df_finan[first_col].loc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế'].index-2]
+        feature_change.index = feature_change.index+2
+        df_finan[first_col].iloc[df_finan[df_finan[first_col]=='- Giá trị hao mòn lũy kế'].index] = feature_change
+        
         return df_finan
+    
     def Financial_F0_to_F1(self,symbol,type_time):
+        '''
+        Chuyển đổi dữ liệu từ dạng F0 sang F1 \n
+        Input: \n
+        symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        Output: DataFrame \n
+
+        '''
         data = pd.DataFrame({})
         for key in self.path_object["F0"].keys():
             if key.find(type_time) != -1:
@@ -185,6 +280,13 @@ class VietStock(TransForm):
         data.to_csv(f'{path_out}/{symbol}.csv', index = False)
 
     def Financial_F1_to_F2(self,symbol,type_time):
+        '''
+        Chuyển đổi dữ liệu từ dạng F1 sang F2 \n
+        Input: \n
+        symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        Output: DataFrame \n
+        '''
         df = pd.read_csv(f'{self.path_object["F1"][type_time]}/{symbol}.csv')
         if len(df.index) == 0:
             return df
@@ -203,6 +305,13 @@ class VietStock(TransForm):
             return False
 
     def Financial_F2_to_F3(self,symbol,type_time):
+            '''
+            Chuyển đổi dữ liệu từ dạng F2 sang F3 \n
+            Input: \n
+            symbol: mã cổ phiếu \n
+            type_time: loại thời gian \n
+            Output: DataFrame \n
+            '''
             if type_time == "Year":
                 data_field = self.data_field_default_year
             elif type_time == "Quarter":
@@ -222,12 +331,19 @@ class VietStock(TransForm):
             temp.to_csv(f'{self.path_object["F3"][type_time]}/{symbol}.csv',index=False)
             return temp
     def run(self,symbol,type_time):
+        '''
+        Chạy chuyển đổi dữ liệu \n
+        Input: \n
+        symbol: mã cổ phiếu \n
+        type_time: loại thời gian \n
+        Output: True: thành công, False: thất bại \n
+        '''
         try:
             self.Financial_F0_to_F1(symbol,type_time)
             self.Financial_F1_to_F2(symbol,type_time)
             self.Financial_F2_to_F3(symbol,type_time)
         except:
-            print(symbol,type_time)
+            print(symbol,type_time,"VS")
             return False
         return True
 

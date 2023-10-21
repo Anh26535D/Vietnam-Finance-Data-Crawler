@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'A:\DataVietNam')
 from Crawl import CafeF
 from Crawl import StockBiz
 import pandas as pd
@@ -13,14 +13,28 @@ end = PATH_.DateCurrent.strftime("%d/%m/%Y")
 
 
 def closeCafeF(symbol):
+    '''
+    Lấy dữ liệu từ link CafeF \n
+    Input: start: năm bắt đầu \n
+    end: năm kết thúc \n
+    link: link \n
+    Output: DataFrame'''
     PATH = PATH_.joinPath(PATH_.PATH_CLOSE,"CafeF")
     try:
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
+        print(1111)
         com = CafeF.Close(symbol=symbol,start=start,end=end)
         com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
     
 def closeStockBiz(symbol):
+    '''
+    Lấy dữ liệu từ link StockBiz \n
+    Input: start: năm bắt đầu \n
+    end: năm kết thúc \n
+    link: link \n
+    Output: DataFrame
+    '''
     PATH = PATH_.joinPath(PATH_.PATH_CLOSE,"StockBiz")
     try:
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
@@ -29,14 +43,14 @@ def closeStockBiz(symbol):
         com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
 
 List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-for symbol in List_Symbol["Mã CK▲"]:
-    print(symbol, end="--")
-    try:
-        closeCafeF(symbol)
-        closeStockBiz(symbol)
-    except:
-        pass
-    print("Done!!!")
+# for symbol in List_Symbol["Mã CK▲"]:
+#     print(symbol, end="--")
+#     try:
+#         closeCafeF(symbol)
+#         closeStockBiz(symbol)
+#     except:
+#         pass
+#     print("Done!!!")
 
-# closeCafeF("AAA")
+closeCafeF("AAA")
 # closeStockBiz("AAA")
