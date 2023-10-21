@@ -1,10 +1,9 @@
 import sys
 import time
-sys.path.append("A:\DataVietNam")
+sys.path.append("C:\DataVietNam")
 
 from Crawl import CafeF
 from Crawl import VietStock
-from Flow import PATH_env
 
 import json
 import pandas as pd
@@ -32,28 +31,23 @@ def create_data(symbol,year):
     return cookie,data
 
 
-YEAR = "2023"
-QUY = "2"
+YEAR = "2021"
+QUY = ""
 
 PATH_FROM = ""
-PATH_TO = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS/2023-08-04/"
+PATH_TO = ""
 
-PATH_ = PATH_env.PATH_ENV("Ingestion")
-
-# data = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-data = pd.read_csv("G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS/2023-08-04/List_company.csv")
+data = pd.read_csv("/content/List_company.csv")
 df_result_cf = pd.DataFrame()
 df_result_vs = pd.DataFrame()
-print(f"/{PATH_TO}/CafeF_{YEAR}_{QUY}.csv",8888)
+
 for index in data.index:
     symbol = data["Mã CK▲"][index]
-    cookie,data_ = create_data(symbol,YEAR)
+    cookie,data = create_data(symbol,YEAR)
     C_F = CafeF.FinancailStatement().get_FinancialReportPDF(symbol,YEAR,QUY)
-    # print(C_F)
-    # V_S = VietStock.FinanStatement(symbol).get_FinancialReportPDF(symbol, YEAR, cookie,data)
+    V_S = VietStock.FinanStatement().get_FinancialReportPDF(cookie,data)
     df_result_cf = pd.concat([df_result_cf, C_F], ignore_index=True)
-    df_result_cf.to_csv(f"{PATH_TO}/CafeF_{YEAR}_{QUY}.csv",index=False)
-    # df_result_vs = pd.concat([df_result_vs, V_S], ignore_index=True)
+    df_result_vs = pd.concat([df_result_vs, V_S], ignore_index=True)
 
-df_result_cf.to_csv(f"{PATH_TO}/CafeF_{YEAR}_{QUY}.csv",index=False)
-# df_result_vs.to_csv(f"/{PATH_TO}/VietStock_{YEAR}_{QUY}.csv",index=False)
+df_result_cf.to_csv(f"/{PATH_TO}/CafeF_{YEAR}_{QUY}.csv",index=False)
+df_result_vs.to_csv(f"/{PATH_TO}/VietStock_{YEAR}_{QUY}.csv",index=False)

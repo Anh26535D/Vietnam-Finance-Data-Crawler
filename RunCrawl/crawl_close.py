@@ -1,11 +1,13 @@
-import sys
-sys.path.append(r'A:\DataVietNam')
-from Crawl import CafeF
-from Crawl import StockBiz
-import pandas as pd
-from Flow import PATH_env
+import time
 import datetime
+from Flow import PATH_env
+import pandas as pd
+from Crawl import StockBiz
+from Crawl import CafeF
+import sys
+sys.path.append(r'C:\DataVietNam')
 
+time.sleep(5)
 PATH_ = PATH_env.PATH_ENV("Ingestion")
 start = PATH_.DateCurrent - datetime.timedelta(days=180)
 start = start.strftime("%d/%m/%Y")
@@ -18,15 +20,16 @@ def closeCafeF(symbol):
     Input: start: năm bắt đầu \n
     end: năm kết thúc \n
     link: link \n
-    Output: DataFrame'''
-    PATH = PATH_.joinPath(PATH_.PATH_CLOSE,"CafeF")
+    Output: DataFrame
+    '''
+    PATH = PATH_.joinPath(PATH_.PATH_CLOSE, "CafeF")
     try:
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
-        print(1111)
-        com = CafeF.Close(symbol=symbol,start=start,end=end)
-        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
-    
+        com = CafeF.Close(symbol=symbol, start=start, end=end)
+        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv", index=False)
+
+
 def closeStockBiz(symbol):
     '''
     Lấy dữ liệu từ link StockBiz \n
@@ -35,22 +38,24 @@ def closeStockBiz(symbol):
     link: link \n
     Output: DataFrame
     '''
-    PATH = PATH_.joinPath(PATH_.PATH_CLOSE,"StockBiz")
+    PATH = PATH_.joinPath(PATH_.PATH_CLOSE, "StockBiz")
     try:
         df = pd.read_csv(f"{PATH}/{symbol}.csv")
     except:
-        com = StockBiz.Close(symbol=symbol,start=end,end=start)
-        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv",index=False)
+        com = StockBiz.Close(symbol=symbol, start=end, end=start)
+        com.DownloadClose().to_csv(f"{PATH}/{symbol}.csv", index=False)
 
-List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-# for symbol in List_Symbol["Mã CK▲"]:
-#     print(symbol, end="--")
-#     try:
-#         closeCafeF(symbol)
-#         closeStockBiz(symbol)
-#     except:
-#         pass
-#     print("Done!!!")
 
-closeCafeF("AAA")
+List_Symbol = pd.read_csv(
+    f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+for symbol in List_Symbol["Mã CK▲"]:
+    print(symbol, end="--")
+    try:
+        closeCafeF(symbol)
+        closeStockBiz(symbol)
+    except:
+        pass
+    print("Done!!!")
+
+# closeCafeF("AAA")
 # closeStockBiz("AAA")

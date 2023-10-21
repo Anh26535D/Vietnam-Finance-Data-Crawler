@@ -7,10 +7,11 @@ import json
 
 class FolderData(PATH_env.PATH_ENV):
     '''
-    Create Folder for Data'''
+    Create Folder for Data
+    '''
     def __init__(self, Type_, date):
         '''
-        Type_: Type of Data \n
+        Type_: Type of Data 
         date: date of Data'''
         if len(date) == 0:
             super().__init__(Type_, RealDay=True)
@@ -19,9 +20,10 @@ class FolderData(PATH_env.PATH_ENV):
 
     def createFolder(self, path):
         '''
-        Create Folder \n
-        Input: path \n
-        Output: path'''
+        Create Folder 
+        Input: path 
+        Output: path
+        '''
         isExist = os.path.exists(path)
         if not isExist:
             os.makedirs(path)
@@ -29,9 +31,10 @@ class FolderData(PATH_env.PATH_ENV):
 
     def GetDateUpdate(self, DAY):
         '''
-        Get Date Update \n
-        Input: DAY: date \n
-        Output: date'''
+        Get Date Update 
+        Input: DAY: date 
+        Output: date
+        '''
         list_date = os.listdir(self.PATH_MAIN)
         arr = []
         for day in list_date:
@@ -45,23 +48,24 @@ class FolderData(PATH_env.PATH_ENV):
 
     def getListPath(self):
         '''
-        Get List Path \n
-        Output: list path'''
+        Get List Path 
+        Output: list path
+        '''
         return os.listdir(self.PATH_MAIN)
 
 
 class FolderCrawl(FolderData):
     def __init__(self, date=""):
         '''
-        Create Folder for Crawl Data \n
+        Create Folder for Crawl Data 
         Input: date'''
 
         super().__init__("Ingestion", date)
 
     def folderClose(self):
         '''
-        Create Folder for Close Data \n
-        Input: None \n
+        Create Folder for Close Data 
+        Input: None 
         Output: None'''
         path = self.PATH_CLOSE
         self.createFolder(path)
@@ -70,23 +74,23 @@ class FolderCrawl(FolderData):
 
     def folderDividend(self):
         '''
-        Create Folder for Dividend Data \n
-        Input: None \n
+        Create Folder for Dividend Data 
+        Input: None 
         Output: None'''
         path = self.PATH_DIVIDEND
         self.createFolder(path)
         for obj in self.DividendObject:
             if obj == "VietStock":
                 pass
-                for p_obj in self.DividendPartObject:
-                    self.createFolder(self.joinPath(path,obj,p_obj))
+                # for p_obj in self.DividendPartObject:
+                #     self.createFolder(self.joinPath(path,obj,p_obj))
             else:
                 self.createFolder(self.joinPath(path, obj))
 
     def folderFinancial(self):
         '''
-        Create Folder for Financial Data \n
-        Input: None \n
+        Create Folder for Financial Data 
+        Input: None 
         Output: None'''
         path = self.PATH_FINANCIAL
         self.createFolder(path)
@@ -97,8 +101,8 @@ class FolderCrawl(FolderData):
 
     def folderVolume(self):
         '''
-        Create Folder for Volume Data \n
-        Input: None \n
+        Create Folder for Volume Data 
+        Input: None 
         Output: None'''
 
         path = self.PATH_VOLUME
@@ -109,7 +113,7 @@ class FolderCrawl(FolderData):
 
     def Run_Create_Folder(self):
         '''
-        Run Create Folder \n
+        Run Create Folder 
         '''
         self.folderClose()
         self.folderDividend()
@@ -122,13 +126,13 @@ class FolderUpdate(FolderData):
     Create Folder for Update Data'''
     def __init__(self, date):
         '''
-        NeedFolderUpdate: list folder need update \n'''
+        NeedFolderUpdate: list folder need update '''
         super().__init__("Raw_VIS", date=date)
         self.NeedFolderUpdate = []
 
     def folderClose(self):
         '''
-        Create Folder for Close Data \n'''
+        Create Folder for Close Data '''
         path = self.PATH_CLOSE
         # for obj in self.CloseObject:
         #     for PHASE in self.Phase[]:
@@ -137,8 +141,8 @@ class FolderUpdate(FolderData):
 
     def folderDividend(self):
         '''
-        Create Folder for Dividend Data \n
-        Input: None \n
+        Create Folder for Dividend Data 
+        Input: None 
         Output: None    '''
         path = self.PATH_DIVIDEND
         self.createFolder(path)
@@ -153,8 +157,8 @@ class FolderUpdate(FolderData):
 
     def folderFinancial(self):
         '''
-        Create Folder for Financial Data \n
-        Input: None \n
+        Create Folder for Financial Data 
+        Input: None 
         Output: None
         '''
         path = self.PATH_FINANCIAL
@@ -175,8 +179,8 @@ class FolderUpdate(FolderData):
 
     def folderVolume(self):
         '''
-        Create Folder for Volume Data \n
-        Input: None \n
+        Create Folder for Volume Data 
+        Input: None 
         Output: None'''
         path = self.PATH_VOLUME
         for obj in self.VolumeObject:
@@ -186,8 +190,8 @@ class FolderUpdate(FolderData):
 
     def folderCompare(self):
         '''
-        Create Folder for Compare Data \n
-        Input: None \n
+        Create Folder for Compare Data 
+        Input: None 
         Output: None'''
         path = self.PATH_COMPARE
         for time in self.Type_Time:
@@ -197,7 +201,7 @@ class FolderUpdate(FolderData):
 
     def Run_Create_Folder(self):
         '''
-        Run Create Folder \n
+        Run Create Folder 
         '''
         self.folderClose()
         self.folderDividend()

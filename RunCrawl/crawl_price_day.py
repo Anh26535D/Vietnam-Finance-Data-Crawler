@@ -1,5 +1,6 @@
 import sys
-sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'E:\vis\vis_vietnamese_data\Vis_Data_VietNam')
+
 import datetime
 from Flow import PATH_env
 from Crawl import SSI
@@ -8,8 +9,7 @@ PATH_ = PATH_env.PATH_ENV("Ingestion")
 
 t = SSI.Price()
 day = datetime.datetime.today()
-# day = datetime.datetime(2023, 3, 31)
-# print(t.getPriceToDayAllExchange())
+
 Data = t.getIBoardAllExchange()
 Data.to_csv(
     f"{PATH_.REAl_DAY_IBOARD}/{day.strftime('%Y-%m-%d')}.csv", index=False)

@@ -1,6 +1,6 @@
 import sys
 import time
-sys.path.append("A:\DataVietNam")
+sys.path.append("C:\DataVietNam")
 
 from Crawl import CafeF
 from Crawl import VietStock

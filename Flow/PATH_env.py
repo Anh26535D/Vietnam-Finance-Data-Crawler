@@ -1,10 +1,9 @@
 import datetime
 
-# PATH_Data = "C:\Data"
-PATH_Data = "H:\My Drive\DataVIS_\VietNam\Data Lake\Ingestion"
+PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
 
-day,month,year=0,0,0
-# day,month,year=1,5,2023
+day, month, year= 0, 0, 0
+
 if day != 0:
     date = datetime.datetime(year,month,day)
 else:
@@ -19,18 +18,18 @@ class PATH_ENV():
     '''
     def __init__(self,Type_,date=date,RealDay=True):
         '''
-        Type_: Loại data \n
-        date: Ngày \n
-        RealDay: True: Ngày thực, False: Ngày thực tế \n
-        CloseObject: Các đối tượng cần lấy giá \n
-        DividendObject: Các đối tượng cần lấy cổ tức \n
-        DividendPartObject: Các đối tượng cần lấy cổ tức chi tiết \n
-        FinancialObject: Các đối tượng cần lấy tài chính \n
-        FinancialPartObject: Các đối tượng cần lấy tài chính chi tiết \n
-        VolumeObject: Các đối tượng cần lấy khối lượng \n
-        VolumePartObject: Các đối tượng cần lấy khối lượng chi tiết \n
-        Phase: Các giai đoạn \n
-        Temp: Thư mục tạm \n
+        Type_: Loại data 
+        date: Ngày 
+        RealDay: True: Ngày thực, False: Ngày thực tế 
+        CloseObject: Các đối tượng cần lấy giá 
+        DividendObject: Các đối tượng cần lấy cổ tức 
+        DividendPartObject: Các đối tượng cần lấy cổ tức chi tiết 
+        FinancialObject: Các đối tượng cần lấy tài chính 
+        FinancialPartObject: Các đối tượng cần lấy tài chính chi tiết 
+        VolumeObject: Các đối tượng cần lấy khối lượng 
+        VolumePartObject: Các đối tượng cần lấy khối lượng chi tiết 
+        Phase: Các giai đoạn 
+        Temp: Thư mục tạm 
         '''
         if RealDay == True:
             self.DateCurrent = date
@@ -49,33 +48,38 @@ class PATH_ENV():
         self.Phase = [f"F{i}" for i in range(4)]
         self.Temp = "Temp"
 
-    def joinPath(self,*arg):
+    def joinPath(self, *args):
         '''
-        Nối các đường dẫn thành thư mục \n
-        Input: *arg: các đường dẫn \n
-        Output: đường dẫn nối'''
-        arr = []
-        for i in arg:
-            if i != "":
-                arr.append(i)
-        return "/".join(arr)
+        Join multiple paths into a directory path.
+        
+        Parameters:
+        *args : str
+            Multiple path segments to join.
+        
+        Returns:
+        str
+            Joined directory path.
+        '''
+        filtered_paths = [path for path in args if path != ""]
+        joined_path = "/".join(filtered_paths)
+        return joined_path
 
     def setTypeForder(self,Type):
         '''
-        Chọn loại thư mục \n
-        Input: Type: Loại thư mục \n
+        Chọn loại thư mục 
+        Input: Type: Loại thư mục 
         Output: None'''
         if Type == "Ingestion":
-            PATH_Data = "H:\My Drive\DataVIS_\VietNam\Data Lake\Ingestion"
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
         elif Type == "Raw_VIS":
-            PATH_Data = "H:\My Drive\DataVIS_\VietNam\Data Lake\Raw_VIS"
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
         elif Type == "WH":
-            PATH_Data = "H:\My Drive\DataVIS_\VietNam\Data Lake\Data WareHouse"
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data WareHouse"
             self.PATH_MAIN = PATH_Data
             self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,"Close")
             return 
         else:
-            PATH_Data = "H:\My Drive\DataVIS_\VietNam\Data Lake\Data_Rule"
+            PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Data_Rule"
         self.PATH_MAIN = PATH_Data
         self.PATH_MAIN_CURRENT = self.joinPath(self.PATH_MAIN,self.DayCurrent)
         self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,self.DayCurrent,"Close")

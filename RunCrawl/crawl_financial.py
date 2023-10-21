@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'A:\DataVietNam')
+sys.path.append(r'E:\vis\vis_vietnamese_data\Vis_Data_VietNam')
 
 from Crawl import CafeF
 from Crawl import VietStock
@@ -114,7 +114,7 @@ def FinancialCafeF(symbol, type_):
 
     print(symbol, uncrawled_data_types, end=" ")
 
-    web = CafeF.FinancailStatement()
+    web = CafeF.FinancialStatement()
     time = 3
     for i in uncrawled_data_types:
         if i == 1:

@@ -1,8 +1,8 @@
 import sys
 import time
-sys.path.append("A:\DataVietNam")
-
-
+sys.path.append("C:\DataVietNam")
+import time
+time.sleep(5)
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
@@ -26,7 +26,6 @@ def DividendCafeF(symbol):
         try:
             com = CafeF.Dividend()
             df = com.get_new(symbol)
-            print(df,5555)
             df.to_csv(f"{PATH}/{symbol}.csv",index=False)
             return df
         except:
@@ -44,7 +43,6 @@ def run_reset_vs():
         run_reset_vs()
 
 com = VietStock.Other()
-
 def DividendVietStock(symbol):
     '''
     Lấy dữ liệu từ link VietStock \n
@@ -73,31 +71,17 @@ def DividendAllVietStock():
     Lấy dữ liệu từ link VietStock \n
     Output: DataFrame'''
     PATH = PATH_.joinPath(PATH_.PATH_DIVIDEND,"VietStock")
-
-    # PATH = 'G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion/2023-07-28/Dividend/VietStock'
-    # print(PATH)
     try:
         com.Dividend().to_csv(f'{PATH}/Dividend.csv',index=False)
     except:
         run_reset_vs()
        
 
-# DividendVietStock("ALL")
+DividendAllVietStock()
+# print("D")
 
-List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-
-for i in range(5):
-    PATH = PATH_.joinPath(PATH_.PATH_DIVIDEND,"VietStock")
-
-    # PATH = 'G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion/2023-07-28/Dividend/VietStock'
-    try:
-        pd.read_csv(f'{PATH}/Dividend.csv')
-    except:
-        DividendAllVietStock()
-
-for symbol in List_Symbol["Mã CK▲"]:
-    print(symbol)
-    DividendCafeF(symbol)
-# print(DividendCafeF("AAA"))
-
+# List_Symbol = pd.read_csv(f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
+# for symbol in List_Symbol["Mã CK▲"]:
+#     DividendCafeF(symbol)
+# # print(DividendCafeF("SFI"))
 com.turn_off_drive()
