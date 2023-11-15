@@ -49,15 +49,6 @@ def convert_to_investment_period(time, is_yearly=True):
         )
     return start_date, end_date
 
-
-def coverTime(str_time):
-    '''
-    Chuyển đổi thời gian từ dd/mm/yyyy sang yyyy-mm-dd
-    '''
-    time = str_time.split("/")
-    return datetime.datetime(int(time[2]), int(time[1]), int(time[0]))
-
-
 def progress_bar(cur, total, color=colorama.Fore.GREEN, text=""):
     '''
     Hiển thị thanh tiến trình'''

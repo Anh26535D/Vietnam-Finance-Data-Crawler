@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'E:\vis\vis_vietnamese_data\Vis_Data_VietNam')
+sys.path.append(r'E:\vis\vis_vietnamese_data\DataVietNam')
 
 import datetime
 from Flow import PATH_env
@@ -10,11 +10,13 @@ PATH_ = PATH_env.PATH_ENV("Ingestion")
 t = SSI.Price()
 day = datetime.datetime.today()
 
-Data = t.getIBoardAllExchange()
-Data.to_csv(
+
+iboard_data = t.getIBoardAllExchange()
+iboard_data.to_csv(
     f"{PATH_.REAl_DAY_IBOARD}/{day.strftime('%Y-%m-%d')}.csv", index=False)
 
-trading = Data[["stockSymbol", "matchedPrice", "nmTotalTradedQty", "refPrice","exchange"]].rename(
+
+trading = iboard_data[["stockSymbol", "matchedPrice", "nmTotalTradedQty", "refPrice","exchange"]].rename(
     columns={"stockSymbol": "Symbol", 
              "matchedPrice": "Price", 
              "nmTotalTradedQty": "Volume", 

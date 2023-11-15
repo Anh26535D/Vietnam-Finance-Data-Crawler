@@ -1,6 +1,7 @@
 import sys
 sys.path.append(r'E:\vis\vis_vietnamese_data\DataVietNam')
 
+
 from Crawl import CafeF
 from Crawl import VietStock
 import pandas as pd
@@ -30,9 +31,8 @@ time_formats = {
     "NAM":"Year/"
 }
 
-# webVS = VietStock.FinanStatement("")
-webVS = None
-# webVS.login_VS()
+webVS = VietStock.FinanStatement("")
+webVS.login_VS()
 
 def check_file_existence(symbol, document_type):
     '''
@@ -95,14 +95,12 @@ def FinancialCafeF(symbol, type_):
     '''
     Fetches financial data from CafeF website and saves it as JSON files.
 
-    Parameters:
+    Parameters
+    ----------
     symbol : str
         Stock symbol.
     data_type : str
         Type of financial data to fetch (e.g., "Q" for quarterly, "Y" for yearly).
-
-    Returns:
-    None
     '''
 
     global PATH
@@ -149,14 +147,12 @@ def FinancialVietStock(symbol, type_):
     '''
     Fetches financial data from VietStock website and saves it as CSV files.
     
-    Parameters:
+    Parameters
+    ----------
     symbol : str
         Stock symbol.
     data_type : str
         Type of financial data to fetch (e.g., "Q" for quarterly, "Y" for yearly).
-    
-    Returns:
-    None
     '''
 
     global PATH
@@ -210,11 +206,13 @@ def update_stock_symbols_status(stock_symbols, **kwargs):
     '''
     Updates the status of stock symbols in the given list.
 
-    Parameters:
+    Parameters
+    ----------
     stock_symbols : dict
         Dictionary containing stock symbols as keys and their statuses as values.
 
-    Returns:
+    Returns
+    -------
     dict
         Updated dictionary of stock symbols with their statuses.
     '''
@@ -228,7 +226,8 @@ def run_crawl(func_crawl, func_reset, symbol, type_, state):
     '''
     Executes the crawling process.
 
-    Parameters:
+    Parameters
+    ----------
     func_crawl : function
         Function to crawl financial data.
     func_reset : function
@@ -240,7 +239,8 @@ def run_crawl(func_crawl, func_reset, symbol, type_, state):
     state : bool
         Crawl state (True for successfully crawled, False for failed crawl).
 
-    Returns:
+    Returns
+    -------
     bool
         True if crawl is successful, False otherwise.
     '''
@@ -259,7 +259,7 @@ list_symbol_df = pd.read_csv(
     f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
 initial_status = [False for _ in list_symbol_df.index]
 list_symbol_df = update_stock_symbols_status(
-    list_symbol_df, CF_Q=initial_status, CF_Y=initial_status, VS_Q=initial_status, VS_Y=initial_status)
+    list_symbol_df, VS_Q=initial_status, VS_Y=initial_status)
 list_symbol_df.to_csv(
     f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv', index=False)
 
@@ -267,29 +267,24 @@ list_symbol_df.to_csv(
 for i in range(3):
     list_symbol_df = pd.read_csv(
         f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv')
-    CheckStateCF_QUARTER = []
-    CheckStateCF_YEAR = []
+    CheckStateVS_QUARTER = []
+    CheckStateVS_YEAR = []
+
     PATH = PATH_.joinPath(PATH_.PATH_FINANCIAL, "VietStock")
 
-    # webVS.CrawlWithBatch(list_symbol_df, q, f"{PATH}/Quarter")
-    # webVS.CrawlWithBatch(list_symbol_df, y, f"{PATH}/Year")
+    webVS.CrawlWithBatch(list_symbol_df["Mã CK▲"], q, f"{PATH}/Quarter")
+    webVS.CrawlWithBatch(list_symbol_df["Mã CK▲"], y, f"{PATH}/Year")
 
     for idx in list_symbol_df.index:
-        state_CF_Q, state_CF_Y = list_symbol_df["CF_Q"][idx], list_symbol_df["CF_Y"][idx]
+        state_VS_Q, state_VS_Y = list_symbol_df["VS_Q"][idx], list_symbol_df["VS_Y"][idx]
         symbol = list_symbol_df["Mã CK▲"][idx]
-        print(symbol)
-        state_CF_Q = run_crawl(
-            FinancialCafeF, run_reset_cf, symbol, "Q", state_CF_Q)
-        state_CF_Y = run_crawl(
-            FinancialCafeF, run_reset_cf, symbol, "Y", state_CF_Y)
-        # state_VS_Q = run_crawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
-        # state_VS_Y = run_crawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
-        CheckStateCF_QUARTER.append(state_CF_Q)
-        CheckStateCF_YEAR.append(state_CF_Y)
-        # CheckStateVS_QUARTER.append(state_VS_Q)
-        # CheckStateVS_YEAR.append(state_VS_Y)
+        state_VS_Q = run_crawl(FinancialVietStock,run_reset_vs,symbol,"QUY",state_VS_Q)
+        state_VS_Y = run_crawl(FinancialVietStock,run_reset_vs,symbol,"NAM",state_VS_Y)
+        
+        CheckStateVS_QUARTER.append(state_VS_Q)
+        CheckStateVS_YEAR.append(state_VS_Y)
     list_symbol_df = update_stock_symbols_status(
-        list_symbol_df, CF_Q=CheckStateCF_QUARTER, CF_Y=CheckStateCF_YEAR)
+        list_symbol_df, VS_Q=CheckStateVS_QUARTER, VS_Y=CheckStateVS_YEAR)
     list_symbol_df.to_csv(
         f'{PATH_.joinPath(PATH_.PATH_MAIN_CURRENT,"List_company")}.csv', index=False)
 

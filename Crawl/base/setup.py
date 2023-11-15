@@ -77,8 +77,10 @@ class Setup():
         '''
         Khởi tạo trình duyệt Selenium
         '''
+
         if browser == "Edge":
             edge_options = webdriver.EdgeOptions()
+            # edge_options.add_argument('--start-maximized')
             # edge_options.add_argument('--headless')
             self.driver = webdriver.Edge(options=edge_options)
         else:
@@ -97,6 +99,7 @@ class Setup():
         '''
         Mở link trên trình duyệt
         '''
+        print("IN request_link function")
         try:
             self.driver.set_page_load_timeout(time)
             self.driver.get(link)

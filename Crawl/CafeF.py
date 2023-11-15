@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 import pandas as pd
 import time
 import re
+import requests
 
 class ListCompany(setup.Setup):
     '''Get all symbol of company in Vietnam Stock Market From CafeF'''
@@ -90,6 +91,7 @@ class FinancialStatement(setup.Setup):
         '''
         Khởi tạo FinancialStatement
         self.link: link để lấy dữ liệu CafeF'''
+        
         super().__init__('Selenium')
         self.link = URL_CAFE["FINANCIAL"]
 
@@ -98,6 +100,8 @@ class FinancialStatement(setup.Setup):
         Tạo link để lấy dữ liệu
         Input: mã chứng khoán, năm, tháng, ngày, loại dữ liệu
         Output: None'''
+
+        print("IN setup_link function")
         if type_ == "Y":
             time = "/".join([str(year), "0", "0", "0"])
         elif type_ == "Q":
@@ -149,7 +153,7 @@ class FinancialStatement(setup.Setup):
         Output: bảng chứa dữ liệu'''
 
         self.setup_link(symbol, year,month,day, type_)
-        self.request_link(self.link)
+        self.request_link(self.link, time=60)
         self.clickIncome()
         return self.getData(times)
     
@@ -179,9 +183,9 @@ class FinancialStatement(setup.Setup):
         Lấy dữ liệu
         Input: số lần lấy dữ liệu
         Output: bảng chứa dữ liệu'''
+        print("IN getData function")
         df = {}
-        while times != 0:
-            times -= 1
+        for i in range(times):
             df1 = self.getTable()
             df[df1.columns[1]] = df1.to_dict('records')
             self.clickPerious()
@@ -191,9 +195,11 @@ class FinancialStatement(setup.Setup):
         '''
         Lấy dữ liệu từ bảng
         Input: None
-        Output: bảng chứa dữ liệu'''
-        page_sourse = self.driver.page_source
-        soup = BeautifulSoup(page_sourse, "html.parser")
+        Output: bảng chứa dữ liệu
+        '''
+
+        page_source = self.driver.page_source
+        soup = BeautifulSoup(page_source, "html.parser")
         table = soup.find('table', {'id': 'tblGridData'})
         header = pd.read_html(str(table), displayed_only=False)
         time = np.array_str(header[0][4].values)
@@ -225,6 +231,7 @@ class FinancialStatement(setup.Setup):
     def clickIncome(self):
         '''
         Click vào nút bảng kết quả hoạt động kinh doanh'''
+        print("IN clickIncome function")
         self.click_something_by_id("aNhom2")
 
     def clickCashFlowIndirect(self):

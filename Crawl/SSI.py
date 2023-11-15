@@ -1,10 +1,16 @@
 from .base import setup
-from bs4 import BeautifulSoup
 import pandas as pd
-import time
-import re
 import json
 from datetime import datetime
+import requests
+
+import sys
+import codecs
+
+try:
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.buffer)
+except:
+    pass
 
 
 class Price(setup.Setup):
@@ -16,36 +22,21 @@ class Price(setup.Setup):
         type_tech: Selenium or Colab"""
         super().__init__(type_tech)
 
-    def CrawlPriceIBoardHOSE(self, exchange):
+    def crawlPriceIBoard(self, exchange):
         """
-        Crawl price from https://iboard.ssi.com.vn/"""
-        dict_ = {
-            "operationName": "stockRealtimes",
-            "variables": {"exchange": exchange},
-            "query": "query stockRealtimes($exchange: String) {\n  stockRealtimes(exchange: $exchange) {\n    stockNo\n    ceiling\n    floor\n    refPrice\n    stockSymbol\n    stockType\n    exchange\n    prevMatchedPrice\n    lastMatchedPrice\n    matchedPrice\n    matchedVolume\n    priceChange\n    priceChangePercent\n    highest\n    avgPrice\n    lowest\n    nmTotalTradedQty\n    best1Bid\n    best1BidVol\n    best2Bid\n    best2BidVol\n    best3Bid\n    best3BidVol\n    best4Bid\n    best4BidVol\n    best5Bid\n    best5BidVol\n    best6Bid\n    best6BidVol\n    best7Bid\n    best7BidVol\n    best8Bid\n    best8BidVol\n    best9Bid\n    best9BidVol\n    best10Bid\n    best10BidVol\n    best1Offer\n    best1OfferVol\n    best2Offer\n    best2OfferVol\n    best3Offer\n    best3OfferVol\n    best4Offer\n    best4OfferVol\n    best5Offer\n    best5OfferVol\n    best6Offer\n    best6OfferVol\n    best7Offer\n    best7OfferVol\n    best8Offer\n    best8OfferVol\n    best9Offer\n    best9OfferVol\n    best10Offer\n    best10OfferVol\n    buyForeignQtty\n    buyForeignValue\n    sellForeignQtty\n    sellForeignValue\n    caStatus\n    tradingStatus\n    remainForeignQtty\n    currentBidQty\n    currentOfferQty\n    session\n    __typename\n  }\n}\n",
+        Crawl price from https://iboard.ssi.com.vn/
+        """
+        url = f"https://iboard-query.ssi.com.vn/stock/exchange/{exchange}"
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 Edg/118.0.2088.69"
         }
-        header = {
-            "accept": "*/*",
-            "accept-encoding": "gzip, deflate, br",
-            "accept-language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7,fr-FR;q=0.6,fr;q=0.5",
-            "content-length": "1322",
-            "content-type": "application/json",
-            "g-captcha": None,
-            "origin": "https://iboard.ssi.com.vn",
-            "referer": "https://iboard.ssi.com.vn/",
-            "sec-ch-ua": '"Chromium";v="110", "Not A(Brand";v="24", "Google Chrome";v="110"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/110.0.0.0 Safari/537.36",
-        }
-        data = self.r_post(
-            "https://wgateway-iboard.ssi.com.vn/graphql",
-            data=json.dumps(dict_),
-            headers=header,
-        )
-        return data.json()
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+            content = json.loads(response.content)
+        else:
+            content = {"data": []}
+
+        return content["data"]
 
     def getPriceToDayWithExchange(self, exchange="hose"):
         """
@@ -54,11 +45,10 @@ class Price(setup.Setup):
         output: DataFrame
         """
         date = datetime.now().strftime("%Y-%m-%d")
-        data = self.CrawlPriceIBoardHOSE(exchange)
+        data = self.crawlPriceIBoard(exchange)
         dict_ = {"Symbol": [], "Price": [], "Volume": []}
 
         for row in data["data"]["stockRealtimes"]:
-            # print(row)
             dict_["Symbol"].append(row["stockSymbol"])
             dict_["Price"].append(row["matchedPrice"])
             dict_["Volume"].append(row["nmTotalTradedQty"])
@@ -72,9 +62,8 @@ class Price(setup.Setup):
         Input:  exchange: hose, hnx, upcom
         Output: DataFrame
         """
-        date = datetime.now().strftime("%Y-%m-%d")
-        data = self.CrawlPriceIBoardHOSE(exchange)
-        return pd.DataFrame(data["data"]["stockRealtimes"])
+        data = self.crawlPriceIBoard(exchange)
+        return pd.DataFrame(data)
 
     def getPriceToDayAllExchange(self):
         """
@@ -82,7 +71,6 @@ class Price(setup.Setup):
         Output: DataFrame
         """
         exchange = ["hose", "hnx", "upcom"]
-        # exchange = ['hose']
         result = pd.DataFrame()
         for ex in exchange:
             data = self.getPriceToDayWithExchange(ex)
@@ -96,7 +84,6 @@ class Price(setup.Setup):
 
         """
         exchange = ["hose", "hnx", "upcom"]
-        # exchange = ['hose']
         result = pd.DataFrame()
         for ex in exchange:
             data = self.getIBoardExchange(ex)

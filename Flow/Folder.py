@@ -1,8 +1,5 @@
-from datetime import datetime
 import os
-from typing import Type
 from Flow import PATH_env
-import json
 
 
 class FolderData(PATH_env.PATH_ENV):
@@ -12,7 +9,8 @@ class FolderData(PATH_env.PATH_ENV):
     def __init__(self, Type_, date):
         '''
         Type_: Type of Data 
-        date: date of Data'''
+        date: date of Data
+        '''
         if len(date) == 0:
             super().__init__(Type_, RealDay=True)
         else:
@@ -199,7 +197,7 @@ class FolderUpdate(FolderData):
         self.createFolder(self.joinPath(path, "Dividend"))
         self.createFolder(self.joinPath(path, "Error"))
 
-    def Run_Create_Folder(self):
+    def run(self):
         '''
         Run Create Folder 
         '''

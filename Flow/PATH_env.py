@@ -49,31 +49,42 @@ class PATH_ENV():
         self.Temp = "Temp"
 
     def joinPath(self, *args):
-        '''
+        """
         Join multiple paths into a directory path.
         
-        Parameters:
+        Parameters
+        ----------
         *args : str
             Multiple path segments to join.
         
-        Returns:
+        Returns
+        -------
         str
             Joined directory path.
-        '''
+        """
         filtered_paths = [path for path in args if path != ""]
         joined_path = "/".join(filtered_paths)
         return joined_path
 
-    def setTypeForder(self,Type):
-        '''
-        Chọn loại thư mục 
-        Input: Type: Loại thư mục 
-        Output: None'''
-        if Type == "Ingestion":
+    def setFolderType(self, type):
+        """
+        Select the type of folder.
+
+        Parameters
+        ----------
+        type : str
+            Type of folder.
+
+        Returns
+        -------
+        None
+        """
+
+        if type == "Ingestion":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Ingestion"
-        elif Type == "Raw_VIS":
+        elif type == "Raw_VIS":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data Lake\Raw_VIS"
-        elif Type == "WH":
+        elif type == "WH":
             PATH_Data = "G:\My Drive\DataVIS\VietNam\Data WareHouse"
             self.PATH_MAIN = PATH_Data
             self.PATH_CLOSE = self.joinPath(self.PATH_MAIN,"Close")
