@@ -1,25 +1,16 @@
-# DataVietNam
-# Vis_Data_VietNam
-# DataVietNam
-Trong Project này có 2 phần chính:
-    
-+ Crawl (Kéo dữ liệu từ các nguồn)
-+ Transform (Biến đối và compare)
+# Vietnamese Finance Data Crawler
 
-Để dễ tiếp cận đọc và chính sửa code thì tài liệu này sẽ giải thích chi tiết các hàm trong hệ thống, về flow data sẽ chạy theo 2 phần chính như kia:
+## Description
+This project consists of two main parts:
+- **Crawler**: Retrieve data from various sources
+- **Transformer**: Transform data and compare
+
+To facilitate understanding and code modification, this documentation will provide detailed explanations of each function in the system. The data flow will follow the two main parts mentioned above. In general, the current crawler can meet about 80-90% of the data sources on the internet. Currently, there is no captcha processing functionality.
+
 # Crawl
-- Nhìn chung các tool hiện tại đang sử dụng đều có thể đáp ứng được 80-90% các nguồn dữ liệu trên mạng (Hiện chưa có chức năng xử lý capcha):
 
-| Công nghệ | Chức năng | Áp dụng | Ký hiệu |
-|-----------|-----------|---------|---------|
-| BeatifulSoup | Phân tích cú pháp HTML | Khi có source HTML | BS4_ |
-| Request | Gửi yêu cầu đến máy chủ để lấy dữ liệu về | Khi phát hiện được API của trang web để public | R_ |
-| Selenium | Tương tác nhưng người thật với máy để lấy được Source HTML của trang web | Khi không thể dùng request để lấy | S_ |
 ## Base
-- Trong quá trình làm thì để tạo ra những công việc chung nhất sau này tiện cho việc tái sử dụng code thì hệ thống có cung cấp các hàm cơ bản để tương tác và hiện nó được lưu trữ và được để trong thư mục
-
-    ![image](https://user-images.githubusercontent.com/35418790/236776337-138eac38-1834-4885-a5e1-f4e62a2407f8.png)
-- Cần quan tâm những file sau:
+- Trong quá trình làm thì để tạo ra những công việc chung nhất sau này tiện cho việc tái sử dụng code thì hệ thống có cung cấp các hàm cơ bản để tương tác và hiện nó được lưu trữ và được để trong thư mục `Crawl/base`
 
 | Tên file | Nhiệm vụ |
 |-----------|-----------|

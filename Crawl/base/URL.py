@@ -1,4 +1,3 @@
-# USER = 'bwt90798@zslsz.com'
 USER = 'jgb48995@omeie.com'
 PASSWORD = 'V@ng2000'
 
