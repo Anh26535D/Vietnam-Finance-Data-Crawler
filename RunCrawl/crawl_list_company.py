@@ -1,5 +1,5 @@
 import sys
-sys.path.append(r'C:\DataVietNam')
+sys.path.append(r'E:\vis\vis_vietnamese_data\DataVietNam')
 import pandas as pd
 from Crawl import VietStock
 import Flow.PATH_env as PATH_env
@@ -7,7 +7,8 @@ import time
 
 def run_reset_vs():
     '''
-    Reset VietStock\n'''
+    Reset VietStock
+    '''
     global webVS
     webVS.turn_off_drive()
     print("Tam Nghi VS-------------------")
