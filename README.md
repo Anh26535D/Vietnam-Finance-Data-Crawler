@@ -11,16 +11,16 @@ To facilitate understanding and code modification, this documentation will provi
 
 The crawler source code is located in the Crawl directory.
 
-1. **BaseCrawler**: During the development process, to create the most common tasks for convenient code reuse, the system provides basic functions for interaction,.
+1. **BaseCrawler**: basic functions for interaction.
 
-| Tên file | Nhiệm vụ |
+| File name | Task |
 |-----------|-----------|
 | setup.py | Stores basic functions for interacting with the website. Read details in the API section. [API](#api_setup) |
 | URL.py | Stores the paths of various sources, including VietStock accounts.|
 
 2. **Wrappers**: 
 
-| Tên file | API | Trạng Thái |
+| File name | API | Scrape Type |
 |-----------|-----------|-----------|
 | CafeF.py |  [API](#CafeF) | Daily scrape |
 | SSI.py | [API](#SSI) | One-time scrape |
@@ -29,10 +29,8 @@ The crawler source code is located in the Crawl directory.
 | VietStock.py | [API](#VietStock) | Daily scrape |
 | Web68.py | [API](#Web68) | One-time scrape |
 
-## Crawl main
+## CrawlRunner
 Đây là thư mục lưu trữ phần kéo data:
-
-![image](https://github.com/dangthevang/DataVietNam/assets/35418790/858c72f2-512b-48f9-851b-0996dbde1b8e)
 
 | Data | Tên file | Trạng Thái | Source | Mô tả |
 |-----------|-----------|-----------|-----------|------------------------------|
