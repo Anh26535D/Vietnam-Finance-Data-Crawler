@@ -7,30 +7,27 @@ This project consists of two main parts:
 
 To facilitate understanding and code modification, this documentation will provide detailed explanations of each function in the system. The data flow will follow the two main parts mentioned above. In general, the current crawler can meet about 80-90% of the data sources on the internet. Currently, there is no captcha processing functionality.
 
-# Crawl
+## Crawler
 
-## Base
-- Trong quá trình làm thì để tạo ra những công việc chung nhất sau này tiện cho việc tái sử dụng code thì hệ thống có cung cấp các hàm cơ bản để tương tác và hiện nó được lưu trữ và được để trong thư mục `Crawl/base`
+The crawler source code is located in the Crawl directory.
+
+1. **BaseCrawler**: During the development process, to create the most common tasks for convenient code reuse, the system provides basic functions for interaction,.
 
 | Tên file | Nhiệm vụ |
 |-----------|-----------|
-| setup.py | Lưu trữ các hàm cơ bản để tương tác với trang web. Đọc chi tiết ở phần dưới đây. [API](#api_setup) |
-| URL.py | Nơi lưu trữ các đường dẫn của các nguồn khác nhau, Có tài khoản của VietStock |
+| setup.py | Stores basic functions for interacting with the website. Read details in the API section. [API](#api_setup) |
+| URL.py | Stores the paths of various sources, including VietStock accounts.|
 
-## Source Data
+2. **Wrappers**: 
 
-![image](https://user-images.githubusercontent.com/35418790/236780765-e8138d16-1aa6-4154-baac-957602f7c9ce.png)
-
-- Cần quan tâm những file sau:
-
-| Tên file | API | Trạng Thái | Công nghệ |
-|-----------|-----------|-----------|----------|
-| CafeF.py |  [API](#CafeF) | Kéo hàng ngày | BS4, R_, S_ |
-| SSI.py | [API](#SSI) | Kéo 1 lần | R_ |
-| StockBiz.py | [API](#StockBiz) | Kéo 1 lần | BS4, R_ |
-| TVSI.py | [API](#TVSI) | Kéo 1 lần | BS4, R_ |
-| VietStock.py | [API](#VietStock) | Kéo hàng ngày |  BS4, R_, S_ |
-| Web68.py | [API](#Web68) | Kéo 1 lần | BS4, R_, S_ |
+| Tên file | API | Trạng Thái |
+|-----------|-----------|-----------|
+| CafeF.py |  [API](#CafeF) | Daily scrape |
+| SSI.py | [API](#SSI) | One-time scrape |
+| StockBiz.py | [API](#StockBiz) | One-time scrape |
+| TVSI.py | [API](#TVSI) | One-time scrape |
+| VietStock.py | [API](#VietStock) | Daily scrape |
+| Web68.py | [API](#Web68) | One-time scrape |
 
 ## Crawl main
 Đây là thư mục lưu trữ phần kéo data:
